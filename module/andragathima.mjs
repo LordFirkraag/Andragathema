@@ -61,7 +61,7 @@ Hooks.once('init', async function() {
   Actors.unregisterSheet("core", ActorSheet);
   Actors.registerSheet("andragathima", AndragathimaActorSheet, { 
     makeDefault: true,
-    types: ["character", "npc"],
+    types: ["character", "npc", "container"],
     label: "ANDRAGATHIMA.SheetClassCharacter"
   });
   
@@ -1885,6 +1885,7 @@ async function preloadHandlebarsTemplates() {
     // Actor sheets
     "systems/andragathima/templates/actor/character-sheet.html",
     "systems/andragathima/templates/actor/npc-sheet.html",
+    "systems/andragathima/templates/actor/container-sheet.html",
     
     // Item sheets
     "systems/andragathima/templates/item/item-sheet.html",

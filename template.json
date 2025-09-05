@@ -1,6 +1,6 @@
 {
   "Actor": {
-    "types": ["character", "npc"],
+    "types": ["character", "npc", "container"],
     "templates": {
       "base": {
         "biography": "",
@@ -1335,6 +1335,12 @@
         "miscItem18": "", "miscWeight18": "",
         "miscItem19": "", "miscWeight19": "",
         "miscItem20": "", "miscWeight20": ""
+      }
+    },
+    "container": {
+      "templates": ["base"],
+      "miscellaneous": {
+        "items": []
       }
     }
   },

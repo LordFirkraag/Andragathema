@@ -4287,3 +4287,173 @@ body.andragathima .tooltip {
   position: relative;
   z-index: 10;
 }
+
+/* ==========================================
+   Container Sheet Styling
+   ========================================== */
+
+.andragathima.container {
+  background: url(../assets/parchment.jpg) repeat;
+  background-size: 400px 400px;
+  color: var(--andragathima-text);
+  font-family: 'Albertus', serif;
+}
+
+.andragathima.container .sheet-header {
+  display: flex;
+  align-items: center;
+  padding: 20px;
+  background: linear-gradient(135deg, rgba(196, 154, 107, 0.3), rgba(180, 115, 51, 0.2));
+  border-bottom: 2px solid var(--andragathima-bronze);
+  margin-bottom: 20px;
+}
+
+.andragathima.container .profile-img {
+  border: 3px solid var(--andragathima-bronze);
+  border-radius: 50%;
+  margin-right: 20px;
+}
+
+.andragathima.container .charname input {
+  font-family: 'Albertus', serif;
+  font-size: 24px;
+  font-weight: bold;
+  color: var(--andragathima-title);
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  padding: 5px 0;
+  margin: 0;
+  width: 100%;
+}
+
+.andragathima.container .charname input:focus {
+  border-bottom: 2px solid var(--andragathima-gold);
+  outline: none;
+}
+
+.andragathima.container .header-character-info {
+  font-size: 16px;
+  color: var(--andragathima-text);
+  font-style: italic;
+  margin-top: 5px;
+}
+
+.andragathima.container .container-body {
+  padding: 20px;
+  height: calc(100% - 140px);
+  overflow-y: auto;
+}
+
+.andragathima.container .container-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+}
+
+.andragathima.container .container-items-section {
+  width: 100%;
+  max-width: 600px;
+}
+
+.andragathima.container .container-items-section h2 {
+  text-align: center;
+  font-size: 20px;
+  color: var(--andragathima-title);
+  font-weight: bold;
+  margin-bottom: 20px;
+  border-bottom: 2px solid var(--andragathima-bronze);
+  padding-bottom: 10px;
+}
+
+.andragathima.container .container-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 60px);
+  gap: 12px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  border: 2px solid var(--andragathima-accent);
+  justify-content: center;
+}
+
+.andragathima.container .item-slot {
+  position: relative;
+  width: 60px;
+  height: 60px;
+  border: 2px solid var(--andragathima-bronze);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(244, 232, 208, 0.3);
+  transition: all 0.2s ease;
+}
+
+.andragathima.container .item-slot:hover {
+  border-color: var(--andragathima-gold);
+  background: rgba(244, 232, 208, 0.5);
+  box-shadow: 0 0 8px rgba(212, 175, 55, 0.4);
+}
+
+.andragathima.container .item-image {
+  width: 48px;
+  height: 48px;
+  border-radius: 4px;
+  object-fit: cover;
+}
+
+.andragathima.container .empty-slot-image {
+  width: 36px;
+  height: 36px;
+  opacity: 0.4;
+  filter: sepia(1) saturate(2) hue-rotate(20deg);
+}
+
+.andragathima.container .item-delete {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  width: 18px;
+  height: 18px;
+  background: var(--andragathima-penalty-red);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  font-size: 12px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  opacity: 0;
+  transform: scale(0.8);
+}
+
+.andragathima.container .item-slot:hover .item-delete {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.andragathima.container .item-delete:hover {
+  background: #c92a20;
+  transform: scale(1.1);
+}
+
+.andragathima.container .ammunition-quantity-overlay {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  background: var(--andragathima-gold);
+  color: var(--andragathima-text);
+  font-size: 10px;
+  font-weight: bold;
+  padding: 2px 4px;
+  border-radius: 3px;
+  border: 1px solid var(--andragathima-bronze);
+  min-width: 16px;
+  text-align: center;
+  line-height: 1;
+}

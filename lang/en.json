@@ -255,6 +255,9 @@
     "NPCType": "Type",
     "NPCChallenge": "Level",
     
+    "Container": "Container",
+    "ContainerName": "Container name",
+    
     "Currency": "Currency",
     "SilverCoinsPlaceholder": "Silver coins",
     "Encumbrance": "Load",

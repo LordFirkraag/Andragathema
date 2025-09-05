@@ -255,6 +255,9 @@
     "NPCType": "Τύπος",
     "NPCChallenge": "Επίπεδο",
     
+    "Container": "Δοχείο",
+    "ContainerName": "Όνομα δοχείου",
+    
     "Currency": "Νόμισμα",
     "SilverCoinsPlaceholder": "Ασημένια κέρματα",
     "Encumbrance": "Φόρτος",

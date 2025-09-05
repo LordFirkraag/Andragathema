@@ -68,6 +68,11 @@ export class AndragathimaActorSheet extends ActorSheet {
       }
     }
 
+    // Prepare Container data and items.
+    if (actorData.type == 'container') {
+      this._prepareContainerData(context);
+    }
+
     // Add roll data for TinyMCE editors.
     context.rollData = context.actor.getRollData();
 
@@ -4763,6 +4768,39 @@ export class AndragathimaActorSheet extends ActorSheet {
     const saveType = dataset.saveType;
     // Target numbers toggle only affects display, calculations remain the same
     return this.actor.rollSave(saveType);
+  }
+
+  /**
+   * Prepare Container type specific data
+   */
+  _prepareContainerData(context) {
+    // Ensure miscellaneous structure exists and has exactly 20 slots
+    const items = context.system.miscellaneous?.items || [];
+    
+    // Fill with actual items from the actor's items collection
+    context.system.miscellaneous = {
+      items: new Array(20).fill(null)
+    };
+    
+    // Get all miscellaneous items and place them in slots
+    const miscItems = Array.from(this.actor.items).filter(item => 
+      item.type === "miscellaneous" || item.type === "ammunition" || 
+      item.type === "equipment" || item.type === "weapon" || item.type === "armor"
+    );
+    
+    // Place items in first 20 slots
+    for (let i = 0; i < Math.min(miscItems.length, 20); i++) {
+      context.system.miscellaneous.items[i] = this._enrichItem(miscItems[i]);
+    }
+  }
+
+  /**
+   * Enrich item with additional display data for container
+   */
+  _enrichItem(item) {
+    const enriched = item.toObject();
+    enriched.tooltip = this._getItemTooltip(item);
+    return enriched;
   }
   
 }

@@ -49,6 +49,7 @@ export class AndragathimaActor extends Actor {
     // things organized.
     this._prepareDerivedCharacterData(actorData);
     this._prepareDerivedNpcData(actorData);
+    this._prepareDerivedContainerData(actorData);
   }
 
   /** @override */
@@ -63,6 +64,7 @@ export class AndragathimaActor extends Actor {
     // things organized.
     this._prepareCharacterData(actorData);
     this._prepareNpcData(actorData);
+    this._prepareContainerData(actorData);
   }
 
   /**
@@ -1410,6 +1412,40 @@ export class AndragathimaActor extends Actor {
     
     // Store the calculated level
     systemData.characterLevel = characterLevel;
+  }
+
+  /**
+   * Prepare Container type specific data
+   */
+  _prepareContainerData(actorData) {
+    if (actorData.type !== 'container') return;
+
+    // Make modifications to data here.
+    const systemData = actorData.system;
+    
+    // Initialize miscellaneous items if not present
+    if (!systemData.miscellaneous) {
+      systemData.miscellaneous = {
+        items: []
+      };
+    }
+    
+    // Ensure we have exactly 20 slots
+    const items = systemData.miscellaneous.items || [];
+    while (items.length < 20) {
+      items.push({ id: "", name: "", img: "", quantity: 0 });
+    }
+    systemData.miscellaneous.items = items.slice(0, 20); // Keep only first 20
+  }
+
+  /**
+   * Prepare Container type derived data (after active effects)
+   */
+  _prepareDerivedContainerData(actorData) {
+    if (actorData.type !== 'container') return;
+
+    // Container actors don't need complex derived data calculations
+    // Just ensure the structure is maintained
   }
 
 }
