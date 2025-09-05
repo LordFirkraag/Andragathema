@@ -1,0 +1,26 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find:*)",
+      "Bash(node:*)",
+      "Bash(grep:*)",
+      "WebFetch(domain:gitlab.com)",
+      "Read(c:\\Users\\fotis\\AppData\\Local\\FoundryVTT\\Data\\systems\\andragathima\\css/**)",
+      "Read(c:\\Users\\fotis\\AppData\\Local\\FoundryVTT\\Data\\systems\\andragathima\\css/**)",
+      "Read(c:\\Users\\fotis\\AppData\\Local\\FoundryVTT\\Data\\systems\\andragathima\\css/**)",
+      "Read(c:\\Users\\fotis\\AppData\\Local\\FoundryVTT\\Data\\systems\\andragathima\\css/**)",
+      "Read(c:\\Users\\fotis\\AppData\\Local\\FoundryVTT\\Data\\systems\\andragathima\\css/**)",
+      "Read(c:\\Users\\fotis\\AppData\\Local\\FoundryVTT\\Data\\systems\\andragathima\\css/**)",
+      "Read(c:\\Users\\fotis\\AppData\\Local\\FoundryVTT\\Data\\systems\\andragathima\\css/**)",
+      "Bash(sed:*)",
+      "Bash(python3:*)",
+      "Bash(git init:*)",
+      "Bash(mv:*)"
+    ],
+    "deny": [],
+    "ask": [],
+    "additionalDirectories": [
+      "C:\\Users\\fotis\\AppData\\Local\\FoundryVTT"
+    ]
+  }
+}

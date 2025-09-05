@@ -1,0 +1,80 @@
+<form class="{{cssClass}} andragathima" autocomplete="off">
+  <header class="sheet-header">
+    <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}"/>
+    <div class="header-fields">
+      <h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="{{localize 'ANDRAGATHIMA.SkillNamePlaceholder'}}"/></h1>
+    </div>
+  </header>
+
+  {{!-- Sheet Tab Navigation --}}
+  <nav class="sheet-tabs tabs" data-group="primary">
+    <a class="item" data-tab="description">{{localize 'ANDRAGATHIMA.Description'}}</a>
+    <a class="item" data-tab="details">{{localize 'ANDRAGATHIMA.Details'}}</a>
+  </nav>
+
+  {{!-- Sheet Body --}}
+  <section class="sheet-body">
+
+    {{!-- Description Tab --}}
+    <div class="tab" data-group="primary" data-tab="description">
+      {{!-- Effects Grid --}}
+      <div class="item-effects-section">
+        <div class="effects-grid">
+          {{#each item.effects as |effect|}}
+            <div class="effect-slot has-effect {{#if effect.disabled}}disabled{{/if}}" 
+                 data-effect-id="{{effect.id}}" 
+                 title="{{effect.tooltip}}">
+              <img src="{{effect.img}}" alt="{{effect.name}}" class="effect-image" width="36" height="36" draggable="true"/>
+              <button type="button" class="effect-delete" data-effect-id="{{effect.id}}" title="{{localize 'ANDRAGATHIMA.DeleteEffect'}}">×</button>
+            </div>
+          {{/each}}
+          
+          {{!-- Add Effect Slot --}}
+          <div class="effect-slot add-effect-slot" data-action="create" title="{{localize 'ANDRAGATHIMA.AddNewEffect'}}">
+            <i class="fas fa-plus"></i>
+          </div>
+        </div>
+        
+        {{!-- Equipment Effects Checkbox --}}
+        <div class="equipment-effects-toggle">
+          <label class="checkbox">
+            <input type="checkbox" name="system.effectsRequireEquipment" {{#if (ne system.effectsRequireEquipment false)}}checked{{/if}}/>
+            {{localize 'ANDRAGATHIMA.Equipment'}}
+          </label>
+        </div>
+      </div>
+      
+      {{editor system.description target="system.description" button=true owner=owner editable=editable}}
+    </div>
+
+    {{!-- Details Tab --}}
+    <div class="tab" data-group="primary" data-tab="details">
+      
+      {{!-- Skill Level --}}
+      <div class="form-group">
+        <label>{{localize 'ANDRAGATHIMA.SkillLevel'}}</label>
+        <select name="system.level" data-dtype="Number">
+          {{#each skillLevels as |label level|}}
+          <option value="{{level}}" {{#if (eq ../system.level level)}}selected{{/if}}>{{label}}</option>
+          {{/each}}
+        </select>
+      </div>
+
+      {{!-- Has Skill Checkbox --}}
+      <div class="form-group">
+        <label>
+          <input type="checkbox" name="system.hasSkill" {{#if system.hasSkill}}checked{{/if}}/>
+          {{localize 'ANDRAGATHIMA.HasSkill'}}
+        </label>
+      </div>
+
+      {{!-- Prerequisites --}}
+      <div class="form-group">
+        <label>{{localize 'ANDRAGATHIMA.Prerequisites'}}</label>
+        <input type="text" name="system.prerequisites" value="{{system.prerequisites}}" placeholder="{{localize 'ANDRAGATHIMA.SkillPrerequisitesPlaceholder'}}"/>
+      </div>
+
+    </div>
+
+  </section>
+</form>

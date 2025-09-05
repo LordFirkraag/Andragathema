@@ -1,0 +1,9 @@
+@font-face {
+    font-family: 'Albertus Nova';
+    src: local('Albertus Nova Regular'), local('Albertus-Nova-Regular'),
+        url('AlbertusNova.woff2') format('woff2'),
+        url('AlbertusNova.woff') format('woff'),
+        url('AlbertusNova.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+  }

@@ -1,0 +1,318 @@
+<form class="{{cssClass}} andragathima" autocomplete="off">
+  <header class="sheet-header">
+    <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}"/>
+    <div class="header-fields">
+      <h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="{{localize 'ANDRAGATHIMA.ItemName'}}"/></h1>
+    </div>
+  </header>
+
+  {{!-- Sheet Tab Navigation --}}
+  <nav class="sheet-tabs tabs" data-group="primary">
+    <a class="item" data-tab="description">{{localize 'ANDRAGATHIMA.Description'}}</a>
+    <a class="item" data-tab="details">{{localize 'ANDRAGATHIMA.Details'}}</a>
+    {{#if (or (eq item.type 'weapon') (eq item.type 'armor'))}}
+    <a class="item" data-tab="combat">{{localize 'ANDRAGATHIMA.Combat'}}</a>
+    {{/if}}
+    {{#if (eq item.type 'spell')}}
+    <a class="item" data-tab="magic">{{localize 'ANDRAGATHIMA.Magic'}}</a>
+    {{/if}}
+  </nav>
+
+  {{!-- Sheet Body --}}
+  <section class="sheet-body">
+
+    {{!-- Description Tab --}}
+    <div class="tab" data-group="primary" data-tab="description">
+      {{editor system.description target="system.description" button=true owner=owner editable=editable}}
+    </div>
+
+    {{!-- Details Tab --}}
+    <div class="tab" data-group="primary" data-tab="details">
+      
+      {{!-- Common Details --}}
+      <div class="form-group">
+        <label>{{localize 'ANDRAGATHIMA.WeightKg'}}</label>
+        <input type="number" name="system.weight" value="{{system.weight}}" data-dtype="Number"/>
+      </div>
+      
+      <div class="form-group">
+        <label>{{localize 'ANDRAGATHIMA.Price'}}</label>
+        <div class="flexrow">
+          <input type="number" name="system.price.value" value="{{system.price.value}}" data-dtype="Number"/>
+          <select name="system.price.denomination">
+            <option value="cp" {{#if (eq system.price.denomination 'cp')}}selected{{/if}}>{{localize 'ANDRAGATHIMA.CurrencyCopper'}}</option>
+            <option value="sp" {{#if (eq system.price.denomination 'sp')}}selected{{/if}}>{{localize 'ANDRAGATHIMA.CurrencySilver'}}</option>
+            <option value="gp" {{#if (eq system.price.denomination 'gp')}}selected{{/if}}>{{localize 'ANDRAGATHIMA.CurrencyGold'}}</option>
+          </select>
+        </div>
+      </div>
+
+      {{!-- Type-specific Details --}}
+      {{#if (eq item.type 'weapon')}}
+      
+      <div class="form-group">
+        <label>{{localize 'ANDRAGATHIMA.WeaponTypeLabel'}}</label>
+        <select name="system.weaponType">
+          {{#select system.weaponType}}
+          {{#each weaponTypes as |label key|}}
+          <option value="{{key}}">{{localize label}}</option>
+          {{/each}}
+          {{/select}}
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>{{localize 'ANDRAGATHIMA.DamageTypeLabel'}}</label>
+        <select name="system.damageType">
+          {{#select system.damageType}}
+          {{#each damageTypes as |label key|}}
+          <option value="{{key}}">{{localize label}}</option>
+          {{/each}}
+          {{/select}}
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>{{localize 'ANDRAGATHIMA.BaseDamage'}}</label>
+        <input type="number" name="system.damage.base" value="{{system.damage.base}}" data-dtype="Number"/>
+      </div>
+
+      <div class="form-group">
+        <label>{{localize 'ANDRAGATHIMA.AttackBonus'}}</label>
+        <input type="number" name="system.attack.bonus" value="{{system.attack.bonus}}" data-dtype="Number"/>
+      </div>
+
+      <div class="properties">
+        {{#each weaponProperties as |label key|}}
+        <div class="form-group">
+          <label class="checkbox">
+            <input type="checkbox" class="property-toggle" data-property="{{key}}" 
+                   {{#if (lookup ../system.properties key)}}checked{{/if}}/>
+            {{localize label}}
+          </label>
+        </div>
+        {{/each}}
+      </div>
+      {{/if}}
+
+      {{#if (eq item.type 'armor')}}
+      
+      <div class="form-group">
+        <label>{{localize 'ANDRAGATHIMA.ArmorTypeLabel'}}</label>
+        <select name="system.armorType">
+          {{#select system.armorType}}
+          {{#each armorTypes as |label key|}}
+          <option value="{{key}}">{{localize label}}</option>
+          {{/each}}
+          {{/select}}
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>{{localize 'ANDRAGATHIMA.Penalty'}}</label>
+        <input type="number" name="system.penalty" value="{{system.penalty}}" data-dtype="Number"/>
+      </div>
+
+      <div class="resistances grid grid-2col">
+        {{#each damageTypes as |label key|}}
+        <div class="form-group">
+          <label>{{localize label}}</label>
+          <input type="number" class="resistance-value" data-resistance="{{key}}" 
+                 name="system.resistances.{{key}}" 
+                 value="{{lookup ../system.resistances key}}" data-dtype="Number"/>
+        </div>
+        {{/each}}
+      </div>
+      {{/if}}
+
+      {{#if (eq item.type 'equipment')}}
+      
+      <div class="form-group">
+        <label>{{localize 'ANDRAGATHIMA.Quantity'}}</label>
+        <input type="number" name="system.quantity" value="{{system.quantity}}" data-dtype="Number"/>
+      </div>
+
+      <div class="form-group">
+        <label>{{localize 'ANDRAGATHIMA.Uses'}}</label>
+        <div class="flexrow">
+          <input type="number" name="system.uses.value" value="{{system.uses.value}}" data-dtype="Number"/>
+          <span>/</span>
+          <input type="number" name="system.uses.max" value="{{system.uses.max}}" data-dtype="Number"/>
+        </div>
+      </div>
+      {{/if}}
+
+      {{#if (eq item.type 'skill')}}
+      
+      <div class="form-group">
+        <label>{{localize 'ANDRAGATHIMA.Level'}}</label>
+        <select name="system.level">
+          {{#select system.level}}
+          {{#each skillLevels as |label key|}}
+          <option value="{{key}}">{{label}}</option>
+          {{/each}}
+          {{/select}}
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>{{localize 'ANDRAGATHIMA.MaxLevel'}}</label>
+        <input type="number" name="system.maxLevel" value="{{system.maxLevel}}" data-dtype="Number"/>
+      </div>
+
+      <div class="form-group">
+        <label>{{localize 'ANDRAGATHIMA.ExperienceCost'}}</label>
+        <span>{{system.experienceCost}}</span>
+      </div>
+
+      <div class="form-group">
+        <label>{{localize 'ANDRAGATHIMA.Requirements'}}</label>
+        <input type="text" name="system.requirements" value="{{system.requirements}}"/>
+      </div>
+      {{/if}}
+    </div>
+
+    {{!-- Combat Tab (for weapons and armor) --}}
+    {{#if (or (eq item.type 'weapon') (eq item.type 'armor'))}}
+    <div class="tab" data-group="primary" data-tab="combat">
+      {{#if (eq item.type 'weapon')}}
+      
+      <div class="combat-stats">
+        <div class="stat-block">
+          <label>{{localize 'ANDRAGATHIMA.TotalAttack'}}</label>
+          <div class="stat-value">{{#if system.totalAttack}}+{{system.totalAttack}}{{else}}—{{/if}}</div>
+        </div>
+        
+        <div class="stat-block">
+          <label>{{localize 'ANDRAGATHIMA.TotalDamage'}}</label>
+          <div class="stat-value">{{#if system.totalDamage}}{{system.totalDamage}}{{else}}—{{/if}}</div>
+        </div>
+        
+        <div class="stat-block">
+          <label>{{localize 'ANDRAGATHIMA.DamageTypeLabel'}}</label>
+          <div class="stat-value">{{localize (lookup damageTypes system.damageType)}}</div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <button type="button" class="rollable" data-roll-type="weapon">
+          <i class="fas fa-dice-d20"></i> {{localize 'ANDRAGATHIMA.RollAttack'}}
+        </button>
+      </div>
+      {{/if}}
+
+      {{#if (eq item.type 'armor')}}
+      
+      <div class="protection-grid">
+        {{#each system.resistances as |value key|}}
+        <div class="protection-item">
+          <label>{{localize (lookup ../damageTypes key)}}</label>
+          <div class="protection-value">{{value}}</div>
+        </div>
+        {{/each}}
+      </div>
+
+      <div class="form-group">
+        <label class="checkbox">
+          <input type="checkbox" name="system.equipped" {{#if system.equipped}}checked{{/if}}/>
+          {{localize 'ANDRAGATHIMA.Equipped'}}
+        </label>
+      </div>
+      {{/if}}
+    </div>
+    {{/if}}
+
+    {{!-- Magic Tab (for spells) --}}
+    {{#if (eq item.type 'spell')}}
+    <div class="tab" data-group="primary" data-tab="magic">
+      
+      <div class="form-group">
+        <label>{{localize 'ANDRAGATHIMA.Level'}}</label>
+        <select name="system.level">
+          {{#select system.level}}
+          {{#each spellLevels as |label key|}}
+          <option value="{{key}}">{{label}}</option>
+          {{/each}}
+          {{/select}}
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>{{localize 'ANDRAGATHIMA.SpellSchool'}}</label>
+        <select name="system.school">
+          <option value="">{{localize 'ANDRAGATHIMA.SelectOption'}}</option>
+          {{#select system.school}}
+          {{#each spellSchools as |label key|}}
+          <option value="{{key}}">{{localize label}}</option>
+          {{/each}}
+          {{/select}}
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>{{localize 'ANDRAGATHIMA.Power'}}</label>
+        <input type="number" name="system.power.value" value="{{system.power.value}}" data-dtype="Number"/>
+      </div>
+
+      <div class="spell-components">
+        <label class="checkbox">
+          <input type="checkbox" name="system.components.verbal" {{#if system.components.verbal}}checked{{/if}}/>
+          {{localize 'ANDRAGATHIMA.Verbal'}}
+        </label>
+        <label class="checkbox">
+          <input type="checkbox" name="system.components.somatic" {{#if system.components.somatic}}checked{{/if}}/>
+          {{localize 'ANDRAGATHIMA.Somatic'}}
+        </label>
+        <label class="checkbox">
+          <input type="checkbox" name="system.components.material" {{#if system.components.material}}checked{{/if}}/>
+          {{localize 'ANDRAGATHIMA.Material'}}
+        </label>
+      </div>
+
+      {{#if system.components.material}}
+      <div class="form-group">
+        <label>{{localize 'ANDRAGATHIMA.Materials'}}</label>
+        <input type="text" name="system.materials.value" value="{{system.materials.value}}"/>
+      </div>
+      {{/if}}
+
+      <div class="spell-targeting grid grid-2col">
+        <div class="form-group">
+          <label>{{localize 'ANDRAGATHIMA.RangeLabel'}}</label>
+          <input type="text" name="system.range.value" value="{{system.range.value}}"/>
+        </div>
+        <div class="form-group">
+          <label>{{localize 'ANDRAGATHIMA.Unit'}}</label>
+          <input type="text" name="system.range.units" value="{{system.range.units}}" placeholder="{{localize 'ANDRAGATHIMA.Meters'}}"/>
+        </div>
+        <div class="form-group">
+          <label>{{localize 'ANDRAGATHIMA.Target'}}</label>
+          <input type="text" name="system.target.type" value="{{system.target.type}}"/>
+        </div>
+        <div class="form-group">
+          <label>{{localize 'ANDRAGATHIMA.Area'}}</label>
+          <input type="text" name="system.target.value" value="{{system.target.value}}"/>
+        </div>
+      </div>
+
+      <div class="spell-duration grid grid-2col">
+        <div class="form-group">
+          <label>{{localize 'ANDRAGATHIMA.Value'}}</label>
+          <input type="text" name="system.duration.value" value="{{system.duration.value}}"/>
+        </div>
+        <div class="form-group">
+          <label>{{localize 'ANDRAGATHIMA.Unit'}}</label>
+          <input type="text" name="system.duration.units" value="{{system.duration.units}}" placeholder="{{localize 'ANDRAGATHIMA.Rounds'}}"/>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <button type="button" class="rollable" data-roll-type="spell">
+          <i class="fas fa-magic"></i> {{localize 'ANDRAGATHIMA.CastSpell'}}
+        </button>
+      </div>
+    </div>
+    {{/if}}
+
+  </section>
+</form>

@@ -1,0 +1,105 @@
+<form class="{{cssClass}} andragathima flexcol" autocomplete="off">
+
+  {{!-- Sheet Header --}}
+  <header class="sheet-header">
+    <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}" height="64" width="64"/>
+    <div class="header-fields">
+      <h1 class="charname">
+        <input name="name" type="text" value="{{item.name}}" placeholder="{{localize 'ANDRAGATHIMA.ItemName'}}"/>
+      </h1>
+      <div class="item-subtitle">{{localize 'ANDRAGATHIMA.ItemTypeArmor'}}</div>
+    </div>
+  </header>
+
+  {{!-- Sheet Body --}}
+  <section class="sheet-body">
+    <div class="armor-details">
+      
+      {{!-- Armor Properties --}}
+      <div class="armor-properties">
+        <div class="info-section">
+          
+          <table class="armor-properties-table">
+            <tr>
+              <td><label>{{localize 'ANDRAGATHIMA.Cost'}}:</label></td>
+              <td><input type="number" name="system.price.value" value="{{system.price.value}}" data-dtype="Number" step="0.01"/></td>
+              <td><span class="currency-symbol">Ӿ</span></td>
+            </tr>
+            <tr>
+              <td><label>{{localize 'ANDRAGATHIMA.ResistanceDiatrisi'}}:</label></td>
+              <td><input type="number" name="system.resistances.diatrisi" value="{{system.resistances.diatrisi}}" data-dtype="Number"/></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td><label>{{localize 'ANDRAGATHIMA.ResistanceKroysi'}}:</label></td>
+              <td><input type="number" name="system.resistances.kroysi" value="{{system.resistances.kroysi}}" data-dtype="Number"/></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td><label>{{localize 'ANDRAGATHIMA.ResistanceTomi'}}:</label></td>
+              <td><input type="number" name="system.resistances.tomi" value="{{system.resistances.tomi}}" data-dtype="Number"/></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td><label>{{localize 'ANDRAGATHIMA.ArmorPenalty'}}:</label></td>
+              <td><input type="number" name="system.penalty" value="{{system.penalty}}" data-dtype="Number"/></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td><label>{{localize 'ANDRAGATHIMA.ArmorType'}}:</label></td>
+              <td>
+                <select name="system.armorType">
+                  <option value="light" {{#if (eq system.armorType "light")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.ArmorLight'}}</option>
+                  <option value="medium" {{#if (eq system.armorType "medium")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.ArmorMedium'}}</option>
+                  <option value="heavy" {{#if (eq system.armorType "heavy")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.ArmorHeavy'}}</option>
+                </select>
+              </td>
+              <td></td>
+            </tr>
+            <tr>
+              <td><label>{{localize 'ANDRAGATHIMA.Weight'}}:</label></td>
+              <td><input type="number" name="system.weight" value="{{system.weight}}" data-dtype="Number" step="0.1"/></td>
+              <td>kg</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+
+      {{!-- Effects Grid --}}
+      <div class="item-effects-section">
+        <div class="effects-grid">
+          {{#each item.effects as |effect|}}
+            <div class="effect-slot has-effect {{#if effect.disabled}}disabled{{/if}}" 
+                 data-effect-id="{{effect.id}}" 
+                 title="{{effect.tooltip}}">
+              <img src="{{effect.img}}" alt="{{effect.name}}" class="effect-image" width="36" height="36" draggable="true"/>
+              <button type="button" class="effect-delete" data-effect-id="{{effect.id}}" title="{{localize 'ANDRAGATHIMA.DeleteEffect'}}">×</button>
+            </div>
+          {{/each}}
+          
+          {{!-- Add Effect Slot --}}
+          <div class="effect-slot add-effect-slot" data-action="create" title="{{localize 'ANDRAGATHIMA.AddNewEffect'}}">
+            <i class="fas fa-plus"></i>
+          </div>
+        </div>
+        
+        {{!-- Equipment Effects Checkbox --}}
+        <div class="equipment-effects-toggle">
+          <label class="checkbox">
+            {{localize 'ANDRAGATHIMA.Equipment'}}
+            <input type="checkbox" name="system.effectsRequireEquipment" {{#if (ne system.effectsRequireEquipment false)}}checked{{/if}}/>
+          </label>
+        </div>
+      </div>
+
+      {{!-- Description --}}
+      <div class="description-section">
+        <h3>{{localize 'ANDRAGATHIMA.DescriptionNotes'}}</h3>
+        <div class="form-group stacked description-text">
+          <textarea name="system.description" rows="6">{{system.description}}</textarea>
+        </div>
+      </div>
+
+    </div>
+  </section>
+</form>
