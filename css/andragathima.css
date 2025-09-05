@@ -297,6 +297,7 @@ body .tooltip {
 }
 
 .andragathima-rich-tooltip .item-name {
+  font-family: 'Albertus Nova', 'Trajan Pro', 'Optima', 'Cinzel', Georgia, serif;
   font-weight: normal;
   color: var(--andragathima-title);
   margin-bottom: 4px;
@@ -2375,6 +2376,38 @@ body .tooltip {
 .andragathima-rich-tooltip {
   z-index: 10000 !important;
   pointer-events: none;
+  transition: opacity 0.2s ease-in-out;
+  opacity: 0.95;
+  min-width: 200px;
+  max-width: 350px;
+}
+
+/* Hide any default Foundry tooltips when our custom ones are active */
+body.andragathima .tooltip {
+  display: none !important;
+}
+
+/* Better spacing for tooltip properties */
+.andragathima-rich-tooltip .item-property {
+  margin: 1px 0;
+  padding: 2px 4px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 2px;
+}
+
+/* Subtle alternating row shading */
+.andragathima-rich-tooltip .item-property:nth-child(even) {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.andragathima-rich-tooltip .property-label {
+  font-weight: bold;
+  color: var(--andragathima-title);
+  margin-right: 8px;
+  min-width: 100px; /* Reduced further to bring columns closer */
+  flex-shrink: 0;
 }
 
 /* Disable browser tooltips completely for elements with our custom tooltips */
@@ -4155,15 +4188,28 @@ body .tooltip {
   -webkit-filter: grayscale(100%) brightness(80%) contrast(110%);
 }
 
-/* Target Numbers Toggle */
-.andragathima .target-numbers-toggle {
+/* Toggle Controls Container */
+.andragathima .toggle-controls {
+  margin-top: -10px;
+  padding: 8px;
+  text-align: right;
+  position: relative;
+  z-index: 10;
+}
+
+/* Individual Toggle Styling */
+.andragathima .target-numbers-toggle,
+.andragathima .hide-stats-toggle {
   display: flex !important;
-  justify-content: right;
-  align-items: right;
-  padding: 0;
-  margin-bottom: -5px;
-  margin-top: -15px;
-  margin-right: -5px;
+  flex-direction: row-reverse;
+  justify-content: space-between;
+  padding: 5px;
+  margin: 0;
+}
+
+.andragathima .hide-stats-toggle {
+  margin-top: 2px;
+  text-align: right;
 }
 
 .andragathima .toggle-switch {

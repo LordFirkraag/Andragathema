@@ -20,6 +20,9 @@ export class AndragathimaActor extends Actor {
 
   /** @override */
   prepareData() {
+    // Increment prepare data version for caching
+    this._prepareDataVersion = (this._prepareDataVersion || 0) + 1;
+    
     // Prepare data for the actor. Calling the super version of this executes
     // the following, in order: data reset (to clear active effects),
     // prepareBaseData(), prepareEmbeddedDocuments() (including active effects),
@@ -925,6 +928,11 @@ export class AndragathimaActor extends Actor {
    * Get status modifiers from flags and Active Effects
    */
   _getStatusModifiers() {
+    // Simple caching based on prepareData cycle
+    if (this._cachedStatusModifiers && this._lastPrepareDataVersion === this._prepareDataVersion) {
+      return this._cachedStatusModifiers;
+    }
+    
     const flags = this.flags.andragathima || {};
     const flagModifiers = flags.modifiers || {};
     
@@ -960,13 +968,19 @@ export class AndragathimaActor extends Actor {
     };
 
     // Merge flag modifiers with Active Effect modifiers
-    return {
+    const result = {
       abilities: applyOverrides(flagModifiers.abilities || {}, activeEffectModifiers.abilities),
       saves: applyOverrides(flagModifiers.saves || {}, activeEffectModifiers.saves),
       combat: applyOverrides(flagModifiers.combat || {}, activeEffectModifiers.combat),
       resistances: applyOverrides(flagModifiers.resistances || {}, activeEffectModifiers.resistances),
       other: applyOverrides(flagModifiers.other || {}, activeEffectModifiers.other)
     };
+    
+    // Cache the result for this prepareData cycle
+    this._cachedStatusModifiers = result;
+    this._lastPrepareDataVersion = this._prepareDataVersion;
+    
+    return result;
   }
 
   /**

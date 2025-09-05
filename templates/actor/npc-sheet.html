@@ -120,14 +120,6 @@
         <div class="right-column">
           <div class="character-stats">
             
-            {{!-- Target Numbers Toggle --}}
-            <div class="stat-line target-numbers-toggle">
-              <label class="toggle-switch">
-                <span class="toggle-label">{{localize 'ANDRAGATHIMA.TargetNumbers'}}</span>
-                <input type="checkbox" class="target-numbers-checkbox" {{#if flags.andragathima.useTargetNumbers}}checked{{/if}}>
-                <span class="toggle-slider"></span>
-              </label>
-            </div>
             
             <div class="stat-line">
               <strong>{{localize 'ANDRAGATHIMA.Defense'}}:</strong> <span {{#if (or system.hasArmorPenalty system.hasEncumbrancePenalty system.hasShieldPenalty)}}class="armor-penalty-text"{{/if}}><span class="{{statusModifierClass (default flags.andragathima.modifiers.combat.meleeDefense 0)}}">{{formatStatNumber system.combat.melee.defense flags}}</span>/<span class="{{statusModifierClass (default flags.andragathima.modifiers.combat.rangedDefense 0)}}">{{formatStatNumber system.combat.ranged.defense flags}}</span></span>
@@ -221,6 +213,27 @@
           </div>
         </div>
 
+      </div>
+      
+      {{!-- Toggle Controls --}}
+      <div class="toggle-controls">
+        {{!-- Target Numbers Toggle --}}
+        <div class="stat-line target-numbers-toggle">
+          <label class="toggle-switch">
+            <span class="toggle-label">{{localize 'ANDRAGATHIMA.TargetNumbers'}}</span>
+            <input type="checkbox" class="target-numbers-checkbox" {{#if flags.andragathima.useTargetNumbers}}checked{{/if}}>
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+        
+        {{!-- Hide Stats from Players Toggle --}}
+        <div class="stat-line hide-stats-toggle">
+          <label class="toggle-switch">
+            <span class="toggle-label">{{localize 'ANDRAGATHIMA.HideStatsFromPlayers'}}</span>
+            <input type="checkbox" class="hide-stats-checkbox" {{#if flags.andragathima.hideStatsFromPlayers}}checked{{/if}}>
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
       </div>
     </div>
 

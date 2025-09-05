@@ -70,7 +70,7 @@
     "SizeLilliputian": "Λιλιπούτειο",
     "SizeTiny": "Τοσοδούλικο",
     "SizeSmall": "Μικρό",
-    "SizeMedium": "Μεσαίο",
+    "SizeMedium": "Μέσο",
     "SizeLarge": "Μεγάλο",
     "SizeHuge": "Τεράστιο",
     "SizeGargantuan": "Πελώριο",
@@ -218,7 +218,8 @@
     "Add": "Προσθήκη",
     "Edit": "Επεξεργασία",
     "Delete": "Διαγραφή",
-    "TargetNumbers": "Στόχοι",
+    "TargetNumbers": "Συντελεστές/Στόχοι",
+    "HideStatsFromPlayers": "Κρυμμένα χαρακτηριστικά",
     "Duplicate": "Αντιγραφή",
     "Use": "Χρήση",
     "Equip": "Εξόπλισε",
@@ -257,9 +258,7 @@
     "Currency": "Νόμισμα",
     "SilverCoinsPlaceholder": "Ασημένια κέρματα",
     "Encumbrance": "Φόρτος",
-    "EncumbranceLight": "Ελαφρύς",
     "EncumbranceMedium": "Μεσαίος",
-    "EncumbranceHeavy": "Βαρύς",
     "EncumbranceMax": "Μέγιστος",
     "Limits": "Όρια:",
     
@@ -284,11 +283,6 @@
     "Error": "Σφάλμα",
     "Info": "Πληροφορία",
 	
-  	"TOKEN.DISPOSITION_FRIENDLY": "Ήρωας",
-  	"TOKEN.DISPOSITION_NEUTRAL": "Ουδέτερος",
-  	"TOKEN.DISPOSITION_HOSTILE": "Εχθρός",
-  	"TOKEN.DISPOSITION_SECRET": "Μυστική",
-    
     "Tooltips": {
       "RollAbility": "Ρίξε μια δοκιμασία ικανότητας",
       "RollSave": "Ρίξε μια ζαριά αποφυγής",
@@ -481,7 +475,7 @@
     "SpellInsufficientNoMagicDegree": "Χρειάζεται Βαθμό τουλάχιστον 1",
     "SpellInsufficientMagicLevel": "Χρειάζεται Επίπεδο μάγου {level} (έχετε {current})",
     "SpellInsufficientIntelligence": "Χρειάζεται Συντελεστή Ευφυΐας {level} (έχετε {current})",
-    "SpellInsufficientElements": "Δεν έχετε κανένα από τα απαιτούμενα στοιχεία",
+    "SpellInsufficientElements": "Χρειάζεται Βαθμό τουλάχιστον 3 για ξόρκια αυτού του στοιχείου",
     
     "SheetClassCharacter": "Χαρακτήρας",
     "SheetClassItem": "Αντικείμενο",
@@ -562,21 +556,21 @@
     "StatusGrappledDesc": "Χάνεις τον συντελεστή Άμυνας.",
     "StatusHelplessDesc": "Δεν μπορείς να εκτελέσεις καθόλου ενέργειες.",
     "StatusInvisibleDesc": "Αόρατος.",
-    "StatusParalyzedDesc": "Παραλυμένος και ανήμπορος να κινηθεί ή να μιλήσει. Αυτόματη αποτυχία σε σωματικά σωτήρια ρίξιμο.",
+    "StatusParalyzedDesc": "Παράλυτος.",
     "StatusPoisonedDesc": "Δηλητηριασμένος. Οι ποινές είναι ανάλογες με το δηλητήριο.",
     "StatusProneDesc": "−4 Επίθεση σώμα με σώμα, −4/+4 Άμυνα.",
     "StatusRestrainedDesc": "Δεσμευμένος. Ταχύτητα 0, μειοτέλεσμα στις επιθέσεις και την άμυνα.",
     "StatusStunnedDesc": "Ζαλισμένος και ανίκανος να κάνει ενέργειες. Χάνεις τον συντελεστή Άμυνας και έχεις επιπλέον ποινή −2/−2 Άμυνα.",
-    "StatusUnconsciousDesc": "Αναίσθητος και πεσμένος. Ανίκανος να κάνει ενέργειες, αυτόματη αποτυχία σε σωματικά σωτήρια.",
+    "StatusUnconsciousDesc": "Ανίκανος να κάνει ενέργειες, οι επιθέσεις σώμα με σώμα πετυχαίνουν αυτόματα.",
     
     "StatusDrunk": "Μεθυσμένος",
     "StatusDrunkDesc": "−4 σε Πρωτοβουλία, ζαριές αιφνιδιασμού, επίθεση και άμυνα. Δεν μπορείς να χρησιμοποιήσεις τον συντελεστή επιδεξιότητας στη ζημιά. Είσαι άτρωτος στον πόνο και δεν γίνεσαι εμβρόντητος ως αποτέλεσμα ζημιάς.",
     
     "StatusDead": "Νεκρός",
-    "StatusDeadDesc": "Έχεις πεθάνει. Δεν μπορείς να κάνεις τίποτα.",
+    "StatusDeadDesc": "Έχεις πεθάνει.",
     
     "StatusDying": "Ετοιμοθάνατος",
-    "StatusDyingDesc": "Είσαι ετοιμοθάνατος και χάνεις συνείδηση.",
+    "StatusDyingDesc": "Είσαι ετοιμοθάνατος.",
     
     "StatusWounded": "Λαβωματιά",
     "StatusWoundedDesc": "Έχεις ποινή −1/−1 Άμυνα, −1 Αντοχή, και −1 σε όλες τις ζαριές αποφυγής.",
@@ -619,7 +613,6 @@
     "Meters": "μέτρα",
     "Area": "Περιοχή",
     "Value": "Τιμή",
-    "Rounds": "γύροι",
     "SecondHand": "(δεύτερο χέρι)",
     "ExperiencePointsAbbr": "ΠΕ:",
     "AvailableExperiencePoints": "Διαθέσιμοι πόντοι εμπειρίας:",
@@ -649,8 +642,6 @@
     "AvoidanceRoll": "Ζαριά Αποφυγής",
     "RangedAttack": "Επίθεση Μακρόθεν",
     "MeleeAttack": "Επίθεση Σώμα με Σώμα",
-    "CriticalHit": "ΚΑΙΡΙΟ ΠΛΗΓΜΑ!",
-    "CriticalFailure": "ΚΡΙΣΙΜΗ ΑΠΟΤΥΧΙΑ!",
     
     "DamageTypeDiatrisi": "Διάτρηση",
     "DamageTypeKroysi": "Κρούση",
@@ -661,8 +652,7 @@
     
     "CriticalHitResult": "Καίριο Πλήγμα!",
     "CriticalFailureResult": "Κρίσιμη Αποτυχία!",
-    "Success": "Επιτυχία!",
-    "Failure": "Αποτυχία",
+
     
     "OneRoundPerDegree": "1 γύρος/βαθμό",
     "OneMinutePerDegree": "1 λεπτό/βαθμό",
@@ -707,8 +697,7 @@
     "DiceLabel": "Ζαριά",
     "GrappleDiceLabel": "Ζαριά Πάλης",
     "StabilityDiceLabel": "Ζαριά Ευστάθειας",
-    
-    "SizeMedium": "Μεσαίο",
+
     "AbilityCannotExceed50": "Η ικανότητα δεν μπορεί να ξεπεράσει το 50",
     "AbilityCannotExceed25": "Η ικανότητα δεν μπορεί να ξεπεράσει το 25",
     "AbilityCannotGoBelowZero": "Η ικανότητα δεν μπορεί να πέσει κάτω από το 0",
@@ -721,6 +710,9 @@
     "NoPermissionToChangeExperience": "Δεν έχετε δικαίωμα να αλλάξετε τους πόντους εμπειρίας.",
     
     "CriticalHitDamageBonus": "Καίριο πλήγμα! +5 ζημιά",
-    "DefaultSpellSchool": "Μαγεία"
+    "DefaultSpellSchool": "Μαγεία",
+    
+    "TooltipErrorLoadingData": "Σφάλμα φόρτωσης δεδομένων",
+    "TooltipUnknownActor": "Άγνωστος"
   }
 }

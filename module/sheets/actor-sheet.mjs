@@ -953,6 +953,9 @@ export class AndragathimaActorSheet extends ActorSheet {
     // Handle target numbers toggle for NPCs
     html.find('.target-numbers-checkbox').change(this._onTargetNumbersToggle.bind(this));
     
+    // Handle hide stats from players toggle for NPCs
+    html.find('.hide-stats-checkbox').change(this._onHideStatsToggle.bind(this));
+    
     // Handle element dropdown selection
     html.find('.element-dropdown').change(this._onElementChange.bind(this));
 
@@ -1266,6 +1269,22 @@ export class AndragathimaActorSheet extends ActorSheet {
     // Update the flag
     await this.actor.update({ 
       "flags.andragathima.useTargetNumbers": useTargetNumbers 
+    });
+    
+    // Re-render to update the display
+    this.render(false);
+  }
+
+  async _onHideStatsToggle(event) {
+    event.preventDefault();
+    const hideStatsFromPlayers = event.currentTarget.checked;
+    
+    // Only apply to NPCs
+    if (this.actor.type !== 'npc') return;
+    
+    // Update the flag
+    await this.actor.update({ 
+      "flags.andragathima.hideStatsFromPlayers": hideStatsFromPlayers 
     });
     
     // Re-render to update the display
