@@ -2616,7 +2616,7 @@ export class AndragathimaActorSheet extends ActorSheet {
     }
     
     if (system.damage?.coefficient || system.damage?.bonus) {
-      tooltip += `\nΖημιά: ${this._formatNumber(system.damage.coefficient || 0, true)}`;
+      tooltip += `\n${game.i18n.localize('ANDRAGATHIMA.DamageWithColon')} ${this._formatNumber(system.damage.coefficient || 0, true)}`;
       if (system.damage.bonus) {
         tooltip += ` ${this._formatNumber(system.damage.bonus, true)}`;
       }
@@ -2624,20 +2624,20 @@ export class AndragathimaActorSheet extends ActorSheet {
     
     if (system.attack?.bonus) {
       const attackFormatted = system.attack.bonus >= 0 ? `+${this._formatNumber(system.attack.bonus)}` : this._formatNumber(system.attack.bonus);
-      tooltip += `\nΕπίθεση: ${attackFormatted}`;
+      tooltip += `\n${game.i18n.localize('ANDRAGATHIMA.AttackWithColon')} ${attackFormatted}`;
     }
     
     if (system.range?.text && system.range.text !== "0") {
       const rangeText = system.range.text.replace(/Χ/g, '×');
-      tooltip += `\nΕμβέλεια: ${rangeText} m`;
+      tooltip += `\n${game.i18n.localize('ANDRAGATHIMA.RangeDisplay')} ${rangeText} m`;
     }
     
     if (system.strength) {
-      tooltip += `\nΔύναμη: ${this._formatNumber(system.strength)}`;
+      tooltip += `\n${game.i18n.localize('ANDRAGATHIMA.Strength')}: ${this._formatNumber(system.strength)}`;
     }
     
     if (system.weight) {
-      tooltip += `\nΒάρος: ${this._formatNumber(system.weight)} kg`;
+      tooltip += `\n${game.i18n.localize('ANDRAGATHIMA.Weight')}: ${this._formatNumber(system.weight)} kg`;
     }
     
     return tooltip;
@@ -2673,11 +2673,11 @@ export class AndragathimaActorSheet extends ActorSheet {
     }
     
     if (system.penalty && system.penalty !== 0) {
-      tooltip += `\nΠοινή: ${this._formatNumber(system.penalty)}`;
+      tooltip += `\n${game.i18n.localize('ANDRAGATHIMA.ArmorPenalty')}: ${this._formatNumber(system.penalty)}`;
     }
     
     if (system.weight) {
-      tooltip += `\nΒάρος: ${this._formatNumber(system.weight)} kg`;
+      tooltip += `\n${game.i18n.localize('ANDRAGATHIMA.Weight')}: ${this._formatNumber(system.weight)} kg`;
     }
     
     return tooltip;
@@ -2691,7 +2691,7 @@ export class AndragathimaActorSheet extends ActorSheet {
     let tooltip = `<strong>${equipment.name}</strong>`;
     
     if (system.quantity && system.quantity > 1) {
-      tooltip += `\nΠοσότητα: ${this._formatNumber(system.quantity)}`;
+      tooltip += `\n${game.i18n.localize('ANDRAGATHIMA.Quantity')}: ${this._formatNumber(system.quantity)}`;
     }
     
     if (system.weight) {
@@ -2944,11 +2944,11 @@ export class AndragathimaActorSheet extends ActorSheet {
     let tooltip = `<strong>${skill.name}</strong>`;
     
     if (system.level !== undefined) {
-      tooltip += `\nΕπίπεδο: ${this._formatNumber(system.level)}/${this._formatNumber(system.maxLevel || 3)}`;
+      tooltip += `\n${game.i18n.localize('ANDRAGATHIMA.SkillLevel')}: ${this._formatNumber(system.level)}/${this._formatNumber(system.maxLevel || 3)}`;
     }
     
     if (system.experienceCost) {
-      tooltip += `\nΚόστος ΠΕ: ${this._formatNumber(system.experienceCost)}`;
+      tooltip += `\n${game.i18n.localize('ANDRAGATHIMA.ExperienceCost')}: ${this._formatNumber(system.experienceCost)}`;
     }
     
     return tooltip;
@@ -3563,11 +3563,11 @@ export class AndragathimaActorSheet extends ActorSheet {
     const effectiveDegree = this._calculateSpellDegreeForTooltip(spell);
     
     if (effectiveDegree === 0) {
-      return `Έκρηξη ${this._formatNumber(multiplier)} m/βαθμό`;
+      return `${game.i18n.localize('ANDRAGATHIMA.SpellAreaBurst')} ${this._formatNumber(multiplier)} m/βαθμό`;
     }
     
     const area = multiplier * effectiveDegree;
-    return `Έκρηξη ${this._formatNumber(area)} m`;
+    return `${game.i18n.localize('ANDRAGATHIMA.SpellAreaBurst')} ${this._formatNumber(area)} m`;
   }
 
   /**

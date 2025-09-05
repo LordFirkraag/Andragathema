@@ -189,7 +189,7 @@
     "RollAttack": "Attack Roll",
     "RollDefense": "Defense Roll",
     "RollDamage": "Damage Roll",
-    "RollResistance": "Resistance Roll",
+    "RollResistance": "Toughness Roll",
     "RollSave": "Saving Throw",
     "RollAbility": "Ability Check",
     "RollGrapple": "Grapple Roll",
@@ -219,6 +219,7 @@
     "Edit": "Edit",
     "Delete": "Delete",
     "TargetNumbers": "Targets",
+    "HideStatsFromPlayers": "Hidden Stats",
     "Duplicate": "Duplicate",
     "Use": "Use",
     "Equip": "Equip",
@@ -319,7 +320,7 @@
 
     "Overview": "Record",
     "Points": "Points",
-    "Resistance": "Resistance",
+    "Resistance": "Toughness",
     "SavingThrows": "Saving throws",
     "QuickItems": "Quick items",
     "Empty": "Empty",
@@ -348,7 +349,7 @@
     "CombatAbilities": "Combat abilities",
     "MagicAbilities": "Magic abilities",
     "MageLevel": "Mage level",
-    "MagicDegree": "Magic degree",
+    "MagicDegree": "Magic rank",
     "MagicElement": "Element",
     "Magic": "Magic",
     "ElementAir": "Air",
@@ -365,7 +366,7 @@
     "SpellDeleted": "{name} was removed from your spellbook.",
     "DeleteItemConfirm": "Are you sure you want to delete <strong>{name}</strong>?",
     "OnlySpellsCanBeAdded": "Only spells can be added to the spellbook.",
-    "NeedMagicAbilities": "You need both Mage Level and Magic Degree to use spells.",
+    "NeedMagicAbilities": "You need both Mage Level and Magic Rank to use spells.",
     "SpellAdded": "{name} was added to your spellbook.",
     "Abilities": "Abilities",
     "ChangeCharacterImage": "Change character image",
@@ -653,11 +654,11 @@
     "CriticalFailureResult": "Critical Failure!",
 
     
-    "OneRoundPerDegree": "1 round/degree",
-    "OneMinutePerDegree": "1 minute/degree",
-    "FiveMinutesPerDegree": "5 minutes/degree",
-    "TenMinutesPerDegree": "10 minutes/degree",
-    "OneHourPerDegree": "1 hour/degree",
+    "OneRoundPerDegree": "1 round/rank",
+    "OneMinutePerDegree": "1 minute/rank",
+    "FiveMinutesPerDegree": "5 minutes/rank",
+    "TenMinutesPerDegree": "10 minutes/rank",
+    "OneHourPerDegree": "1 hour/rank",
     
     "DegreeZero": "Zero",
     "DegreeFirst": "First",
@@ -671,13 +672,13 @@
     "SkillRankExperienced": "Experienced",
     "SkillRankMaster": "Master",
     
-    "RoundPerDegree": "round(s)/degree",
+    "RoundPerDegree": "round(s)/rank",
     "Round": "round",
     "Rounds": "rounds",
-    "MinutePerDegree": "minute(s)/degree",
+    "MinutePerDegree": "minute(s)/rank",
     "Minute": "minute",
     "Minutes": "minutes",
-    "HourPerDegree": "hour(s)/degree",
+    "HourPerDegree": "hour(s)/rank",
     "Hour": "hour",
     "Hours": "hours",
     
@@ -709,6 +710,9 @@
     "NoPermissionToChangeExperience": "You do not have permission to change experience points.",
     
     "CriticalHitDamageBonus": "Critical hit! +5 damage",
-    "DefaultSpellSchool": "Magic"
+    "DefaultSpellSchool": "Magic",
+    
+    "TooltipErrorLoadingData": "Error loading data",
+    "TooltipUnknownActor": "Unknown"
   }
 }

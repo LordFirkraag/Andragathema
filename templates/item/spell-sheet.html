@@ -48,7 +48,7 @@
               <td><label>{{localize 'ANDRAGATHIMA.SpellSchool'}}:</label></td>
               <td>
                 <select name="system.school">
-                  <option value="">Επίλεξε ένα...</option>
+                  <option value="">{{localize 'ANDRAGATHIMA.SelectOne'}}</option>
                   <option value="abjuration" {{#if (eq system.school "abjuration")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.SpellSchoolAbjuration'}}</option>
                   <option value="enchantment" {{#if (eq system.school "enchantment")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.SpellSchoolEnchantment'}}</option>
                   <option value="evocation" {{#if (eq system.school "evocation")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.SpellSchoolEvocation'}}</option>
@@ -123,11 +123,11 @@
               <td>
                 <select name="system.duration.type">
                   <option value="instant" {{#if (eq system.duration.type "instant")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.SpellDurationInstant'}}</option>
-                  <option value="round_per_degree" {{#if (eq system.duration.type "round_per_degree")}}selected{{/if}}>1 γύρος/βαθμό</option>
-                  <option value="minute_per_degree" {{#if (eq system.duration.type "minute_per_degree")}}selected{{/if}}>1 λεπτό/βαθμό</option>
-                  <option value="five_minutes_per_degree" {{#if (eq system.duration.type "five_minutes_per_degree")}}selected{{/if}}>5 λεπτά/βαθμό</option>
-                  <option value="ten_minutes_per_degree" {{#if (eq system.duration.type "ten_minutes_per_degree")}}selected{{/if}}>10 λεπτά/βαθμό</option>
-                  <option value="hour_per_degree" {{#if (eq system.duration.type "hour_per_degree")}}selected{{/if}}>1 ώρα/βαθμό</option>
+                  <option value="round_per_degree" {{#if (eq system.duration.type "round_per_degree")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.OneRoundPerDegree'}}</option>
+                  <option value="minute_per_degree" {{#if (eq system.duration.type "minute_per_degree")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.OneMinutePerDegree'}}</option>
+                  <option value="five_minutes_per_degree" {{#if (eq system.duration.type "five_minutes_per_degree")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.FiveMinutesPerDegree'}}</option>
+                  <option value="ten_minutes_per_degree" {{#if (eq system.duration.type "ten_minutes_per_degree")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.TenMinutesPerDegree'}}</option>
+                  <option value="hour_per_degree" {{#if (eq system.duration.type "hour_per_degree")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.OneHourPerDegree'}}</option>
                   <option value="custom" {{#if (eq system.duration.type "custom")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.SpellDurationCustom'}}</option>
                 </select>
               </td>

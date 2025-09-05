@@ -1195,7 +1195,8 @@ function generateTooltipContent(actor) {
     // Function to format stat display
     const formatStat = (value, useTargetNumbers) => {
       if (hideStatsFromPlayers) return "???";
-      return useTargetNumbers ? `${value + 11}+` : `${value >= 0 ? '+' : ''}${value}`;
+      const result = useTargetNumbers ? `${value + 11}+` : `${value >= 0 ? '+' : ''}${value}`;
+      return result.replace(/^-/, '−');
     };
     
     // Function to format simple value
@@ -1230,7 +1231,8 @@ function generateTooltipContent(actor) {
     Object.entries(system.resistances).forEach(([key, resistance]) => {
       if (resistance.total !== undefined && resistance.total !== system.baseResistance && resistance.specialized !== 0) {
         const resistanceDisplay = formatStat(resistance.total, useTargetNumbers);
-        content += `<div class="item-property"><span class="property-label">${resistance.label}:</span> ${resistanceDisplay}</div>`;
+        const resistanceKey = `Resistance${key.charAt(0).toUpperCase() + key.slice(1)}`;
+        content += `<div class="item-property"><span class="property-label">${game.i18n.localize(`ANDRAGATHIMA.${resistanceKey}`)}:</span> ${resistanceDisplay}</div>`;
       }
     });
   }
@@ -1240,7 +1242,9 @@ function generateTooltipContent(actor) {
     Object.entries(system.saves).forEach(([key, save]) => {
       if (save.value !== undefined) {
         const saveDisplay = formatStat(save.value, useTargetNumbers);
-        content += `<div class="item-property"><span class="property-label">${save.label || key}:</span> ${saveDisplay}</div>`;
+        const saveKey = `Save${key.charAt(0).toUpperCase() + key.slice(1)}`;
+        const saveLabel = game.i18n.localize(`ANDRAGATHIMA.${saveKey}`);
+        content += `<div class="item-property"><span class="property-label">${saveLabel}:</span> ${saveDisplay}</div>`;
       }
     });
   }
@@ -1356,7 +1360,8 @@ function getBestQuickWeaponFromRecord(actor, useTargetNumbers, hideStatsFromPlay
     // Helper functions for formatting
     const formatStat = (value) => {
       if (hideStatsFromPlayers) return "???";
-      return useTargetNumbers ? `${value + 11}+` : `${value >= 0 ? '+' : ''}${value}`;
+      const result = useTargetNumbers ? `${value + 11}+` : `${value >= 0 ? '+' : ''}${value}`;
+      return result.replace(/^-/, '−');
     };
     
     const formatValue = (value) => {
@@ -1388,6 +1393,7 @@ function getBestQuickWeaponFromRecord(actor, useTargetNumbers, hideStatsFromPlay
         }
       } else {
         damageDisplay = useTargetNumbers ? `${damage + 11}+` : `${damage >= 0 ? '+' : ''}${damage}`;
+        damageDisplay = damageDisplay.replace(/^-/, '−');
         if (damageType) {
           damageDisplay += ` ${damageType}`;
         }

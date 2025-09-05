@@ -72,12 +72,12 @@ export class AndragathimaItem extends Item {
       
       // Display damage type
       const damageTypes = {
-        'diatrisi': 'Διάτρηση',
-        'kroysi': 'Κρούση', 
-        'tomi': 'Τομή',
-        'diatrisi_kroysi': 'Διάτρηση/Κρούση',
-        'diatrisi_tomi': 'Διάτρηση/Τομή',
-        'kroysi_tomi': 'Κρούση/Τομή'
+        'diatrisi': game.i18n.localize('ANDRAGATHIMA.DamageDiatrisi'),
+        'kroysi': game.i18n.localize('ANDRAGATHIMA.DamageKroysi'), 
+        'tomi': game.i18n.localize('ANDRAGATHIMA.DamageTomi'),
+        'diatrisi_kroysi': game.i18n.localize('ANDRAGATHIMA.DamageDiatrisiKroysi'),
+        'diatrisi_tomi': game.i18n.localize('ANDRAGATHIMA.DamageDiatrisiTomi'),
+        'kroysi_tomi': game.i18n.localize('ANDRAGATHIMA.DamageKroysiTomi')
       };
       data.damageTypeDisplay = damageTypes[data.damageType] || data.damageType || '';
       
@@ -403,13 +403,13 @@ export class AndragathimaItem extends Item {
       <h3>${this.name} - ${isRanged ? game.i18n.localize('ANDRAGATHIMA.RangedAttack') : game.i18n.localize('ANDRAGATHIMA.MeleeAttack')}</h3>`;
     
     if (critical) {
-      flavor += `<div class="critical">⚔️ ΚΑΙΡΙΟ ΠΛΗΓΜΑ! ⚔️</div>`;
+      flavor += `<div class="critical">⚔️ ${game.i18n.localize('ANDRAGATHIMA.CriticalHit')} ⚔️</div>`;
     } else if (fumble) {
-      flavor += `<div class="fumble">💀 ΚΡΙΣΙΜΗ ΑΠΟΤΥΧΙΑ! 💀</div>`;
+      flavor += `<div class="fumble">💀 ${game.i18n.localize('ANDRAGATHIMA.CriticalMiss')} 💀</div>`;
     } else if (success) {
-      flavor += `<div class="success">Επιτυχία${stage > 1 ? ` (${stage}ο στάδιο)` : ''}!</div>`;
+      flavor += `<div class="success">${game.i18n.localize('ANDRAGATHIMA.Success')}${stage > 1 ? ` (${stage}${game.i18n.localize('ANDRAGATHIMA.ChatStage')})` : ''}!</div>`;
     } else {
-      flavor += `<div class="failure">Αποτυχία${stage > 1 ? ` (${stage}ο στάδιο)` : ''}</div>`;
+      flavor += `<div class="failure">${game.i18n.localize('ANDRAGATHIMA.Failure')}${stage > 1 ? ` (${stage}${game.i18n.localize('ANDRAGATHIMA.ChatStage')})` : ''}</div>`;
     }
     
     flavor += `</div>`;
@@ -483,9 +483,9 @@ export class AndragathimaItem extends Item {
     
     // Build flavor text
     const flavor = `<div class="andragathima-chat-message">
-      <h3>${this.name} - Ζημιά</h3>
-      <div class="damage-type">Τύπος: ${damageType}</div>
-      <div class="damage-total">Ζημιά: ${roll.total}</div>
+      <h3>${this.name} - ${game.i18n.localize('ANDRAGATHIMA.Damage')}</h3>
+      <div class="damage-type">${game.i18n.localize('ANDRAGATHIMA.DamageTypeLabel')}: ${damageType}</div>
+      <div class="damage-total">${game.i18n.localize('ANDRAGATHIMA.Damage')}: ${roll.total}</div>
     </div>`;
     
     // Send to chat
@@ -515,8 +515,8 @@ export class AndragathimaItem extends Item {
     const flavor = `<div class="andragathima-chat-message">
       <h3>${this.name}</h3>
       <div class="spell-school">${itemData.school || game.i18n.localize('ANDRAGATHIMA.DefaultSpellSchool')}</div>
-      <div class="spell-power">Ισχύς: ${roll.total}</div>
-      <div class="spell-level">Επίπεδο: ${itemData.level || 0}</div>
+      <div class="spell-power">${game.i18n.localize('ANDRAGATHIMA.SpellPower')}: ${roll.total}</div>
+      <div class="spell-level">${game.i18n.localize('ANDRAGATHIMA.SpellLevel')}: ${itemData.level || 0}</div>
     </div>`;
     
     // Send to chat
@@ -546,8 +546,8 @@ export class AndragathimaItem extends Item {
     // Build flavor text
     const flavor = `<div class="andragathima-chat-message">
       <h3>${this.name}</h3>
-      <div class="skill-level">Επίπεδο: ${level}</div>
-      <div class="skill-bonus">Μπόνους: +${bonus}</div>
+      <div class="skill-level">${game.i18n.localize('ANDRAGATHIMA.SkillLevel')}: ${level}</div>
+      <div class="skill-bonus">${game.i18n.localize('ANDRAGATHIMA.Bonus')}: +${bonus}</div>
     </div>`;
     
     // Send to chat
@@ -580,13 +580,13 @@ export class AndragathimaItem extends Item {
     // Add item-specific details
     switch (this.type) {
       case 'equipment':
-        if (itemData.quantity) content += `<div>Ποσότητα: ${itemData.quantity}</div>`;
-        if (itemData.weight) content += `<div>Βάρος: ${itemData.weight} kg</div>`;
-        if (itemData.price?.value) content += `<div>Τιμή: ${itemData.price.value} ${itemData.price.denomination}</div>`;
+        if (itemData.quantity) content += `<div>${game.i18n.localize('ANDRAGATHIMA.Quantity')}: ${itemData.quantity}</div>`;
+        if (itemData.weight) content += `<div>${game.i18n.localize('ANDRAGATHIMA.Weight')}: ${itemData.weight} kg</div>`;
+        if (itemData.price?.value) content += `<div>${game.i18n.localize('ANDRAGATHIMA.Price')}: ${itemData.price.value} ${itemData.price.denomination}</div>`;
         break;
       case 'armor':
-        content += `<div>Τύπος: ${itemData.armorType}</div>`;
-        if (itemData.penalty) content += `<div>Ποινή: ${itemData.penalty}</div>`;
+        content += `<div>${game.i18n.localize('ANDRAGATHIMA.ArmorType')}: ${itemData.armorType}</div>`;
+        if (itemData.penalty) content += `<div>${game.i18n.localize('ANDRAGATHIMA.ArmorPenalty')}: ${itemData.penalty}</div>`;
         break;
     }
     
