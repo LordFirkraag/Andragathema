@@ -1,0 +1,43 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find:*)",
+      "Bash(node:*)",
+      "Bash(grep:*)",
+      "WebFetch(domain:gitlab.com)",
+      "Read(c:\\Users\\fotis\\AppData\\Local\\FoundryVTT\\Data\\systems\\andragathima\\css/**)",
+      "Read(c:\\Users\\fotis\\AppData\\Local\\FoundryVTT\\Data\\systems\\andragathima\\css/**)",
+      "Read(c:\\Users\\fotis\\AppData\\Local\\FoundryVTT\\Data\\systems\\andragathima\\css/**)",
+      "Read(c:\\Users\\fotis\\AppData\\Local\\FoundryVTT\\Data\\systems\\andragathima\\css/**)",
+      "Read(c:\\Users\\fotis\\AppData\\Local\\FoundryVTT\\Data\\systems\\andragathima\\css/**)",
+      "Read(c:\\Users\\fotis\\AppData\\Local\\FoundryVTT\\Data\\systems\\andragathima\\css/**)",
+      "Read(c:\\Users\\fotis\\AppData\\Local\\FoundryVTT\\Data\\systems\\andragathima\\css/**)",
+      "Bash(sed:*)",
+      "Bash(python3:*)",
+      "Bash(git init:*)",
+      "Bash(mv:*)",
+      "Read(c:\\Users\\fotis\\AppData\\Local\\FoundryVTT\\Data\\systems\\andragathima\\lang/**)",
+      "Read(c:\\Users\\fotis\\AppData\\Local\\FoundryVTT\\Data\\systems\\andragathima\\lang/**)",
+      "Read(/C:\\Users\\fotis\\AppData\\Local\\FoundryVTT\\Data\\systems\\andragathima\\module/**)",
+      "Read(/C:\\Users\\fotis\\AppData\\Local\\FoundryVTT\\Data\\systems\\andragathima\\module/**)",
+      "Read(/C:\\Users\\fotis\\AppData\\Local\\FoundryVTT\\Data\\systems\\andragathima\\module\\helpers/**)",
+      "Read(/C:\\Users\\fotis\\AppData\\Local\\FoundryVTT\\Data\\systems\\andragathima\\module\\helpers/**)",
+      "Read(/C:\\Users\\fotis\\AppData\\Local\\FoundryVTT\\Data\\systems\\andragathima\\module\\helpers/**)",
+      "Read(/C:\\Users\\fotis\\AppData\\Local\\FoundryVTT\\Data\\systems\\andragathima\\module/**)",
+      "Read(/C:\\Users\\fotis\\AppData\\Local\\FoundryVTT\\Data\\systems\\andragathima\\module/**)",
+      "Read(/C:\\Users\\fotis\\AppData\\Local\\FoundryVTT\\Data\\systems\\andragathima\\module/**)",
+      "Read(/C:\\Users\\fotis\\AppData\\Local\\FoundryVTT\\Data\\systems\\andragathima\\module\\documents/**)",
+      "Read(/C:\\Users\\fotis\\AppData\\Local\\FoundryVTT\\Data\\systems\\andragathima\\module\\documents/**)",
+      "Read(/C:\\Users\\fotis\\AppData\\Local\\FoundryVTT\\Data\\systems\\andragathima\\module\\documents/**)",
+      "Read(/C:\\Users\\fotis\\AppData\\Local\\FoundryVTT\\Data\\systems\\andragathima\\module\\documents/**)",
+      "Read(/C:\\Users\\fotis\\AppData\\Local\\FoundryVTT\\Data\\systems\\andragathima\\module\\documents/**)",
+      "Read(/C:\\Users\\fotis\\AppData\\Local\\FoundryVTT\\Data\\systems\\andragathima\\module\\documents/**)",
+      "Read(/C:\\Users\\fotis\\AppData\\Local\\FoundryVTT\\Data\\systems\\andragathima\\module/**)"
+    ],
+    "deny": [],
+    "ask": [],
+    "additionalDirectories": [
+      "C:\\Users\\fotis\\AppData\\Local\\FoundryVTT"
+    ]
+  }
+}
