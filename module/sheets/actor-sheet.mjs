@@ -345,10 +345,22 @@ export class AndragathimaActorSheet extends ActorSheet {
     // Add size options
     context.sizeChoices = CONFIG.ANDRAGATHIMA.sizes;
     
-    // Add current size name for display (after ensuring defaults are set)
+    // Add localized size name for placeholder - same pattern as character sheet
     const currentSize = systemData.details.size.value || 'medium';
     const sizeKey = CONFIG.ANDRAGATHIMA.sizes[currentSize];
-    context.currentSizeName = sizeKey ? game.i18n.localize(sizeKey) : game.i18n.localize('ANDRAGATHIMA.SizeMedium');
+    
+    // Provide safe fallback to hardcoded values if localization fails
+    try {
+      const localizedName = sizeKey ? game.i18n.localize(sizeKey) : game.i18n.localize("ANDRAGATHIMA.SizeMedium");
+      context.currentSizeName = localizedName && typeof localizedName === 'string' ? localizedName : 'Μέσο';
+    } catch (e) {
+      console.warn('Failed to localize size name for NPC:', e);
+      context.currentSizeName = 'Μέσο';
+    }
+    
+    // Ensure displayTitle is always a string, never an object
+    const displayTitle = systemData.details.displayTitle;
+    context.displayTitleString = (typeof displayTitle === 'string') ? displayTitle : '';
       
     // NPCs don't have races, so no race features
     context.raceFeatures = [];
@@ -1950,8 +1962,63 @@ export class AndragathimaActorSheet extends ActorSheet {
       return this._handleMiscSlotDrop(event, null, firstEmptySlot, data);
     }
     
-    // If no misc slots available, fall back to default behavior
-    return super._onDrop(event);
+    // If no misc slots available, handle the drop manually to ensure move behavior
+    return this._handleGenericItemDrop(data);
+  }
+
+  /**
+   * Handle generic item drop with move behavior
+   */
+  async _handleGenericItemDrop(data) {
+    // Get the item being dropped
+    let item = null;
+    if (data.uuid) {
+      item = await fromUuid(data.uuid);
+    } else if (data.id) {
+      item = game.items.get(data.id);
+    }
+    
+    if (!item) {
+      return;
+    }
+    
+    // Move item if it doesn't belong to this actor (instead of copying)
+    if (item.parent !== this.actor) {
+      const sourceActor = item.parent;
+      const itemData = item.toObject();
+      
+      try {
+        // Create the item in the destination actor FIRST
+        const newItem = await Item.create(itemData, {parent: this.actor});
+        
+        // Only delete the original if creation was successful
+        if (newItem && sourceActor) {
+          // Clear the item from any quick slots or equipment slots in source actor
+          await this._clearItemFromSourceActor(sourceActor, item.id);
+          
+          // Then delete the actual item
+          await item.delete();
+          
+          // Force refresh of source actor's sheet to update UI
+          if (sourceActor.sheet && sourceActor.sheet.rendered) {
+            sourceActor.sheet.render(false);
+          }
+        }
+        
+        item = newItem;
+      } catch (error) {
+        console.error('Failed to move item:', error);
+        // If creation fails, don't delete the original
+        return;
+      }
+    }
+    
+    // Force refresh of destination actor's sheet to update UI
+    if (this.rendered) {
+      this.render(false);
+    }
+    
+    return item;
   }
 
   /**
@@ -2317,10 +2384,35 @@ export class AndragathimaActorSheet extends ActorSheet {
       return;
     }
     
-    // Create item if it doesn't belong to this actor
+    // Move item if it doesn't belong to this actor (instead of copying)
     if (item.parent !== this.actor) {
+      const sourceActor = item.parent;
       const itemData = item.toObject();
-      item = await Item.create(itemData, {parent: this.actor});
+      
+      try {
+        // Create the item in the destination actor FIRST
+        const newItem = await Item.create(itemData, {parent: this.actor});
+        
+        // Only delete the original if creation was successful
+        if (newItem && sourceActor) {
+          // Clear the item from any quick slots or equipment slots in source actor
+          await this._clearItemFromSourceActor(sourceActor, item.id);
+          
+          // Then delete the actual item
+          await item.delete();
+          
+          // Force refresh of source actor's sheet to update UI
+          if (sourceActor.sheet && sourceActor.sheet.rendered) {
+            sourceActor.sheet.render(false);
+          }
+        }
+        
+        item = newItem;
+      } catch (error) {
+        console.error('Failed to move item:', error);
+        // If creation fails, don't delete the original
+        return;
+      }
     }
     
     // Handle the equipment slot logic with validation
@@ -2400,6 +2492,12 @@ export class AndragathimaActorSheet extends ActorSheet {
     }
     
     await this.actor.update(updateData);
+    
+    // Force refresh of destination actor's sheet to update UI
+    if (this.rendered) {
+      this.render(false);
+    }
+    
     return item;
   }
 
@@ -2419,10 +2517,35 @@ export class AndragathimaActorSheet extends ActorSheet {
       return;
     }
     
-    // Create item if it doesn't belong to this actor
+    // Move item if it doesn't belong to this actor (instead of copying)
     if (item.parent !== this.actor) {
+      const sourceActor = item.parent;
       const itemData = item.toObject();
-      item = await Item.create(itemData, {parent: this.actor});
+      
+      try {
+        // Create the item in the destination actor FIRST
+        const newItem = await Item.create(itemData, {parent: this.actor});
+        
+        // Only delete the original if creation was successful
+        if (newItem && sourceActor) {
+          // Clear the item from any quick slots or equipment slots in source actor
+          await this._clearItemFromSourceActor(sourceActor, item.id);
+          
+          // Then delete the actual item
+          await item.delete();
+          
+          // Force refresh of source actor's sheet to update UI
+          if (sourceActor.sheet && sourceActor.sheet.rendered) {
+            sourceActor.sheet.render(false);
+          }
+        }
+        
+        item = newItem;
+      } catch (error) {
+        console.error('Failed to move item:', error);
+        // If creation fails, don't delete the original
+        return;
+      }
     }
     
     // Misc slots accept everything (no validation needed)
@@ -2453,7 +2576,53 @@ export class AndragathimaActorSheet extends ActorSheet {
       await item.update({"flags.andragathima.miscSlotIndex": slotIndex});
     }
     
+    // Force refresh of destination actor's sheet to update UI
+    if (this.rendered) {
+      this.render(false);
+    }
+    
     return item;
+  }
+
+  /**
+   * Clear item from all quick slots and equipment slots in source actor
+   */
+  async _clearItemFromSourceActor(sourceActor, itemId) {
+    if (!sourceActor || !itemId) return;
+    
+    const updateData = {};
+    
+    // Check and clear equipment slots
+    const equipmentSlots = sourceActor.system.equipment?.slots || {};
+    for (const [slotType, slotData] of Object.entries(equipmentSlots)) {
+      if (slotData && slotData.id === itemId) {
+        updateData[`system.equipment.slots.${slotType}.name`] = "";
+        updateData[`system.equipment.slots.${slotType}.img`] = "";
+        updateData[`system.equipment.slots.${slotType}.id`] = "";
+        updateData[`system.equipment.slots.${slotType}.type`] = "";
+      }
+    }
+    
+    // Check and clear quick slots
+    const quickItems = sourceActor.system.equipment?.quickItems || [];
+    let quickSlotsChanged = false;
+    const newQuickItems = [...quickItems];
+    
+    for (let i = 0; i < newQuickItems.length; i++) {
+      if (newQuickItems[i] && newQuickItems[i].id === itemId) {
+        newQuickItems[i] = {"name": "", "img": "icons/svg/item-bag.svg", "id": "", "type": ""};
+        quickSlotsChanged = true;
+      }
+    }
+    
+    if (quickSlotsChanged) {
+      updateData["system.equipment.quickItems"] = newQuickItems;
+    }
+    
+    // Apply updates if any
+    if (Object.keys(updateData).length > 0) {
+      await sourceActor.update(updateData);
+    }
   }
 
   /**

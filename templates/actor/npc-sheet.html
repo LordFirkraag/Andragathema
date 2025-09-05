@@ -109,8 +109,9 @@
           {{!-- Character Info --}}
           <div class="character-info">
             <div class="character-race">
-              <input type="text" name="system.details.displayTitle" value="{{system.details.displayTitle}}" 
-                     placeholder="{{#if currentSizeName}}{{currentSizeName}}{{else}}{{localize 'ANDRAGATHIMA.SizeMedium'}}{{/if}}"
+              <input type="text" name="system.details.displayTitle" 
+                     value="{{displayTitleString}}" 
+                     placeholder="{{currentSizeName}}"
                      class="character-race-input" />
             </div>
           </div>
