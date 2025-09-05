@@ -28,7 +28,7 @@ export class AndragathimaRoll {
     
     // Create and evaluate the roll
     const roll = new Roll(formula);
-    await roll.evaluate({async: true});
+    await roll.evaluate();
     
     // Calculate the result
     const total = roll.total;
@@ -43,25 +43,22 @@ export class AndragathimaRoll {
     const success = isCritical ? true : (isFumble ? false : difference >= 0);
     const stage = this.calculateStage(difference, isCritical, isFumble);
     
-    // Prepare chat message data
-    const messageData = {
+    // Send roll to chat with custom flavor and format
+    await roll.toMessage({
       speaker: ChatMessage.getSpeaker({actor: actor}),
-      flavor: label,
-      content: await this.buildChatContent({
+      flavor: `${label}<br>${await this.buildChatContent({
         formula,
         total,
         d20Result,
+        modifier,
         targetNumber,
         success,
         stage,
         isCritical,
         isFumble,
         opposed
-      })
-    };
-    
-    // Send to chat
-    await roll.toMessage(messageData);
+      })}`
+    });
     
     return {roll, success, stage, isCritical, isFumble};
   }
@@ -91,61 +88,28 @@ export class AndragathimaRoll {
    * @returns {Promise<string>} HTML content for chat message
    */
   static async buildChatContent(data) {
-    const {total, d20Result, targetNumber, success, stage, isCritical, isFumble} = data;
+    const {total, d20Result, modifier} = data;
     
-    // Determine success text and class
-    let resultText = "";
-    let resultClass = "";
+    console.log(`Dice Roll Debug:`, {
+      total,
+      d20Result,
+      modifier
+    });
     
-    if (isCritical) {
-      resultText = game.i18n.localize('ANDRAGATHIMA.CriticalHitResult');
-      resultClass = "critical success";
-    } else if (isFumble) {
-      resultText = game.i18n.localize('ANDRAGATHIMA.CriticalFailureResult');
-      resultClass = "critical failure";
-    } else if (success) {
-      if (stage >= 4) {
-        resultText = `Θρυλική Επιτυχία! (${stage}ο στάδιο)`;
-        resultClass = "success legendary";
-      } else if (stage >= 3) {
-        resultText = `Εξαιρετική Επιτυχία! (${stage}ο στάδιο)`;
-        resultClass = "success major";
-      } else if (stage >= 2) {
-        resultText = `Μεγάλη Επιτυχία! (${stage}ο στάδιο)`;
-        resultClass = "success";
-      } else {
-        resultText = game.i18n.localize('ANDRAGATHIMA.Success');
-        resultClass = "success";
-      }
+    // Format modifier: always show +/− including +0
+    let modifierText = '';
+    if (modifier > 0) {
+      modifierText = ` + ${modifier}`;
+    } else if (modifier < 0) {
+      modifierText = ` − ${Math.abs(modifier)}`;
     } else {
-      if (stage <= -3) {
-        resultText = `Καταστροφική Αποτυχία! (${Math.abs(stage)}ο στάδιο)`;
-        resultClass = "failure critical";
-      } else if (stage <= -2) {
-        resultText = `Σοβαρή Αποτυχία! (${Math.abs(stage)}ο στάδιο)`;
-        resultClass = "failure major";
-      } else {
-        resultText = game.i18n.localize('ANDRAGATHIMA.Failure');
-        resultClass = "failure";
-      }
+      modifierText = ` + 0`;
     }
     
-    // Build HTML
-    const html = `
-      <div class="andragathima-chat-message">
-        <div class="dice-result ${resultClass}">
-          <div class="dice-formula">${data.formula}</div>
-          <div class="dice-total">
-            <span class="total">${total}</span>
-            <span class="vs">εναντίον</span>
-            <span class="target">${targetNumber}</span>
-          </div>
-          <div class="result-text">${resultText}</div>
-          ${isCritical ? '<div class="critical-indicator">⚔️ ΕΙΚΟΣΙ! ⚔️</div>' : ''}
-          ${isFumble ? '<div class="fumble-indicator">💀 ΑΣΟΣ! 💀</div>' : ''}
-        </div>
-      </div>
-    `;
+    // Simple format with bold and larger result: d20 (X) + Y = <b><larger>Z</larger></b>
+    const html = `d20 (${d20Result})${modifierText} = <b><span style="font-size: 1.1em;">${total}</span></b>`;
+    
+    console.log(`Generated HTML:`, html);
     
     return html;
   }
@@ -311,23 +275,26 @@ export class AndragathimaRoll {
    */
   static async rollAbilityCheck(actor, ability, options = {}) {
     const actorData = actor.system;
-    const abilityScore = actorData.abilities[ability]?.value;
+    const abilityData = actorData.abilities[ability];
     
-    if (!abilityScore) {
+    if (!abilityData) {
       ui.notifications.error(`Invalid ability: ${ability}`);
       return null;
     }
     
-    // Formula: d20 + (Ability - 10)
-    const modifier = (abilityScore - 10) + (options.bonus || 0);
+    // Use total value (including racial modifiers) as the raw ability score
+    const abilityScore = abilityData.totalValue || abilityData.value;
+    
+    // Formula: d20 + Ability (raw ability score)
+    const modifier = abilityScore + (options.bonus || 0);
     
     const abilityLabels = {
-      "dyn": game.i18n.localize('ANDRAGATHIMA.AbilityDyn'),
-      "epi": game.i18n.localize('ANDRAGATHIMA.AbilityEpi'),
-      "kra": game.i18n.localize('ANDRAGATHIMA.AbilityKra'),
-      "eyf": game.i18n.localize('ANDRAGATHIMA.AbilityEyf'),
-      "sof": game.i18n.localize('ANDRAGATHIMA.AbilitySof'),
-      "xar": game.i18n.localize('ANDRAGATHIMA.AbilityXar')
+      "dyn": game.i18n.localize('ANDRAGATHIMA.AbilityDynGenitive'),
+      "epi": game.i18n.localize('ANDRAGATHIMA.AbilityEpiGenitive'),
+      "kra": game.i18n.localize('ANDRAGATHIMA.AbilityKraGenitive'),
+      "eyf": game.i18n.localize('ANDRAGATHIMA.AbilityEyfGenitive'),
+      "sof": game.i18n.localize('ANDRAGATHIMA.AbilitySofGenitive'),
+      "xar": game.i18n.localize('ANDRAGATHIMA.AbilityXarGenitive')
     };
     
     return this.basicRoll({

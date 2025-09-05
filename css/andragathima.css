@@ -530,6 +530,25 @@ body .tooltip {
   margin-bottom: 4px;
 }
 
+.andragathima .ability-item.rollable {
+  cursor: pointer;
+  border-radius: 3px;
+  transition: background-color 0.2s ease;
+}
+
+/* Rollable spans and elements - only for right column stats */
+.andragathima .character-stats .rollable {
+  cursor: pointer;
+  border-radius: 3px;
+  transition: background-color 0.2s ease;
+  padding: 2px 4px;
+  margin: -2px -4px;
+}
+
+.andragathima .character-stats .stat-line.rollable:hover {
+  background: rgba(139, 115, 85, 0.1);
+}
+
 .andragathima .ability-name {
   font-family: 'Albertus Nova', 'Trajan Pro', 'Optima', 'Cinzel', Georgia, serif;
   font-weight: normal;

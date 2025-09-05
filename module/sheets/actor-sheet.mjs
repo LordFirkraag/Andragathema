@@ -1,3 +1,5 @@
+import { AndragathimaRoll } from "../helpers/dice.mjs";
+
 /**
  * Extend the basic ActorSheet for ΑΝΔΡΑΓΑΘΗΜΑ
  * @extends {ActorSheet}
@@ -1089,7 +1091,7 @@ export class AndragathimaActorSheet extends ActorSheet {
 
     // Handle ability checks
     if (dataset.ability) {
-      return this.actor.rollAbilityCheck(dataset.ability);
+      return this._rollAbilityCheck(dataset);
     }
 
     // Handle saving throws
@@ -1102,6 +1104,238 @@ export class AndragathimaActorSheet extends ActorSheet {
       const isRanged = dataset.attack === 'ranged';
       return this.actor.rollAttack({ ranged: isRanged });
     }
+
+    // Handle new roll types based on rollType dataset
+    switch (dataset.rollType) {
+      case 'ability':
+        return this._rollAbilityCheck(dataset);
+      case 'save':
+        return this._rollSave(dataset);
+      case 'defense':
+        return this._rollDefense(dataset);
+      case 'resistance':
+        return this._rollResistance(dataset);
+      case 'grapple':
+        return this._rollGrapple();
+      case 'stability':
+        return this._rollStability();
+      case 'initiative':
+        return this._rollInitiative();
+      case 'attack':
+        return this._rollWeaponAttack(dataset);
+      case 'weapon-attack':
+        return this._rollWeaponAttack(dataset);
+      case 'damage':
+        return this._rollWeaponDamage(dataset);
+      case 'weapon-damage':
+        return this._rollWeaponDamage(dataset);
+    }
+  }
+
+  /**
+   * Roll Defense
+   */
+  async _rollDefense(dataset) {
+    const isRanged = dataset.defenseType === 'ranged';
+    
+    const label = isRanged ? 
+      game.i18n.localize('ANDRAGATHIMA.DefenseRangedRoll') : 
+      game.i18n.localize('ANDRAGATHIMA.DefenseMeleeRoll');
+    
+    // Target numbers toggle only affects display, calculations remain the same
+    const modifier = isRanged ? 
+      this.actor.system.combat.ranged.defense || 0 :
+      this.actor.system.combat.melee.defense || 0;
+    
+    return await AndragathimaRoll.basicRoll({
+      label: label,
+      modifier: modifier,
+      targetNumber: 11,
+      actor: this.actor
+    });
+  }
+
+  /**
+   * Roll Resistance
+   */
+  async _rollResistance(dataset) {
+    if (dataset.resistanceType === 'specialized') {
+      // For specialized resistance, add base resistance
+      const baseResistance = this.actor.system.baseResistance || 0;
+      const specializedValue = parseInt(dataset.resistanceValue) || 0;
+      const totalModifier = baseResistance + specializedValue;
+      
+      // Convert to genitive case for proper Greek grammar
+      let resistanceLabel = dataset.resistanceLabel;
+      if (resistanceLabel.includes('Διάτρηση')) resistanceLabel = resistanceLabel.replace('Διάτρηση', 'Διάτρησης');
+      if (resistanceLabel.includes('Τομή')) resistanceLabel = resistanceLabel.replace('Τομή', 'Τομής');
+      if (resistanceLabel.includes('Κρούση')) resistanceLabel = resistanceLabel.replace('Κρούση', 'Κρούσης');
+      if (resistanceLabel.includes('Φωτιά')) resistanceLabel = resistanceLabel.replace('Φωτιά', 'Φωτιάς');
+      if (resistanceLabel.includes('Κρύο')) resistanceLabel = resistanceLabel.replace('Κρύο', 'Κρύου');
+      if (resistanceLabel.includes('Ηλεκτρισμός')) resistanceLabel = resistanceLabel.replace('Ηλεκτρισμός', 'Ηλεκτρισμού');
+      if (resistanceLabel.includes('Οξύ')) resistanceLabel = resistanceLabel.replace('Οξύ', 'Οξέος');
+      
+      return await AndragathimaRoll.basicRoll({
+        label: `${game.i18n.localize('ANDRAGATHIMA.ResistanceRoll')} ${resistanceLabel}`,
+        modifier: totalModifier,
+        targetNumber: 11,
+        actor: this.actor
+      });
+    } else {
+      // Base resistance - target numbers toggle only affects display
+      const modifier = this.actor.system.baseResistance || 0;
+      return await AndragathimaRoll.basicRoll({
+        label: game.i18n.localize('ANDRAGATHIMA.ResistanceRoll'),
+        modifier: modifier,
+        targetNumber: 11,
+        actor: this.actor
+      });
+    }
+  }
+
+  /**
+   * Roll Grapple
+   */
+  async _rollGrapple() {
+    // Target numbers toggle only affects display, calculations remain the same
+    const modifier = this.actor.system.combat.pali.value || 0;
+    return await AndragathimaRoll.basicRoll({
+      label: game.i18n.localize('ANDRAGATHIMA.GrappleDiceLabel'),
+      modifier: modifier,
+      targetNumber: 11,
+      actor: this.actor
+    });
+  }
+
+  /**
+   * Roll Stability
+   */
+  async _rollStability() {
+    // Target numbers toggle only affects display, calculations remain the same
+    const modifier = this.actor.system.combat.eystatheia.value || 0;
+    return await AndragathimaRoll.basicRoll({
+      label: game.i18n.localize('ANDRAGATHIMA.StabilityDiceLabel'),
+      modifier: modifier,
+      targetNumber: 11,
+      actor: this.actor
+    });
+  }
+
+  /**
+   * Roll Initiative
+   */
+  async _rollInitiative() {
+    // Target numbers toggle only affects display, calculations remain the same
+    const modifier = this.actor.system.combat.initiative.value || 0;
+    return await AndragathimaRoll.basicRoll({
+      label: game.i18n.localize('ANDRAGATHIMA.Initiative'),
+      modifier: modifier,
+      targetNumber: 11,
+      actor: this.actor
+    });
+  }
+
+  /**
+   * Roll Weapon Attack
+   */
+  async _rollWeaponAttack(dataset) {
+    const itemId = dataset.itemId;
+    
+    // Find weapon in quickWeapons or shieldWeapons (where attack values are calculated)
+    const context = await this.getData();
+    let weaponData = null;
+    
+    // Check quickWeapons first
+    weaponData = context.quickWeapons?.find(w => w._id === itemId);
+    
+    // If not found, check shieldWeapons
+    if (!weaponData) {
+      weaponData = context.shieldWeapons?.find(w => w._id === itemId);
+    }
+    
+    if (!weaponData) {
+      console.error(`Weapon not found in quickWeapons or shieldWeapons: ${itemId}`);
+      return;
+    }
+
+    const isRanged = dataset.attackType === 'ranged';
+    
+    // Use the final displayed attack value 
+    let modifier;
+    if (isRanged) {
+      modifier = weaponData.system.rangedAttackWithPenalty || 0;
+    } else {
+      modifier = weaponData.system.meleeAttackWithPenalty || 0;
+    }
+    
+    console.log(`Weapon Attack Debug:`, {
+      itemName: weaponData.name,
+      isRanged,
+      modifier,
+      meleeValue: weaponData.system.meleeAttackWithPenalty,
+      rangedValue: weaponData.system.rangedAttackWithPenalty
+    });
+    
+    const label = isRanged ? 
+      `${weaponData.name} - ${game.i18n.localize('ANDRAGATHIMA.RangedAttack')}` : 
+      `${weaponData.name} - ${game.i18n.localize('ANDRAGATHIMA.MeleeAttack')}`;
+    
+    // Target numbers toggle only affects display, calculations remain the same
+    return await AndragathimaRoll.basicRoll({
+      label: label,
+      modifier: modifier,
+      targetNumber: 11,
+      actor: this.actor
+    });
+  }
+
+  /**
+   * Roll Weapon Damage
+   */
+  async _rollWeaponDamage(dataset) {
+    const itemId = dataset.itemId;
+    
+    // Find weapon in quickWeapons or shieldWeapons (where damage values are calculated)
+    const context = await this.getData();
+    let weaponData = null;
+    
+    // Check quickWeapons first
+    weaponData = context.quickWeapons?.find(w => w._id === itemId);
+    
+    // If not found, check shieldWeapons
+    if (!weaponData) {
+      weaponData = context.shieldWeapons?.find(w => w._id === itemId);
+    }
+    
+    if (!weaponData) {
+      console.error(`Weapon not found in quickWeapons or shieldWeapons: ${itemId}`);
+      return;
+    }
+
+    // Use the final displayed damage value 
+    const modifier = weaponData.system.weaponDamage || 0;
+    const damageTypeDisplay = weaponData.system.damageTypeDisplay || "";
+    
+    console.log(`Weapon Damage Debug:`, {
+      itemName: weaponData.name,
+      modifier,
+      weaponDamage: weaponData.system.weaponDamage,
+      damageTypeDisplay
+    });
+    
+    // Convert damage type to genitive case for proper Greek grammar
+    let damageTypeGenitive = damageTypeDisplay;
+    if (damageTypeGenitive.includes('Τομή')) damageTypeGenitive = damageTypeGenitive.replace('Τομή', 'Τομής');
+    if (damageTypeGenitive.includes('Διάτρηση')) damageTypeGenitive = damageTypeGenitive.replace('Διάτρηση', 'Διάτρησης');
+    if (damageTypeGenitive.includes('Κρούση')) damageTypeGenitive = damageTypeGenitive.replace('Κρούση', 'Κρούσης');
+    
+    // Target numbers toggle only affects display, calculations remain the same
+    return await AndragathimaRoll.basicRoll({
+      label: `${weaponData.name} - Ζημιά ${damageTypeGenitive}`,
+      modifier: modifier,
+      targetNumber: 11,
+      actor: this.actor
+    });
   }
 
   /**
@@ -4342,6 +4576,24 @@ export class AndragathimaActorSheet extends ActorSheet {
         }
       }
     }
+  }
+
+  /**
+   * Roll Ability Check with NPC toggle support
+   */
+  async _rollAbilityCheck(dataset) {
+    const ability = dataset.ability;
+    // Target numbers toggle only affects display, calculations remain the same
+    return this.actor.rollAbilityCheck(ability);
+  }
+
+  /**
+   * Roll Save with NPC toggle support
+   */
+  async _rollSave(dataset) {
+    const saveType = dataset.saveType;
+    // Target numbers toggle only affects display, calculations remain the same
+    return this.actor.rollSave(saveType);
   }
   
 }

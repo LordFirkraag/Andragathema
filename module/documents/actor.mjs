@@ -1,3 +1,5 @@
+import { AndragathimaRoll } from "../helpers/dice.mjs";
+
 /**
  * Extend the base Actor document for ΑΝΔΡΑΓΑΘΗΜΑ
  * @extends {Actor}
@@ -1290,45 +1292,7 @@ export class AndragathimaActor extends Actor {
    * @param {Object} options      Options for the roll
    */
   async rollAbilityCheck(abilityId, options = {}) {
-    const ability = this.system.abilities[abilityId];
-    if (!ability) {
-      console.error(`Ability ${abilityId} not found`);
-      return;
-    }
-
-    const label = CONFIG.ANDRAGATHIMA.abilities[abilityId] ?? abilityId;
-    const abilityValue = ability.value + (ability.racialMod || 0);
-    const modifier = abilityValue - 10;
-
-    // Create the roll
-    const roll = await new Roll(`1d20 + ${modifier}`, this.getRollData()).evaluate({async: true});
-
-    // Determine success
-    const target = options.target || 11;
-    const total = roll.total;
-    const success = total >= target;
-    const difference = total - target;
-    const stage = Math.floor(Math.abs(difference) / 5) + 1;
-
-    // Prepare chat message
-    const speaker = ChatMessage.getSpeaker({actor: this});
-    const flavor = `Δοκιμασία ${game.i18n.localize(label)}`;
-    
-    // Send to chat
-    await roll.toMessage({
-      speaker: speaker,
-      flavor: flavor,
-      flags: {
-        andragathima: {
-          type: "ability",
-          ability: abilityId,
-          success: success,
-          stage: success ? stage : -stage
-        }
-      }
-    });
-
-    return roll;
+    return await AndragathimaRoll.rollAbilityCheck(this, abilityId, options);
   }
 
   /**
@@ -1343,38 +1307,21 @@ export class AndragathimaActor extends Actor {
       return;
     }
 
-    const label = CONFIG.ANDRAGATHIMA.saves[saveId] ?? saveId;
+    const saveLabels = {
+      "ant": game.i18n.localize('ANDRAGATHIMA.SaveAntGenitive'),
+      "mya": game.i18n.localize('ANDRAGATHIMA.SaveMyaGenitive'), 
+      "som": game.i18n.localize('ANDRAGATHIMA.SaveSomGenitive')
+    };
+    
+    const label = `${game.i18n.localize('ANDRAGATHIMA.AvoidanceRoll')} ${saveLabels[saveId]}`;
     const modifier = save.value;
 
-    // Create the roll
-    const roll = await new Roll(`1d20 + ${modifier}`, this.getRollData()).evaluate({async: true});
-
-    // Determine success
-    const target = options.target || 11;
-    const total = roll.total;
-    const success = total >= target;
-    const difference = total - target;
-    const stage = Math.floor(Math.abs(difference) / 5) + 1;
-
-    // Prepare chat message
-    const speaker = ChatMessage.getSpeaker({actor: this});
-    const flavor = `Ζαριά Αποφυγής: ${game.i18n.localize(label)}`;
-    
-    // Send to chat
-    await roll.toMessage({
-      speaker: speaker,
-      flavor: flavor,
-      flags: {
-        andragathima: {
-          type: "save",
-          save: saveId,
-          success: success,
-          stage: success ? stage : -stage
-        }
-      }
+    return await AndragathimaRoll.basicRoll({
+      label: label,
+      modifier: modifier,
+      targetNumber: options.target || 11,
+      actor: this
     });
-
-    return roll;
   }
 
   /**

@@ -639,9 +639,25 @@
     "RunningImpossible": " (τρέξιμο αδύνατο)",
     
     "Test": "Δοκιμασία",
-    "AvoidanceRoll": "Ζαριά Αποφυγής",
-    "RangedAttack": "Επίθεση Μακρόθεν",
-    "MeleeAttack": "Επίθεση Σώμα με Σώμα",
+    "AvoidanceRoll": "Ζαριά αποφυγής",
+    "RangedAttack": "Επίθεση μακρόθεν",
+    "MeleeAttack": "Επίθεση σώμα με σώμα",
+    
+    "DefenseMeleeRoll": "Άμυνα σώμα με σώμα",
+    "DefenseRangedRoll": "Άμυνα μακρόθεν",
+    
+    "AbilityDynGenitive": "Δύναμης",
+    "AbilityEpiGenitive": "Επιδεξιότητας",
+    "AbilityKraGenitive": "Κράσης",
+    "AbilityEyfGenitive": "Ευφυΐας",
+    "AbilitySofGenitive": "Σοφίας",
+    "AbilityXarGenitive": "Χαρίσματος",
+    
+    "SaveAntGenitive": "Αντανακλαστικών",
+    "SaveMyaGenitive": "Μυαλού",
+    "SaveSomGenitive": "Σώματος",
+    
+    "ResistanceRoll": "Αντοχή",
     
     "DamageTypeDiatrisi": "Διάτρηση",
     "DamageTypeKroysi": "Κρούση",

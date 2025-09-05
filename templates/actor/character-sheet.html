@@ -46,37 +46,37 @@
         {{!-- Αριστερή Στήλη: Βασικές Ικανότητες --}}
         <div class="left-column">
           <div class="abilities-column">
-            <div class="ability-item">
+            <div class="ability-item rollable" data-roll-type="ability" data-ability="dyn">
               <span class="ability-name">{{localize 'ANDRAGATHIMA.AbilityDyn'}}</span>
               <span class="ability-score {{statusModifierClass system.abilities.dyn.statusMod}}">{{system.abilities.dyn.displayValue}}</span>
               <span class="ability-mod">({{formatNumber system.abilities.dyn.mod sign=true}})</span>
             </div>
             
-            <div class="ability-item">
+            <div class="ability-item rollable" data-roll-type="ability" data-ability="epi">
               <span class="ability-name">{{localize 'ANDRAGATHIMA.AbilityEpi'}}</span>
               <span class="ability-score {{statusModifierClass system.abilities.epi.statusMod}}">{{system.abilities.epi.displayValue}}</span>
               <span class="ability-mod">({{formatNumber system.abilities.epi.mod sign=true}})</span>
             </div>
             
-            <div class="ability-item">
+            <div class="ability-item rollable" data-roll-type="ability" data-ability="kra">
               <span class="ability-name">{{localize 'ANDRAGATHIMA.AbilityKra'}}</span>
               <span class="ability-score {{statusModifierClass system.abilities.kra.statusMod}}">{{system.abilities.kra.displayValue}}</span>
               <span class="ability-mod">({{formatNumber system.abilities.kra.mod sign=true}})</span>
             </div>
             
-            <div class="ability-item">
+            <div class="ability-item rollable" data-roll-type="ability" data-ability="eyf">
               <span class="ability-name">{{localize 'ANDRAGATHIMA.AbilityEyf'}}</span>
               <span class="ability-score {{statusModifierClass system.abilities.eyf.statusMod}}">{{system.abilities.eyf.displayValue}}</span>
               <span class="ability-mod">({{formatNumber system.abilities.eyf.mod sign=true}})</span>
             </div>
             
-            <div class="ability-item">
+            <div class="ability-item rollable" data-roll-type="ability" data-ability="sof">
               <span class="ability-name">{{localize 'ANDRAGATHIMA.AbilitySof'}}</span>
               <span class="ability-score {{statusModifierClass system.abilities.sof.statusMod}}">{{system.abilities.sof.displayValue}}</span>
               <span class="ability-mod">({{formatNumber system.abilities.sof.mod sign=true}})</span>
             </div>
             
-            <div class="ability-item">
+            <div class="ability-item rollable" data-roll-type="ability" data-ability="xar">
               <span class="ability-name">{{localize 'ANDRAGATHIMA.AbilityXar'}}</span>
               <span class="ability-score {{statusModifierClass system.abilities.xar.statusMod}}">{{system.abilities.xar.displayValue}}</span>
               <span class="ability-mod">({{formatNumber system.abilities.xar.mod sign=true}})</span>
@@ -121,26 +121,26 @@
           <div class="character-stats">
             
             <div class="stat-line">
-              <strong>{{localize 'ANDRAGATHIMA.Defense'}}:</strong> <span {{#if (or system.hasArmorPenalty system.hasEncumbrancePenalty system.hasShieldPenalty)}}class="armor-penalty-text"{{/if}}><span class="{{statusModifierClass (default flags.andragathima.modifiers.combat.meleeDefense 0)}}">{{formatNumber system.combat.melee.defense sign=true}}</span>/<span class="{{statusModifierClass (default flags.andragathima.modifiers.combat.rangedDefense 0)}}">{{formatNumber system.combat.ranged.defense sign=true}}</span></span>
+              <strong>{{localize 'ANDRAGATHIMA.Defense'}}:</strong> <span {{#if (or system.hasArmorPenalty system.hasEncumbrancePenalty system.hasShieldPenalty)}}class="armor-penalty-text"{{/if}}><span class="rollable {{statusModifierClass (default flags.andragathima.modifiers.combat.meleeDefense 0)}}" data-roll-type="defense" data-defense-type="melee">{{formatNumber system.combat.melee.defense sign=true}}</span>/<span class="rollable {{statusModifierClass (default flags.andragathima.modifiers.combat.rangedDefense 0)}}" data-roll-type="defense" data-defense-type="ranged">{{formatNumber system.combat.ranged.defense sign=true}}</span></span>
             </div>
 
             <div class="stat-line">
-              <strong>{{localize 'ANDRAGATHIMA.Resistance'}}:</strong> <span class="{{statusModifierClass (default flags.andragathima.modifiers.resistances.base 0)}}">{{formatNumber system.baseResistance sign=true}}</span>
+              <strong>{{localize 'ANDRAGATHIMA.Resistance'}}:</strong> <span class="rollable {{statusModifierClass (default flags.andragathima.modifiers.resistances.base 0)}}" data-roll-type="resistance" data-resistance-type="base">{{formatNumber system.baseResistance sign=true}}</span>
             </div>
             {{#if system.specializedResistances.length}}
             {{#each system.specializedResistances}}
             <div class="stat-line specialized-resistance">
-              {{this.label}} {{formatNumber this.value sign=true}}
+              {{this.label}} <span class="rollable" data-roll-type="resistance" data-resistance-type="specialized" data-resistance-label="{{this.label}}" data-resistance-value="{{this.value}}">{{formatNumber this.value sign=true}}</span>
             </div>
             {{/each}}
             {{/if}}
 
             <div class="stat-line">
-              <strong>{{localize 'ANDRAGATHIMA.SavingThrows'}}:</strong> {{localize 'ANDRAGATHIMA.SaveAntAbbr'}} <span {{#if system.hasEncumbrancePenalty}}class="armor-penalty-text"{{/if}} class="{{statusModifierClass system.saves.ant.statusMod}}">{{formatNumber system.saves.ant.value sign=true}}</span>, {{localize 'ANDRAGATHIMA.SaveMyaAbbr'}} <span class="{{statusModifierClass system.saves.mya.statusMod}}">{{formatNumber system.saves.mya.value sign=true}}</span>, {{localize 'ANDRAGATHIMA.SaveSomAbbr'}} <span class="{{statusModifierClass system.saves.som.statusMod}}">{{formatNumber system.saves.som.value sign=true}}</span>
+              <strong>{{localize 'ANDRAGATHIMA.SavingThrows'}}:</strong> {{localize 'ANDRAGATHIMA.SaveAntAbbr'}} <span {{#if system.hasEncumbrancePenalty}}class="armor-penalty-text"{{/if}} class="rollable {{statusModifierClass system.saves.ant.statusMod}}" data-roll-type="save" data-save="ant">{{formatNumber system.saves.ant.value sign=true}}</span>, {{localize 'ANDRAGATHIMA.SaveMyaAbbr'}} <span class="rollable {{statusModifierClass system.saves.mya.statusMod}}" data-roll-type="save" data-save="mya">{{formatNumber system.saves.mya.value sign=true}}</span>, {{localize 'ANDRAGATHIMA.SaveSomAbbr'}} <span class="rollable {{statusModifierClass system.saves.som.statusMod}}" data-roll-type="save" data-save="som">{{formatNumber system.saves.som.value sign=true}}</span>
             </div>
 
             <div class="stat-line">
-              <strong>{{localize 'ANDRAGATHIMA.GrappleStability'}}:</strong> <span class="{{statusModifierClass (default flags.andragathima.modifiers.other.pali 0)}}">{{formatNumber system.combat.pali.value sign=true}}</span>/<span class="{{statusModifierClass (default flags.andragathima.modifiers.other.eystatheia 0)}}">{{formatNumber system.combat.eystatheia.value sign=true}}</span>
+              <strong>{{localize 'ANDRAGATHIMA.GrappleStability'}}:</strong> <span class="rollable {{statusModifierClass (default flags.andragathima.modifiers.other.pali 0)}}" data-roll-type="grapple">{{formatNumber system.combat.pali.value sign=true}}</span>/<span class="rollable {{statusModifierClass (default flags.andragathima.modifiers.other.eystatheia 0)}}" data-roll-type="stability">{{formatNumber system.combat.eystatheia.value sign=true}}</span>
             </div>
 
             <div class="stat-divider"></div>
@@ -150,7 +150,7 @@
             </div>
 
             <div class="stat-line">
-              <strong>{{localize 'ANDRAGATHIMA.Initiative'}}:</strong> <span class="{{statusModifierClass system.combat.initiative.statusMod}}">{{formatNumber system.combat.initiative.value sign=true}}</span>
+              <strong>{{localize 'ANDRAGATHIMA.Initiative'}}:</strong> <span class="rollable {{statusModifierClass system.combat.initiative.statusMod}}" data-roll-type="initiative">{{formatNumber system.combat.initiative.value sign=true}}</span>
             </div>
 
             {{!-- Όπλα από γρήγορα αντικείμενα --}}
@@ -159,10 +159,10 @@
               <strong>{{this.name}}</strong>
             </div>
             <div class="stat-line weapon-attack specialized-resistance">
-              {{localize 'ANDRAGATHIMA.AttackWithColon'}} <span{{#if this.system.hasAnyNonShieldPenalty}} class="weapon-proficiency-penalty"{{/if}}>{{formatNumber this.system.meleeAttackWithPenalty sign=true}}{{#if this.system.hasRange}}/{{formatNumber this.system.rangedAttackWithPenalty sign=true}}{{else}}/—{{/if}}</span>
+              {{localize 'ANDRAGATHIMA.AttackWithColon'}} <span{{#if this.system.hasAnyNonShieldPenalty}} class="weapon-proficiency-penalty"{{/if}}><span class="rollable" data-roll-type="attack" data-attack-type="melee" data-item-id="{{this._id}}">{{formatNumber this.system.meleeAttackWithPenalty sign=true}}</span>{{#if this.system.hasRange}}/<span class="rollable" data-roll-type="attack" data-attack-type="ranged" data-item-id="{{this._id}}">{{formatNumber this.system.rangedAttackWithPenalty sign=true}}</span>{{else}}/—{{/if}}</span>
             </div>
             <div class="stat-line weapon-damage specialized-resistance">
-              {{localize 'ANDRAGATHIMA.DamageWithColon'}} {{formatNumber this.system.weaponDamage sign=true}} {{this.system.damageTypeDisplay}}
+              {{localize 'ANDRAGATHIMA.DamageWithColon'}} <span class="rollable" data-roll-type="damage" data-item-id="{{this._id}}">{{formatNumber this.system.weaponDamage sign=true}} {{this.system.damageTypeDisplay}}</span>
             </div>
             {{#if (and this.system.range.displayText (ne this.system.range.displayText ""))}}
             <div class="stat-line weapon-range specialized-resistance">
@@ -177,10 +177,10 @@
               <strong>{{this.name}} {{localize 'ANDRAGATHIMA.SecondHand'}}</strong>
             </div>
             <div class="stat-line weapon-attack specialized-resistance">
-              {{localize 'ANDRAGATHIMA.AttackWithColon'}} <span{{#if this.system.hasAnyNonShieldPenalty}} class="weapon-proficiency-penalty"{{/if}}>{{formatNumber this.system.meleeAttackWithPenalty sign=true}}{{#if this.system.hasRange}}/{{formatNumber this.system.rangedAttackWithPenalty sign=true}}{{else}}/—{{/if}}</span>
+              {{localize 'ANDRAGATHIMA.AttackWithColon'}} <span{{#if this.system.hasAnyNonShieldPenalty}} class="weapon-proficiency-penalty"{{/if}}><span class="rollable" data-roll-type="attack" data-attack-type="melee" data-item-id="{{this._id}}">{{formatNumber this.system.meleeAttackWithPenalty sign=true}}</span>{{#if this.system.hasRange}}/<span class="rollable" data-roll-type="attack" data-attack-type="ranged" data-item-id="{{this._id}}">{{formatNumber this.system.rangedAttackWithPenalty sign=true}}</span>{{else}}/—{{/if}}</span>
             </div>
             <div class="stat-line weapon-damage specialized-resistance">
-              {{localize 'ANDRAGATHIMA.DamageWithColon'}} {{formatNumber this.system.weaponDamage sign=true}} {{this.system.damageTypeDisplay}}
+              {{localize 'ANDRAGATHIMA.DamageWithColon'}} <span class="rollable" data-roll-type="damage" data-item-id="{{this._id}}">{{formatNumber this.system.weaponDamage sign=true}} {{this.system.damageTypeDisplay}}</span>
             </div>
             {{#if (and this.system.range.displayText (ne this.system.range.displayText ""))}}
             <div class="stat-line weapon-range specialized-resistance">
