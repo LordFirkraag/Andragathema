@@ -1025,6 +1025,12 @@ export class AndragathimaActor extends Actor {
    * Process effect changes and add to modifiers
    */
   _processEffectChanges(effect, modifiers) {
+    // Special handling for Total Defense condition
+    if (effect.statuses && effect.statuses.has("totaldefense")) {
+      this._processTotalDefenseEffect(effect, modifiers);
+      return;
+    }
+    
     for (const change of effect.changes) {
       const key = change.key;
       const mode = change.mode;
@@ -1100,6 +1106,70 @@ export class AndragathimaActor extends Actor {
         }
       }
     }
+  }
+
+  /**
+   * Process Total Defense effect with complex shield and skill logic
+   */
+  _processTotalDefenseEffect(effect, modifiers) {
+    // Base total defense: +4/+0
+    let meleeDefenseBonus = 4;
+    let rangedDefenseBonus = 0;
+    
+    // Check if character has a shield equipped
+    const shieldSlot = this.system.equipment?.slots?.shield;
+    const hasShield = shieldSlot && shieldSlot.id && shieldSlot.id.trim() !== "";
+    
+    // Check for Projectile Deflection skill (Εκτροπή βλημάτων)
+    const hasProjectileDeflection = this.system.skills?.ektropi_vlimaton?.hasSkill;
+    
+    // Check for Never Unarmed skill (Ποτέ άοπλος)
+    const hasNeverUnarmed = this.system.skills?.pote_aoplos?.hasSkill;
+    
+    // Check if character is holding any weapon that is NOT Fist category
+    const quickWeapons = [];
+    this.system.equipment?.quickItems?.forEach(quickItem => {
+      if (quickItem.id) {
+        const item = this.items.get(quickItem.id);
+        if (item && item.type === 'weapon') {
+          quickWeapons.push({
+            name: item.name,
+            category: item.system.weaponCategory,
+            isFistCategory: item.system.weaponCategory === 'fist'
+          });
+        }
+      }
+    });
+    
+    const isHoldingNonFistWeapon = quickWeapons.some(weapon => !weapon.isFistCategory) || hasShield;
+    
+    // Apply bonus logic:
+    if (hasShield) {
+      // Has shield (light or heavy): +4/+4
+      rangedDefenseBonus = 4;
+    } else if (hasProjectileDeflection && hasNeverUnarmed) {
+      // Has both Projectile Deflection and Never Unarmed: always +4/+4
+      rangedDefenseBonus = 4;
+    } else if (hasProjectileDeflection && isHoldingNonFistWeapon) {
+      // Has Projectile Deflection and holding any weapon that is not fist category: +4/+4
+      rangedDefenseBonus = 4;
+    }
+    
+    // Apply the modifiers
+    modifiers.combat.meleeDefense = (modifiers.combat.meleeDefense || 0) + meleeDefenseBonus;
+    modifiers.combat.rangedDefense = (modifiers.combat.rangedDefense || 0) + rangedDefenseBonus;
+    
+    console.log(`Total Defense DEBUG:`, {
+      meleeBonus: meleeDefenseBonus,
+      rangedBonus: rangedDefenseBonus,
+      hasShield,
+      hasProjectileDeflection,
+      hasNeverUnarmed,
+      isHoldingNonFistWeapon,
+      quickWeapons,
+      projectileDeflectionSkill: this.system.skills?.ektropi_vlimaton,
+      neverUnarmedSkill: this.system.skills?.pote_aoplos
+    });
   }
 
   /**

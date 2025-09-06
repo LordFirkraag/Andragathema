@@ -91,16 +91,7 @@ Hooks.once('init', async function() {
 /*  Handlebars Helpers                          */
 /* -------------------------------------------- */
 
-// Register custom Handlebars helpers
-Handlebars.registerHelper('concat', function() {
-  var outStr = '';
-  for (var arg in arguments) {
-    if (typeof arguments[arg] != 'object') {
-      outStr += arguments[arg];
-    }
-  }
-  return outStr;
-});
+// Register custom Handlebars helpers (removed core duplicates: concat, eq, ne, lt, gt, lte, gte, and, or, not)
 
 Handlebars.registerHelper('toLowerCase', function(str) {
   return str.toLowerCase();
@@ -132,42 +123,6 @@ Handlebars.registerHelper('formatNumber', function(value, options) {
   formatted = formatted.replace(/^-/, '−');
   
   return formatted;
-});
-
-Handlebars.registerHelper('eq', function(a, b) {
-  return a === b;
-});
-
-Handlebars.registerHelper('ne', function(a, b) {
-  return a !== b;
-});
-
-Handlebars.registerHelper('lt', function(a, b) {
-  return a < b;
-});
-
-Handlebars.registerHelper('gt', function(a, b) {
-  return a > b;
-});
-
-Handlebars.registerHelper('lte', function(a, b) {
-  return a <= b;
-});
-
-Handlebars.registerHelper('gte', function(a, b) {
-  return a >= b;
-});
-
-Handlebars.registerHelper('and', function() {
-  return Array.prototype.slice.call(arguments, 0, -1).every(Boolean);
-});
-
-Handlebars.registerHelper('or', function() {
-  return Array.prototype.slice.call(arguments, 0, -1).some(Boolean);
-});
-
-Handlebars.registerHelper('not', function(value) {
-  return !value;
 });
 
 Handlebars.registerHelper('sum', function(a, b) {
@@ -601,23 +556,26 @@ async function updateTokenDyingEffect(token, isDying, activeWounds = 0) {
     dyingOverlay.addChild(overlay);
     
     // Add overlay to token container but position it to appear on top of token image
-    // We need to find where to insert it in the z-order
+    // but under status effects and other UI elements
     let insertIndex = token.children.length;
+    
     for (let i = 0; i < token.children.length; i++) {
-      // Insert after mesh but before other overlays
+      // Insert after mesh but before effects container and other overlays
       if (token.children[i] === token.mesh) {
         insertIndex = i + 1;
+        continue;
       }
-      // Stop before existing overlays
-      if (token.children[i].andragathimaCustomOverlay || 
+      // Stop before effects container or existing overlays
+      if (token.children[i] === token.effects ||
+          token.children[i].andragathimaCustomOverlay || 
           token.children[i].andragathimaWeaponOverlay ||
           token.children[i].andragathimaDeadOverlay) {
+        insertIndex = i;
         break;
       }
     }
     
     token.addChildAt(dyingOverlay, insertIndex);
-    console.log("Dying overlay added to token at index:", insertIndex);
   }
 }
 

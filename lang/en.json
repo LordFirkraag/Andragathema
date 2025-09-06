@@ -586,6 +586,12 @@
     "StatusRunning": "Running",
     "StatusRunningDesc": "You lose your Defense modifier.",
     
+    "StatusCharge": "Charge",
+    "StatusChargeDesc": "+2 Melee Attack, -2/-2 Defense.",
+    
+    "StatusTotalDefense": "Total Defense",
+    "StatusTotalDefenseDesc": "Defense +4/+0. If you have a shield (light or heavy) in shield slot, it's +4/+4. If you have Projectile Deflection skill, you get +4/+4 if you simply hold any weapon except Fists. If you have Projectile Deflection and Never Unarmed, you always get +4/+4 with total defense.",
+    
     "StatusTrapped": "Trapped",
     "StatusTrappedDesc": "You have penalty −2 on all attack and defense rolls, as well as Reflexes saving throws. You cannot move from your position.",
     

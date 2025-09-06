@@ -911,6 +911,36 @@ ANDRAGATHIMA.statusEffects = [
         value: true
       }
     ]
+  },
+  {
+    id: "charge",
+    name: "ANDRAGATHIMA.StatusCharge",
+    description: "ANDRAGATHIMA.StatusChargeDesc",
+    icon: "systems/andragathima/assets/conditions/charge.png",
+    changes: [
+      {
+        key: "system.combat.meleeAttack.modifier",
+        mode: 2, // ADD
+        value: 2
+      },
+      {
+        key: "system.combat.meleeDefense",
+        mode: 2, // ADD
+        value: -2
+      },
+      {
+        key: "system.combat.rangedDefense",
+        mode: 2, // ADD
+        value: -2
+      }
+    ]
+  },
+  {
+    id: "totaldefense",
+    name: "ANDRAGATHIMA.StatusTotalDefense",
+    description: "ANDRAGATHIMA.StatusTotalDefenseDesc",
+    icon: "systems/andragathima/assets/conditions/totaldefense.png",
+    changes: []
   }
 ];
 
