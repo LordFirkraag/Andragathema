@@ -1,0 +1,173 @@
+<form class="{{cssClass}} andragathima flexcol" autocomplete="off">
+
+  {{!-- Sheet Header --}}
+  <header class="sheet-header">
+    <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}" height="64" width="64"/>
+    <div class="header-fields">
+      <h1 class="charname">
+        <input name="name" type="text" value="{{item.name}}" placeholder="{{localize 'ANDRAGATHIMA.SpellName'}}"/>
+      </h1>
+      <div class="item-subtitle">{{localize 'ANDRAGATHIMA.Spell'}}</div>
+    </div>
+  </header>
+
+  {{!-- Sheet Body --}}
+  <section class="sheet-body">
+    <div class="spell-details">
+      
+      {{!-- Spell Properties --}}
+      <div class="spell-properties">
+        <div class="info-section">
+          
+          <table class="spell-properties-table">
+            <tr>
+              <td><label>{{localize 'ANDRAGATHIMA.SpellLevel'}}:</label></td>
+              <td>
+                <select name="system.level" data-dtype="Number">
+                  <option value="1" {{#if (eq system.level 1)}}selected{{/if}}>1</option>
+                  <option value="2" {{#if (eq system.level 2)}}selected{{/if}}>2</option>
+                  <option value="3" {{#if (eq system.level 3)}}selected{{/if}}>3</option>
+                  <option value="4" {{#if (eq system.level 4)}}selected{{/if}}>4</option>
+                  <option value="5" {{#if (eq system.level 5)}}selected{{/if}}>5</option>
+                </select>
+              </td>
+              <td></td>
+            </tr>
+            <tr>
+              <td><label>{{localize 'ANDRAGATHIMA.SpellElement'}}:</label></td>
+              <td colspan="2">
+                <div class="checkbox-group">
+                  <label><input type="checkbox" name="system.elements.air" {{#if system.elements.air}}checked{{/if}}/> {{localize 'ANDRAGATHIMA.ElementAir'}}</label>
+                  <label><input type="checkbox" name="system.elements.earth" {{#if system.elements.earth}}checked{{/if}}/> {{localize 'ANDRAGATHIMA.ElementEarth'}}</label>
+                  <label><input type="checkbox" name="system.elements.water" {{#if system.elements.water}}checked{{/if}}/> {{localize 'ANDRAGATHIMA.ElementWater'}}</label>
+                  <label><input type="checkbox" name="system.elements.fire" {{#if system.elements.fire}}checked{{/if}}/> {{localize 'ANDRAGATHIMA.ElementFire'}}</label>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td><label>{{localize 'ANDRAGATHIMA.SpellSchool'}}:</label></td>
+              <td>
+                <select name="system.school">
+                  <option value="">{{localize 'ANDRAGATHIMA.SelectOne'}}</option>
+                  <option value="abjuration" {{#if (eq system.school "abjuration")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.SpellSchoolAbjuration'}}</option>
+                  <option value="enchantment" {{#if (eq system.school "enchantment")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.SpellSchoolEnchantment'}}</option>
+                  <option value="evocation" {{#if (eq system.school "evocation")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.SpellSchoolEvocation'}}</option>
+                  <option value="necromancy" {{#if (eq system.school "necromancy")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.SpellSchoolNecromancy'}}</option>
+                  <option value="conjuration" {{#if (eq system.school "conjuration")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.SpellSchoolConjuration'}}</option>
+                  <option value="divination" {{#if (eq system.school "divination")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.SpellSchoolDivination'}}</option>
+                  <option value="transmutation" {{#if (eq system.school "transmutation")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.SpellSchoolTransmutation'}}</option>
+                  <option value="illusion" {{#if (eq system.school "illusion")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.SpellSchoolIllusion'}}</option>
+                </select>
+              </td>
+              <td></td>
+            </tr>
+            <tr>
+              <td><label>{{localize 'ANDRAGATHIMA.SpellEnergy'}}:</label></td>
+              <td>
+                <select name="system.energy.type">
+                  <option value="full" {{#if (eq system.energy.type "full")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.SpellEnergyFull'}}</option>
+                  <option value="attack" {{#if (eq system.energy.type "attack")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.SpellEnergyAttack'}}</option>
+                  <option value="move" {{#if (eq system.energy.type "move")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.SpellEnergyMove'}}</option>
+                  <option value="free" {{#if (eq system.energy.type "free")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.SpellEnergyFree'}}</option>
+                  <option value="custom" {{#if (eq system.energy.type "custom")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.SpellEnergyCustom'}}</option>
+                </select>
+              </td>
+              <td>
+                {{#if (eq system.energy.type "custom")}}
+                <input type="text" name="system.energy.custom" value="{{system.energy.custom}}" style="width: 100px;" placeholder="{{localize 'ANDRAGATHIMA.PlaceholderCustomEnergy'}}"/>
+                {{/if}}
+              </td>
+            </tr>
+            <tr>
+              <td><label>{{localize 'ANDRAGATHIMA.SpellRange'}}:</label></td>
+              <td>
+                <select name="system.range.type">
+                  <option value="personal" {{#if (eq system.range.type "personal")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.SpellRangePersonal'}}</option>
+                  <option value="touch" {{#if (eq system.range.type "touch")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.SpellRangeTouch'}}</option>
+                  <option value="ranged" {{#if (eq system.range.type "ranged")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.SpellRangeRanged'}}</option>
+                  <option value="perception" {{#if (eq system.range.type "perception")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.SpellRangePerception'}}</option>
+                  <option value="custom" {{#if (eq system.range.type "custom")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.SpellRangeCustom'}}</option>
+                </select>
+              </td>
+              <td>
+                {{#if (eq system.range.type "ranged")}}
+                <span class="spell-range-display">{{system.rangeDisplay}}</span>
+                {{else if (eq system.range.type "custom")}}
+                <input type="text" name="system.range.custom" value="{{system.range.custom}}" style="width: 100px;" placeholder="{{localize 'ANDRAGATHIMA.PlaceholderCustomRange'}}"/>
+                {{/if}}
+              </td>
+            </tr>
+            <tr>
+              <td><label>{{localize 'ANDRAGATHIMA.SpellArea'}}:</label></td>
+              <td>
+                <select name="system.area.type">
+                  <option value="none" {{#if (eq system.area.type "none")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.SpellAreaNone'}}</option>
+                  <option value="radius" {{#if (eq system.area.type "radius")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.SpellAreaRadius'}}</option>
+                  <option value="burst" {{#if (eq system.area.type "burst")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.SpellAreaBurst'}}</option>
+                  <option value="burst2" {{#if (eq system.area.type "burst2")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.SpellAreaBurst2'}}</option>
+                  <option value="burst5" {{#if (eq system.area.type "burst5")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.SpellAreaBurst5'}}</option>
+                  <option value="cone" {{#if (eq system.area.type "cone")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.SpellAreaCone'}}</option>
+                  <option value="custom" {{#if (eq system.area.type "custom")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.SpellAreaCustom'}}</option>
+                </select>
+              </td>
+              <td>
+                {{#if (eq system.area.type "custom")}}
+                <input type="text" name="system.area.custom" value="{{system.area.custom}}" style="width: 100px;" placeholder="{{localize 'ANDRAGATHIMA.PlaceholderCustomArea'}}"/>
+                {{else if (or (eq system.area.type "burst2") (eq system.area.type "burst5"))}}
+                <span class="calculated-area">{{system.areaDisplay}}</span>
+                {{/if}}
+              </td>
+            </tr>
+            <tr>
+              <td><label>{{localize 'ANDRAGATHIMA.SpellDuration'}}:</label></td>
+              <td>
+                <select name="system.duration.type">
+                  <option value="instant" {{#if (eq system.duration.type "instant")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.SpellDurationInstant'}}</option>
+                  <option value="round_per_degree" {{#if (eq system.duration.type "round_per_degree")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.OneRoundPerDegree'}}</option>
+                  <option value="minute_per_degree" {{#if (eq system.duration.type "minute_per_degree")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.OneMinutePerDegree'}}</option>
+                  <option value="five_minutes_per_degree" {{#if (eq system.duration.type "five_minutes_per_degree")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.FiveMinutesPerDegree'}}</option>
+                  <option value="ten_minutes_per_degree" {{#if (eq system.duration.type "ten_minutes_per_degree")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.TenMinutesPerDegree'}}</option>
+                  <option value="hour_per_degree" {{#if (eq system.duration.type "hour_per_degree")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.OneHourPerDegree'}}</option>
+                  <option value="custom" {{#if (eq system.duration.type "custom")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.SpellDurationCustom'}}</option>
+                </select>
+              </td>
+              <td>
+                {{#if (eq system.duration.type "custom")}}
+                <input type="text" name="system.duration.custom" value="{{system.duration.custom}}" style="width: 100px;" placeholder="{{localize 'ANDRAGATHIMA.PlaceholderCustomDuration'}}"/>
+                {{else if (or (eq system.duration.type "round_per_degree") (eq system.duration.type "minute_per_degree") (eq system.duration.type "five_minutes_per_degree") (eq system.duration.type "ten_minutes_per_degree") (eq system.duration.type "hour_per_degree"))}}
+                <span class="spell-duration-display">{{system.durationDisplay}}</span>
+                {{/if}}
+              </td>
+            </tr>
+            <tr>
+              <td><label>{{localize 'ANDRAGATHIMA.SpellSave'}}:</label></td>
+              <td>
+                <select name="system.save.type">
+                  <option value="none" {{#if (eq system.save.type "none")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.SpellSaveNone'}}</option>
+                  <option value="reflexes" {{#if (eq system.save.type "reflexes")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.SpellSaveReflexes'}}</option>
+                  <option value="mind" {{#if (eq system.save.type "mind")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.SpellSaveMind'}}</option>
+                  <option value="body" {{#if (eq system.save.type "body")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.SpellSaveBody'}}</option>
+                  <option value="custom" {{#if (eq system.save.type "custom")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.SpellSaveCustom'}}</option>
+                </select>
+              </td>
+              <td>
+                {{#if (eq system.save.type "custom")}}
+                <input type="text" name="system.save.custom" value="{{system.save.custom}}" style="width: 100px;" placeholder="{{localize 'ANDRAGATHIMA.PlaceholderCustomSave'}}"/>
+                {{/if}}
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+
+      {{!-- Description --}}
+      <div class="description-section">
+        <h3>{{localize 'ANDRAGATHIMA.DescriptionNotes'}}</h3>
+        <div class="form-group stacked description-text">
+          <textarea name="system.description" rows="6">{{system.description}}</textarea>
+        </div>
+      </div>
+
+    </div>
+  </section>
+</form>

@@ -1,0 +1,135 @@
+<form class="{{cssClass}} andragathima" autocomplete="off">
+  <header class="sheet-header">
+    <img class="profile-img" src="{{effect.img}}" data-edit="img" title="{{effect.name}}"/>
+    <div class="header-fields">
+      <h1 class="charname"><input name="name" type="text" value="{{effect.name}}" placeholder="{{localize 'ANDRAGATHIMA.EffectSheetName'}}"/></h1>
+    </div>
+  </header>
+
+  {{!-- Sheet Body --}}
+  <section class="sheet-body">
+    
+    {{!-- Effects Section --}}
+    <div class="info-section">
+      <h3>{{localize 'ANDRAGATHIMA.EffectSheetStatsTitle'}}</h3>
+      
+      <div class="effects-list">
+        {{#each effect.changes as |change index|}}
+          <div class="effect-change-item" data-change-index="{{index}}">
+            <select name="changes.{{index}}.key" class="effect-attribute">
+              <option value="">{{localize 'ANDRAGATHIMA.EffectSheetSelectAttribute'}}</option>
+              <optgroup label="{{localize 'ANDRAGATHIMA.EffectSheetAbilities'}}">
+                <option value="system.abilities.dyn.value" {{#if (eq change.key "system.abilities.dyn.value")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.AbilityDyn'}}</option>
+                <option value="system.abilities.epi.value" {{#if (eq change.key "system.abilities.epi.value")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.AbilityEpi'}}</option>
+                <option value="system.abilities.kra.value" {{#if (eq change.key "system.abilities.kra.value")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.AbilityKra'}}</option>
+                <option value="system.abilities.eyf.value" {{#if (eq change.key "system.abilities.eyf.value")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.AbilityEyf'}}</option>
+                <option value="system.abilities.sof.value" {{#if (eq change.key "system.abilities.sof.value")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.AbilitySof'}}</option>
+                <option value="system.abilities.xar.value" {{#if (eq change.key "system.abilities.xar.value")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.AbilityXar'}}</option>
+              </optgroup>
+              <optgroup label="{{localize 'ANDRAGATHIMA.EffectSheetSaves'}}">
+                <option value="system.saves.ant.base" {{#if (eq change.key "system.saves.ant.base")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.SaveAnt'}}</option>
+                <option value="system.saves.mya.base" {{#if (eq change.key "system.saves.mya.base")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.SaveMya'}}</option>
+                <option value="system.saves.som.base" {{#if (eq change.key "system.saves.som.base")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.SaveSom'}}</option>
+              </optgroup>
+              <optgroup label="{{localize 'ANDRAGATHIMA.EffectSheetCombat'}}">
+                <option value="system.combat.melee.value" {{#if (eq change.key "system.combat.melee.value")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.EffectSheetMeleeSkill'}}</option>
+                <option value="system.combat.ranged.value" {{#if (eq change.key "system.combat.ranged.value")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.EffectSheetRangedSkill'}}</option>
+                <option value="system.combat.meleeAttack.value" {{#if (eq change.key "system.combat.meleeAttack.value")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.EffectSheetMeleeAttack'}}</option>
+                <option value="system.combat.rangedAttack.value" {{#if (eq change.key "system.combat.rangedAttack.value")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.EffectSheetRangedAttack'}}</option>
+                <option value="system.combat.meleeDefense.value" {{#if (eq change.key "system.combat.meleeDefense.value")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.EffectSheetMeleeDefense'}}</option>
+                <option value="system.combat.rangedDefense.value" {{#if (eq change.key "system.combat.rangedDefense.value")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.EffectSheetRangedDefense'}}</option>
+              </optgroup>
+              <optgroup label="{{localize 'ANDRAGATHIMA.EffectSheetResistances'}}">
+                <option value="system.resistances.base" {{#if (eq change.key "system.resistances.base")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.EffectSheetResistanceBase'}}</option>
+                <option value="system.resistances.diatrisi" {{#if (eq change.key "system.resistances.diatrisi")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.EffectSheetResistancePiercing'}}</option>
+                <option value="system.resistances.kroysi" {{#if (eq change.key "system.resistances.kroysi")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.EffectSheetResistanceBludgeoning'}}</option>
+                <option value="system.resistances.tomi" {{#if (eq change.key "system.resistances.tomi")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.EffectSheetResistanceSlashing'}}</option>
+                <option value="system.resistances.keravnos" {{#if (eq change.key "system.resistances.keravnos")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.EffectSheetResistanceLightning'}}</option>
+                <option value="system.resistances.oxy" {{#if (eq change.key "system.resistances.oxy")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.EffectSheetResistanceAcid'}}</option>
+                <option value="system.resistances.fotia" {{#if (eq change.key "system.resistances.fotia")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.EffectSheetResistanceFire'}}</option>
+                <option value="system.resistances.psyxos" {{#if (eq change.key "system.resistances.psyxos")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.EffectSheetResistanceCold'}}</option>
+                <option value="system.resistances.magiki" {{#if (eq change.key "system.resistances.magiki")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.EffectSheetResistanceMagic'}}</option>
+              </optgroup>
+              <optgroup label="{{localize 'ANDRAGATHIMA.EffectSheetDamage'}}">
+                <option value="system.damage.base" {{#if (eq change.key "system.damage.base")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.EffectSheetDamageBase'}}</option>
+                <option value="system.damage.diatrisi" {{#if (eq change.key "system.damage.diatrisi")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.EffectSheetDamagePiercing'}}</option>
+                <option value="system.damage.kroysi" {{#if (eq change.key "system.damage.kroysi")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.EffectSheetDamageBludgeoning'}}</option>
+                <option value="system.damage.tomi" {{#if (eq change.key "system.damage.tomi")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.EffectSheetDamageSlashing'}}</option>
+                <option value="system.damage.keravnos" {{#if (eq change.key "system.damage.keravnos")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.EffectSheetDamageLightning'}}</option>
+                <option value="system.damage.oxy" {{#if (eq change.key "system.damage.oxy")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.EffectSheetDamageAcid'}}</option>
+                <option value="system.damage.fotia" {{#if (eq change.key "system.damage.fotia")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.EffectSheetDamageFire'}}</option>
+                <option value="system.damage.psyxos" {{#if (eq change.key "system.damage.psyxos")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.EffectSheetDamageCold'}}</option>
+                <option value="system.damage.magiki" {{#if (eq change.key "system.damage.magiki")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.EffectSheetDamageMagic'}}</option>
+                <option value="system.damage.mental" {{#if (eq change.key "system.damage.mental")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.EffectSheetDamageMental'}}</option>
+                <option value="system.damage.desecration" {{#if (eq change.key "system.damage.desecration")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.EffectSheetDamageDesecration'}}</option>
+              </optgroup>
+              <optgroup label="{{localize 'ANDRAGATHIMA.EffectSheetOther'}}">
+                <option value="system.combat.initiative.value" {{#if (eq change.key "system.combat.initiative.value")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.EffectSheetInitiative'}}</option>
+                <option value="system.other.speed.value" {{#if (eq change.key "system.other.speed.value")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.EffectSheetSpeed'}}</option>
+                <option value="system.other.pali.value" {{#if (eq change.key "system.other.pali.value")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.EffectSheetGrapple'}}</option>
+                <option value="system.other.eystatheia.value" {{#if (eq change.key "system.other.eystatheia.value")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.EffectSheetStability'}}</option>
+                <option value="system.magic.degree.value" {{#if (eq change.key "system.magic.degree.value")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.EffectSheetMagicDegree'}}</option>
+              </optgroup>
+            </select>
+            
+            <select name="changes.{{index}}.mode" class="effect-mode">
+              <option value="2" {{#if (eq change.mode 2)}}selected{{/if}}>+</option>
+              <option value="5" {{#if (eq change.mode 5)}}selected{{/if}}>=</option>
+              <option value="6" {{#if (eq change.mode 6)}}selected{{/if}}>>=</option>
+            </select>
+            
+            <input type="text" name="changes.{{index}}.value" value="{{change.value}}" placeholder="{{localize 'ANDRAGATHIMA.EffectSheetCoefficient'}}" class="effect-value"/>
+            
+            <button type="button" class="effect-change-delete" data-change-index="{{index}}" title="{{localize 'ANDRAGATHIMA.EffectSheetDelete'}}">✕</button>
+          </div>
+        {{/each}}
+        
+        {{!-- Empty message when no effects --}}
+        {{#unless effect.changes.length}}
+          <p class="empty-message">{{localize 'ANDRAGATHIMA.EffectSheetEmptyMessage'}}</p>
+        {{/unless}}
+      </div>
+      
+      <button type="button" class="add-effect-change">{{localize 'ANDRAGATHIMA.EffectSheetAddEffect'}}</button>
+    </div>
+
+    {{!-- Duration and Status Section --}}
+    <div class="duration-status-section">
+      <div class="form-group">
+        <label>{{localize 'ANDRAGATHIMA.EffectSheetDuration'}}</label>
+        <div class="form-fields">
+          <input type="number" name="duration.value" value="{{effect.duration.value}}" placeholder="{{localize 'ANDRAGATHIMA.EffectSheetDurationNumber'}}" class="duration-value" min="0"/>
+          
+          <select name="duration.units" class="duration-units">
+            <option value="" {{#unless effect.duration.units}}selected{{/unless}}>{{localize 'ANDRAGATHIMA.EffectSheetDurationPermanent'}}</option>
+            <option value="rounds" {{#if (eq effect.duration.units "rounds")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.EffectSheetDurationRounds'}}</option>
+            <option value="minutes" {{#if (eq effect.duration.units "minutes")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.EffectSheetDurationMinutes'}}</option>
+            <option value="hours" {{#if (eq effect.duration.units "hours")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.EffectSheetDurationHours'}}</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="disabled-section">
+        <label>{{localize 'ANDRAGATHIMA.EffectSheetActive'}}</label>
+        <div class="checkbox-container">
+          <input type="checkbox" name="disabled" {{#if effect.disabled}}checked{{/if}}/>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label>{{localize 'ANDRAGATHIMA.EffectSheetShowOnToken'}}</label>
+        <div class="checkbox-container">
+          <input type="checkbox" name="flags.andragathima.showOnToken" {{#if effect.flags.andragathima.showOnToken}}checked{{/if}}/>
+        </div>
+      </div>
+    </div>
+
+
+    {{!-- Description Section --}}
+    <div class="description-section">
+      <h3>{{localize 'ANDRAGATHIMA.EffectSheetDescription'}}</h3>
+      <textarea name="description" placeholder="{{localize 'ANDRAGATHIMA.EffectSheetDescriptionPlaceholder'}}" rows="4">{{effect.description}}</textarea>
+    </div>
+
+  </section>
+</form>

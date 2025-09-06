@@ -1,0 +1,1483 @@
+{
+  "Actor": {
+    "types": ["character", "npc", "container"],
+    "templates": {
+      "base": {
+        "biography": "",
+        "attributes": {
+          "level": {
+            "value": 1
+          }
+        }
+      },
+      "abilities": {
+        "abilities": {
+          "dyn": {
+            "label": "Δύναμη",
+            "abbr": "ΔΥ",
+            "value": 10,
+            "mod": 0
+          },
+          "epi": {
+            "label": "Επιδεξιότητα", 
+            "abbr": "ΕΠ",
+            "value": 10,
+            "mod": 0
+          },
+          "kra": {
+            "label": "Κράση",
+            "abbr": "ΚΡ",
+            "value": 10,
+            "mod": 0
+          },
+          "eyf": {
+            "label": "Ευφυΐα",
+            "abbr": "ΕΥ",
+            "value": 10,
+            "mod": 0
+          },
+          "sof": {
+            "label": "Σοφία",
+            "abbr": "ΣΟ",
+            "value": 10,
+            "mod": 0
+          },
+          "xar": {
+            "label": "Χάρισμα",
+            "abbr": "ΧΑ",
+            "value": 10,
+            "mod": 0
+          }
+        }
+      },
+      "saves": {
+        "saves": {
+          "ant": {
+            "label": "Αντανακλαστικά",
+            "abbr": "ΑΝ",
+            "base": 0,
+            "value": 0,
+            "ability": "epi"
+          },
+          "mya": {
+            "label": "Μυαλό",
+            "abbr": "ΜΥ",
+            "base": 0,
+            "value": 0,
+            "ability": "sof"
+          },
+          "som": {
+            "label": "Σώμα",
+            "abbr": "ΣΩ",
+            "base": 0,
+            "value": 0,
+            "ability": "kra"
+          }
+        }
+      },
+      "combat": {
+        "combat": {
+          "initiative": {
+            "value": 0,
+            "bonus": 0,
+			"ability": "epi"
+          },
+          "speed": {
+            "value": 9,
+            "units": "m",
+            "swim": null,
+            "fly": null,
+            "flyQuality": null,
+            "climb": null,
+            "burrow": null
+          },
+          "melee": {
+            "value": 0,
+            "label": "Σώμα με σώμα"
+          },
+          "ranged": {
+            "value": 0,
+            "label": "Μακρόθεν"
+          },
+          "pali": {
+            "value": 0,
+            "label": "Πάλη"
+          },
+          "eystatheia": {
+            "value": 0,
+            "label": "Ευστάθεια"
+          }
+        }
+      },
+      "resistances": {
+        "resistances": {
+          "diatrisi": {
+            "label": "Διάτρηση",
+            "value": 0
+          },
+          "kroysi": {
+            "label": "Κρούση",
+            "value": 0
+          },
+          "tomi": {
+            "label": "Τομή",
+            "value": 0
+          },
+          "keravnos": {
+            "label": "Κεραυνός",
+            "value": 0
+          },
+          "oxy": {
+            "label": "Οξύ",
+            "value": 0
+          },
+          "fotia": {
+            "label": "Φωτιά",
+            "value": 0
+          },
+          "psyxos": {
+            "label": "Ψύχος",
+            "value": 0
+          },
+		  "magiki": {
+            "label": "Μαγική ενέργεια",
+            "value": 0
+          },
+          "synthlipsi": {
+            "label": "Σύνθλιψη",
+            "value": 0
+          }
+        }
+      },
+      "magic": {
+        "magic": {
+          "level": {
+            "value": 0,
+            "label": "Επίπεδο μάγου"
+          },
+          "degree": {
+            "value": 0,
+            "label": "Βαθμός μαγείας"
+          },
+          "element": {
+            "value": "",
+            "label": "Στοιχείο"
+          }
+        }
+      },
+      "details": {
+        "details": {
+          "race": {
+            "value": "",
+            "label": "Γένος"
+          },
+          "displayTitle": {
+            "value": "",
+            "label": "Τίτλος"
+          },
+          "background": {
+            "value": "",
+            "label": "Υπόβαθρο"
+          },
+          "size": {
+            "value": "medium",
+            "label": "Μέγεθος"
+          },
+          "experience": {
+            "value": 0,
+            "spent": 0,
+            "remaining": 0,
+            "label": "Πόντοι Εμπειρίας"
+          }
+        }
+      }
+    },
+    "character": {
+      "templates": ["base", "abilities", "saves", "combat", "resistances", "magic", "details"],
+      "notes": "",
+      "pointsLocked": false,
+      "skills": {
+        "aetomatis": {
+          "name": "Αετομάτης",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "athoryvos": {
+          "name": "Αθόρυβος",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "akataviltos": {
+          "name": "Ακατάβλητος",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "aklonitos": {
+          "name": "Ακλόνητος",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "akrovatis": {
+          "name": "Ακροβάτης",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "alafroiskiotos": {
+          "name": "Αλαφροΐσκιωτος",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "altis": {
+          "name": "Άλτης",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "alximistis": {
+          "name": "Αλχημιστής",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "amfidexios": {
+          "name": "Αμφιδέξιος",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "anarixitis": {
+          "name": "Αναρριχητής",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "anthektikos": {
+          "name": "Ανθεκτικός",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "anikneysi_mageias": {
+          "name": "Ανίχνευση μαγείας",
+          "level": 0,
+          "maxLevel": 3,
+          "hasSkill": false
+        },
+        "apofygi": {
+          "name": "Αποφυγή",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "aspides": {
+          "name": "Ασπίδες",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "astrapieos": {
+          "name": "Αστραπιαίος",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "asygkratitos": {
+          "name": "Ασυγκράτητος",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "asyliptos_nous": {
+          "name": "Ασύλληπτος νους",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "afantos": {
+          "name": "Άφαντος",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "votanologos": {
+          "name": "Βοτανολόγος",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "gnostis": {
+          "name": "Γνώστης",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "gorgopodaros": {
+          "name": "Γοργοπόδαρος",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "grammatismenos": {
+          "name": "Γραμματισμένος",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "grapoma": {
+          "name": "Γράπωμα",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "grigoros_sto_gemisma": {
+          "name": "Γρήγορος στο γέμισμα",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "grigoros_sto_traviγma": {
+          "name": "Γρήγορος στο τράβηγμα",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "dilithiriastis": {
+          "name": "Δηλητηριαστής",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "diaesthisi_toy_kakoy": {
+          "name": "Διαίσθηση του κακού",
+          "level": 0,
+          "maxLevel": 3,
+          "hasSkill": false
+        },
+        "diakritika_xorkia": {
+          "name": "Διακριτικά ξόρκια",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "diariktis": {
+          "name": "Διαρρήκτης",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "dromeas": {
+          "name": "Δρομέας",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "eidikeysi_sta_opla": {
+          "name": "Ειδίκευση στα όπλα",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "ektelestis": {
+          "name": "Εκτελεστής",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "ektropi_vlimaton": {
+          "name": "Εκτροπή βλημάτων",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "elafroxeris": {
+          "name": "Ελαφροχέρης",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "empsyxotiko_kalesma": {
+          "name": "Εμψυχωτικό κάλεσμα",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "enstiktodis_apofygi": {
+          "name": "Ενστικτώδης αποφυγή",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "entopismos_pagidon": {
+          "name": "Εντοπισμός παγίδων",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "eraldiki": {
+          "name": "Εραλδική",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "ereynitis": {
+          "name": "Ερευνητής",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "thalassolykos": {
+          "name": "Θαλασσόλυκος",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "therapeftis": {
+          "name": "Θεραπευτής",
+          "level": 0,
+          "maxLevel": 2,
+          "hasSkill": false
+        },
+        "thirioдomastis": {
+          "name": "Θηριοδαμαστής",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "thorakisi": {
+          "name": "Θωράκιση",
+          "level": 0,
+          "maxLevel": 3,
+          "hasSkill": false
+        },
+        "ippeas": {
+          "name": "Ιππέας",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "efippos_maxitis": {
+          "name": "Έφιππος μαχητής",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "ippotoxotis": {
+          "name": "Ιπποτοξότης",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "podopatima": {
+          "name": "Ποδοπάτημα",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "romalea_eformisi": {
+          "name": "Ρωμαλέα εφόρμηση",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "ixnilatis": {
+          "name": "Ιχνηλάτης",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "kallitexnis": {
+          "name": "Καλλιτέχνης",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "katastreofeas": {
+          "name": "Καταστροφέας",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "katoikos_toy_dasoys": {
+          "name": "Κάτοικος του δάσους",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "kolymvitis": {
+          "name": "Κολυμβητής",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "kynigos": {
+          "name": "Κυνηγός",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "lagokeimomenos": {
+          "name": "Λαγοκοιμώμενος",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "leontokardos": {
+          "name": "Λεοντόκαρδος",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "menomenos": {
+          "name": "Μαινόμενος",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "miхaneytis": {
+          "name": "Μηχανευτής",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "xorkia_maxis": {
+          "name": "Ξόρκια μάχης",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "odoiporos": {
+          "name": "Οδοιπόρος",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "oxeia_akoi": {
+          "name": "Οξεία ακοή",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "opla": {
+          "name": "Όπλα",
+          "level": 0,
+          "maxLevel": 3,
+          "hasSkill": false
+        },
+        "ormitikos": {
+          "name": "Ορμητικός",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "polemiki_iaxi": {
+          "name": "Πολεμική ιαχή",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "pote_aoplos": {
+          "name": "Ποτέ άοπλος",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "pote_ligostos": {
+          "name": "Ποτέ λιγοστός",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "proesthisi_kindynoy": {
+          "name": "Προαίσθηση κινδύνου",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "sakatema": {
+          "name": "Σακάτεμα",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "sveltos": {
+          "name": "Σβέλτος",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "sigoyro_simadi": {
+          "name": "Σίγουρο σημάδι",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "siderenia_lavi": {
+          "name": "Σιδερένια λαβή",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "siopira_xorkia": {
+          "name": "Σιωπηρά ξόρκια",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "sklirοtraxilos": {
+          "name": "Σκληροτράχηλος",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "stoixeiaki_kataktisi": {
+          "name": "Στοιχειακή κατάκτηση",
+          "level": 0,
+          "maxLevel": 2,
+          "hasSkill": false
+        },
+        "stragalistis": {
+          "name": "Στραγγαλιστής",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "syntriptiki_lavi": {
+          "name": "Συντριπτική λαβή",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "sfageas": {
+          "name": "Σφαγέας",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "sxoinovatis": {
+          "name": "Σχοινοβάτης",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "somatofylakas": {
+          "name": "Σωματοφύλακας",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "texnitis": {
+          "name": "Τεχνίτης",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "tyranniki_paroysia": {
+          "name": "Τυραννική παρουσία",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "tyflos_maxitis": {
+          "name": "Τυφλός μαχητής",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "ypoyли_epithesi": {
+          "name": "Ύπουλη επίθεση",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "ystati_praxi": {
+          "name": "Ύστατη πράξη",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "filos_ton_zoon": {
+          "name": "Φίλος των ζώων",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "xoris_ixni": {
+          "name": "Χωρίς ίχνη",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        }
+      },
+      "equipment": {
+        "quickItems": [
+          {"name": "", "img": "icons/svg/item-bag.svg", "id": "", "type": ""},
+          {"name": "", "img": "icons/svg/item-bag.svg", "id": "", "type": ""},
+          {"name": "", "img": "icons/svg/item-bag.svg", "id": "", "type": ""},
+          {"name": "", "img": "icons/svg/item-bag.svg", "id": "", "type": ""},
+          {"name": "", "img": "icons/svg/item-bag.svg", "id": "", "type": ""},
+          {"name": "", "img": "icons/svg/item-bag.svg", "id": "", "type": ""},
+          {"name": "", "img": "icons/svg/item-bag.svg", "id": "", "type": ""},
+          {"name": "", "img": "icons/svg/item-bag.svg", "id": "", "type": ""}
+        ],
+        "slots": {
+          "head": {"name": "", "img": "icons/svg/item-bag.svg", "id": "", "type": ""},
+          "torso": {"name": "", "img": "icons/svg/item-bag.svg", "id": "", "type": ""},
+          "shield": {"name": "", "img": "icons/svg/item-bag.svg", "id": "", "type": ""},
+          "cloak": {"name": "", "img": "icons/svg/item-bag.svg", "id": "", "type": ""},
+          "belt": {"name": "", "img": "icons/svg/item-bag.svg", "id": "", "type": ""},
+          "gloves": {"name": "", "img": "icons/svg/item-bag.svg", "id": "", "type": ""},
+          "boots": {"name": "", "img": "icons/svg/item-bag.svg", "id": "", "type": ""},
+          "necklace": {"name": "", "img": "icons/svg/item-bag.svg", "id": "", "type": ""},
+          "ringLeft": {"name": "", "img": "icons/svg/item-bag.svg", "id": "", "type": ""},
+          "ringRight": {"name": "", "img": "icons/svg/item-bag.svg", "id": "", "type": ""}
+        },
+        "money": "",
+        "totalWeight": 0,
+        "miscItem1": "", "miscWeight1": "",
+        "miscItem2": "", "miscWeight2": "",
+        "miscItem3": "", "miscWeight3": "",
+        "miscItem4": "", "miscWeight4": "",
+        "miscItem5": "", "miscWeight5": "",
+        "miscItem6": "", "miscWeight6": "",
+        "miscItem7": "", "miscWeight7": "",
+        "miscItem8": "", "miscWeight8": "",
+        "miscItem9": "", "miscWeight9": "",
+        "miscItem10": "", "miscWeight10": "",
+        "miscItem11": "", "miscWeight11": "",
+        "miscItem12": "", "miscWeight12": "",
+        "miscItem13": "", "miscWeight13": "",
+        "miscItem14": "", "miscWeight14": "",
+        "miscItem15": "", "miscWeight15": "",
+        "miscItem16": "", "miscWeight16": "",
+        "miscItem17": "", "miscWeight17": "",
+        "miscItem18": "", "miscWeight18": "",
+        "miscItem19": "", "miscWeight19": "",
+        "miscItem20": "", "miscWeight20": ""
+      },
+      "currency": {
+        "gold": 0,
+        "silver": 0,
+        "copper": 0
+      }
+    },
+    "npc": {
+      "templates": ["base", "abilities", "saves", "combat", "resistances", "magic", "details"],
+      "cr": {
+        "value": 1,
+        "label": "Επίπεδο"
+      },
+      "skills": {
+        "aetomatis": {
+          "name": "Αετομάτης",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "athoryvos": {
+          "name": "Αθόρυβος",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "akataviltos": {
+          "name": "Ακατάβλητος",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "aklonitos": {
+          "name": "Ακλόνητος",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "akrovatis": {
+          "name": "Ακροβάτης",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "alafroiskiotos": {
+          "name": "Αλαφροΐσκιωτος",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "altis": {
+          "name": "Άλτης",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "alximistis": {
+          "name": "Αλχημιστής",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "amfidexios": {
+          "name": "Αμφιδέξιος",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "anarixitis": {
+          "name": "Αναρριχητής",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "anthektikos": {
+          "name": "Ανθεκτικός",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "anikneysi_mageias": {
+          "name": "Ανίχνευση μαγείας",
+          "level": 0,
+          "maxLevel": 3,
+          "hasSkill": false
+        },
+        "apofygi": {
+          "name": "Αποφυγή",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "aspides": {
+          "name": "Ασπίδες",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "astrapieos": {
+          "name": "Αστραπιαίος",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "asygkratitos": {
+          "name": "Ασυγκράτητος",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "asyliptos_nous": {
+          "name": "Ασύλληπτος νους",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "afantos": {
+          "name": "Άφαντος",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "votanologos": {
+          "name": "Βοτανολόγος",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "gnostis": {
+          "name": "Γνώστης",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "gorgopodaros": {
+          "name": "Γοργοπόδαρος",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "grammatismenos": {
+          "name": "Γραμματισμένος",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "grapoma": {
+          "name": "Γράπωμα",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "grigoros_sto_gemisma": {
+          "name": "Γρήγορος στο γέμισμα",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "grigoros_sto_traviγma": {
+          "name": "Γρήγορος στο τράβηγμα",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "dilithiriastis": {
+          "name": "Δηλητηριαστής",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "diaesthisi_toy_kakoy": {
+          "name": "Διαίσθηση του κακού",
+          "level": 0,
+          "maxLevel": 3,
+          "hasSkill": false
+        },
+        "diakritika_xorkia": {
+          "name": "Διακριτικά ξόρκια",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "diariktis": {
+          "name": "Διαρρήκτης",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "dromeas": {
+          "name": "Δρομέας",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "eidikeysi_sta_opla": {
+          "name": "Ειδίκευση στα όπλα",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "ektelestis": {
+          "name": "Εκτελεστής",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "ektropi_vlimaton": {
+          "name": "Εκτροπή βλημάτων",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "elafroxeris": {
+          "name": "Ελαφροχέρης",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "empsyxotiko_kalesma": {
+          "name": "Εμψυχωτικό κάλεσμα",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "enstiktodis_apofygi": {
+          "name": "Ενστικτώδης αποφυγή",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "entopismos_pagidon": {
+          "name": "Εντοπισμός παγίδων",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "eraldiki": {
+          "name": "Εραλδική",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "ereynitis": {
+          "name": "Ερευνητής",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "thalassolykos": {
+          "name": "Θαλασσόλυκος",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "therapeftis": {
+          "name": "Θεραπευτής",
+          "level": 0,
+          "maxLevel": 2,
+          "hasSkill": false
+        },
+        "thirioдomastis": {
+          "name": "Θηριοδαμαστής",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "thorakisi": {
+          "name": "Θωράκιση",
+          "level": 0,
+          "maxLevel": 3,
+          "hasSkill": false
+        },
+        "ippeas": {
+          "name": "Ιππέας",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "efippos_maxitis": {
+          "name": "Έφιππος μαχητής",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "ippotoxotis": {
+          "name": "Ιπποτοξότης",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "podopatima": {
+          "name": "Ποδοπάτημα",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "romalea_eformisi": {
+          "name": "Ρωμαλέα εφόρμηση",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "ixnilatis": {
+          "name": "Ιχνηλάτης",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "kallitexnis": {
+          "name": "Καλλιτέχνης",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "katastreofeas": {
+          "name": "Καταστροφέας",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "katoikos_toy_dasoys": {
+          "name": "Κάτοικος του δάσους",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "kolymvitis": {
+          "name": "Κολυμβητής",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "kynigos": {
+          "name": "Κυνηγός",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "lagokeimomenos": {
+          "name": "Λαγοκοιμώμενος",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "leontokardos": {
+          "name": "Λεοντόκαρδος",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "menomenos": {
+          "name": "Μαινόμενος",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "miхaneytis": {
+          "name": "Μηχανευτής",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "xorkia_maxis": {
+          "name": "Ξόρκια μάχης",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "odoiporos": {
+          "name": "Οδοιπόρος",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "oxeia_akoi": {
+          "name": "Οξεία ακοή",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "opla": {
+          "name": "Όπλα",
+          "level": 0,
+          "maxLevel": 3,
+          "hasSkill": false
+        },
+        "ormitikos": {
+          "name": "Ορμητικός",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "polemiki_iaxi": {
+          "name": "Πολεμική ιαχή",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "pote_aoplos": {
+          "name": "Ποτέ άοπλος",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "pote_ligostos": {
+          "name": "Ποτέ λιγοστός",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "proesthisi_kindynoy": {
+          "name": "Προαίσθηση κινδύνου",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "sakatema": {
+          "name": "Σακάτεμα",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "sveltos": {
+          "name": "Σβέλτος",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "sigoyro_simadi": {
+          "name": "Σίγουρο σημάδι",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "siderenia_lavi": {
+          "name": "Σιδερένια λαβή",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "siopira_xorkia": {
+          "name": "Σιωπηρά ξόρκια",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "sklirοtraxilos": {
+          "name": "Σκληροτράχηλος",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "stoixeiaki_kataktisi": {
+          "name": "Στοιχειακή κατάκτηση",
+          "level": 0,
+          "maxLevel": 2,
+          "hasSkill": false
+        },
+        "stragalistis": {
+          "name": "Στραγγαλιστής",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "syntriptiki_lavi": {
+          "name": "Συντριπτική λαβή",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "sfageas": {
+          "name": "Σφαγέας",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "sxoinovatis": {
+          "name": "Σχοινοβάτης",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "somatofylakas": {
+          "name": "Σωματοφύλακας",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "texnitis": {
+          "name": "Τεχνίτης",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "tyranniki_paroysia": {
+          "name": "Τυραννική παρουσία",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "tyflos_maxitis": {
+          "name": "Τυφλός μαχητής",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "ypoyли_epithesi": {
+          "name": "Ύπουλη επίθεση",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "ystati_praxi": {
+          "name": "Ύστατη πράξη",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "filos_ton_zoon": {
+          "name": "Φίλος των ζώων",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        },
+        "xoris_ixni": {
+          "name": "Χωρίς ίχνη",
+          "level": 0,
+          "maxLevel": 1,
+          "hasSkill": false
+        }
+      },
+      "equipment": {
+        "quickItems": [
+          {"name": "", "img": "icons/svg/item-bag.svg", "id": "", "type": ""},
+          {"name": "", "img": "icons/svg/item-bag.svg", "id": "", "type": ""},
+          {"name": "", "img": "icons/svg/item-bag.svg", "id": "", "type": ""},
+          {"name": "", "img": "icons/svg/item-bag.svg", "id": "", "type": ""},
+          {"name": "", "img": "icons/svg/item-bag.svg", "id": "", "type": ""},
+          {"name": "", "img": "icons/svg/item-bag.svg", "id": "", "type": ""},
+          {"name": "", "img": "icons/svg/item-bag.svg", "id": "", "type": ""},
+          {"name": "", "img": "icons/svg/item-bag.svg", "id": "", "type": ""}
+        ],
+        "slots": {
+          "head": {"name": "", "img": "icons/svg/item-bag.svg", "id": "", "type": ""},
+          "torso": {"name": "", "img": "icons/svg/item-bag.svg", "id": "", "type": ""},
+          "shield": {"name": "", "img": "icons/svg/item-bag.svg", "id": "", "type": ""},
+          "cloak": {"name": "", "img": "icons/svg/item-bag.svg", "id": "", "type": ""},
+          "belt": {"name": "", "img": "icons/svg/item-bag.svg", "id": "", "type": ""},
+          "gloves": {"name": "", "img": "icons/svg/item-bag.svg", "id": "", "type": ""},
+          "boots": {"name": "", "img": "icons/svg/item-bag.svg", "id": "", "type": ""},
+          "necklace": {"name": "", "img": "icons/svg/item-bag.svg", "id": "", "type": ""},
+          "ringLeft": {"name": "", "img": "icons/svg/item-bag.svg", "id": "", "type": ""},
+          "ringRight": {"name": "", "img": "icons/svg/item-bag.svg", "id": "", "type": ""}
+        },
+        "money": "",
+        "totalWeight": 0,
+        "miscItem1": "", "miscWeight1": "",
+        "miscItem2": "", "miscWeight2": "",
+        "miscItem3": "", "miscWeight3": "",
+        "miscItem4": "", "miscWeight4": "",
+        "miscItem5": "", "miscWeight5": "",
+        "miscItem6": "", "miscWeight6": "",
+        "miscItem7": "", "miscWeight7": "",
+        "miscItem8": "", "miscWeight8": "",
+        "miscItem9": "", "miscWeight9": "",
+        "miscItem10": "", "miscWeight10": "",
+        "miscItem11": "", "miscWeight11": "",
+        "miscItem12": "", "miscWeight12": "",
+        "miscItem13": "", "miscWeight13": "",
+        "miscItem14": "", "miscWeight14": "",
+        "miscItem15": "", "miscWeight15": "",
+        "miscItem16": "", "miscWeight16": "",
+        "miscItem17": "", "miscWeight17": "",
+        "miscItem18": "", "miscWeight18": "",
+        "miscItem19": "", "miscWeight19": "",
+        "miscItem20": "", "miscWeight20": ""
+      }
+    },
+    "container": {
+      "templates": ["base"],
+      "miscellaneous": {
+        "items": []
+      }
+    }
+  },
+  "Item": {
+    "types": ["weapon", "armor", "equipment", "ammunition", "miscellaneous", "skill", "spell"],
+    "templates": {
+      "base": {
+        "description": "",
+        "weight": 0,
+        "price": {
+          "value": 0,
+          "denomination": "gp"
+        }
+      },
+      "activatedEffect": {
+        "activation": {
+          "type": "",
+          "cost": 0,
+          "condition": ""
+        },
+        "duration": {
+          "value": null,
+          "units": ""
+        },
+        "target": {
+          "value": null,
+          "width": null,
+          "units": "",
+          "type": ""
+        },
+        "range": {
+          "value": null,
+          "long": null,
+          "units": ""
+        }
+      },
+      "other": {
+        "ignoreDexterityInDamage": false,
+        "cannotMove": false,
+        "ignoreMeleeCoefficient": false,
+        "ignoreRangedCoefficient": false,
+        "ignoreShieldCoefficient": false
+      }
+    },
+    "weapon": {
+      "templates": ["base"],
+      "weaponType": "",
+      "damageType": "tomi",
+      "damage": {
+        "coefficient": 0,
+        "bonus": 0
+      },
+      "attack": {
+        "bonus": 0
+      },
+      "ability": "dyn",
+      "range": {
+        "short": 0,
+        "long": 0,
+        "units": "m",
+        "text": "",
+        "multiplier": 0,
+        "fixed": 0
+      },
+      "strength": 0,
+      "properties": {},
+      "proficient": false,
+      "showOnToken": false
+    },
+    "armor": {
+      "templates": ["base"],
+      "armorType": "light",
+      "resistances": {
+        "diatrisi": 0,
+        "kroysi": 0,
+        "tomi": 0,
+        "keravnos": 0,
+        "oxy": 0,
+        "fotia": 0,
+        "psyxos": 0,
+        "synthlipsi": 0
+      },
+      "penalty": 0,
+      "equipped": false
+    },
+    "equipment": {
+      "templates": ["base", "activatedEffect"],
+      "equipped": false,
+      "quantity": 1
+    },
+    "ammunition": {
+      "templates": ["base"],
+      "quantity": 1,
+      "showOnToken": false
+    },
+    "miscellaneous": {
+      "templates": ["base", "activatedEffect"],
+      "quantity": 1,
+      "showOnToken": false
+    },
+    "skill": {
+      "description": "",
+      "level": 0,
+      "maxLevel": 3,
+      "experienceCost": 0,
+      "requirements": ""
+    },
+    "spell": {
+      "templates": ["base"],
+      "level": 1,
+      "school": "",
+      "elements": {
+        "air": false,
+        "earth": false,
+        "water": false,
+        "fire": false
+      },
+      "energy": {
+        "type": "attack",
+        "custom": ""
+      },
+      "range": {
+        "type": "personal",
+        "custom": ""
+      },
+      "area": {
+        "type": "none",
+        "custom": ""
+      },
+      "duration": {
+        "type": "instant",
+        "custom": ""
+      },
+      "save": {
+        "type": "none",
+        "custom": ""
+      }
+    }
+  }
+}

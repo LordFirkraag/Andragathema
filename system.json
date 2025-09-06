@@ -1,0 +1,41 @@
+{
+  "id": "andragathima",
+  "title": "ANDRAGATHEMA",
+  "description": "Greek Fantasy RPG System for FoundryVTT",
+  "version": "1.04",
+  "url": "https://andragathema.blogspot.com/",
+  "compatibility": {
+    "minimum": "12",
+    "verified": "13"
+  },
+  "authors": [{
+    "name": "LordFirkraag",
+    "flags": {}
+  }],
+  "media": [{
+    "type": "icon",
+    "url": "assets/system-icon.png"
+  }],
+  "esmodules": ["module/andragathima.mjs"],
+  "styles": ["css/andragathima.css"],
+  "languages": [
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.json"
+    },
+    {
+      "lang": "el",
+      "name": "Ελληνικά",
+      "path": "lang/el.json"
+    }
+  ],
+  "packs": [],
+  "grid": {
+    "distance": 1,
+    "units": "m"
+  },
+  "primaryTokenAttribute": null,
+  "secondaryTokenAttribute": null,
+  "background": "systems/andragathima/assets/system-icon.png"
+}

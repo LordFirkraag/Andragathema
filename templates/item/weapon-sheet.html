@@ -1,0 +1,163 @@
+<form class="{{cssClass}} andragathima flexcol" autocomplete="off">
+
+  {{!-- Sheet Header --}}
+  <header class="sheet-header">
+    <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}" height="64" width="64"/>
+    <div class="header-fields">
+      <h1 class="charname">
+        <input name="name" type="text" value="{{item.name}}" placeholder="{{localize 'ANDRAGATHIMA.ItemName'}}"/>
+      </h1>
+      <div class="item-subtitle">{{localize 'ANDRAGATHIMA.ItemTypeWeapon'}}</div>
+    </div>
+  </header>
+
+  {{!-- Sheet Body --}}
+  <section class="sheet-body">
+    <div class="weapon-details">
+      
+      {{!-- Weapon Properties --}}
+      <div class="weapon-properties">
+        <div class="info-section">
+          
+          <table class="weapon-properties-table">
+            <tr>
+              <td><label>{{localize 'ANDRAGATHIMA.Cost'}}:</label></td>
+              <td><input type="number" name="system.price.value" value="{{system.price.value}}" data-dtype="Number" step="0.01"/></td>
+              <td><span class="currency-symbol">Ӿ</span></td>
+            </tr>
+            <tr>
+              <td><label>{{localize 'ANDRAGATHIMA.Weight'}}:</label></td>
+              <td><input type="number" name="system.weight" value="{{system.weight}}" data-dtype="Number" step="0.1"/></td>
+              <td>kg</td>
+            </tr>
+            <tr>
+              <td><label>{{localize 'ANDRAGATHIMA.Strength'}}:</label></td>
+              <td><input type="number" name="system.strength" value="{{system.strength}}" data-dtype="Number"/></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td><label>{{localize 'ANDRAGATHIMA.DamageCoefficient'}}:</label></td>
+              <td><input type="number" name="system.damage.coefficient" value="{{system.damage.coefficient}}" data-dtype="Number"/></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td><label>{{localize 'ANDRAGATHIMA.Ability'}}:</label></td>
+              <td>
+                <select name="system.ability">
+                  <option value="dyn" {{#if (eq system.ability "dyn")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.AbilityDyn'}}</option>
+                  <option value="epi" {{#if (eq system.ability "epi")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.AbilityEpi'}}</option>
+                  <option value="dyn_epi" {{#if (eq system.ability "dyn_epi")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.AbilityDynEpi'}}</option>
+                </select>
+              </td>
+              <td></td>
+            </tr>
+            <tr>
+              <td><label>{{localize 'ANDRAGATHIMA.DamageType'}}:</label></td>
+              <td>
+                <select name="system.damageType">
+                  <option value="diatrisi" {{#if (eq system.damageType "diatrisi")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.DamageDiatrisi'}}</option>
+                  <option value="kroysi" {{#if (eq system.damageType "kroysi")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.DamageKroysi'}}</option>
+                  <option value="tomi" {{#if (eq system.damageType "tomi")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.DamageTomi'}}</option>
+                  <option value="diatrisi_kroysi" {{#if (eq system.damageType "diatrisi_kroysi")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.DamageDiatrisiKroysi'}}</option>
+                  <option value="diatrisi_tomi" {{#if (eq system.damageType "diatrisi_tomi")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.DamageDiatrisiTomi'}}</option>
+                  <option value="kroysi_tomi" {{#if (eq system.damageType "kroysi_tomi")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.DamageKroysiTomi'}}</option>
+                </select>
+              </td>
+              <td></td>
+            </tr>
+            <tr>
+              <td><label>{{localize 'ANDRAGATHIMA.Range'}}:</label></td>
+              <td>
+                × <input type="number" name="system.range.multiplier" value="{{system.range.multiplier}}" style="width: 60px;" data-dtype="Number"/>
+                {{localize 'ANDRAGATHIMA.Or'}} <input type="number" name="system.range.fixed" value="{{system.range.fixed}}" style="width: 60px;" data-dtype="Number"/> m
+              </td>
+              <td></td>
+            </tr>
+            <tr>
+              <td><label>{{localize 'ANDRAGATHIMA.WeaponType'}}:</label></td>
+              <td>
+                <select name="system.weaponType">
+                  <option value="">{{localize 'ANDRAGATHIMA.None'}}...</option>
+                  <option value="aspida_varia" {{#if (eq system.weaponType "aspida_varia")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.WeaponTypeAspida'}}</option>
+                  <option value="vallistra" {{#if (eq system.weaponType "vallistra")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.WeaponTypeVallistra'}}</option>
+                  <option value="dory" {{#if (eq system.weaponType "dory")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.WeaponTypeDory'}}</option>
+                  <option value="drepani" {{#if (eq system.weaponType "drepani")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.WeaponTypeDrepani'}}</option>
+                  <option value="longi" {{#if (eq system.weaponType "longi")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.WeaponTypeLongi'}}</option>
+                  <option value="macheri" {{#if (eq system.weaponType "macheri")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.WeaponTypeMacheri'}}</option>
+                  <option value="mastigio" {{#if (eq system.weaponType "mastigio")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.WeaponTypeMastigio'}}</option>
+                  <option value="pyrovolo" {{#if (eq system.weaponType "pyrovolo")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.WeaponTypePyrovolo'}}</option>
+                  <option value="ravdi" {{#if (eq system.weaponType "ravdi")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.WeaponTypeRavdi'}}</option>
+                  <option value="riptari" {{#if (eq system.weaponType "riptari")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.WeaponTypeRiptari'}}</option>
+                  <option value="ropalo" {{#if (eq system.weaponType "ropalo")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.WeaponTypeRopalo'}}</option>
+                  <option value="sfendoni" {{#if (eq system.weaponType "sfendoni")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.WeaponTypeSfendoni'}}</option>
+                  <option value="spathi" {{#if (eq system.weaponType "spathi")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.WeaponTypeSpathi'}}</option>
+                  <option value="toxo" {{#if (eq system.weaponType "toxo")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.WeaponTypeToxo'}}</option>
+                  <option value="tsekoiri" {{#if (eq system.weaponType "tsekoiri")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.WeaponTypeTsekoiri'}}</option>
+                  <option value="frageli" {{#if (eq system.weaponType "frageli")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.WeaponTypeFrageli'}}</option>
+                  <option value="autosxedio" {{#if (eq system.weaponType "autosxedio")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.WeaponTypeAutosxedio'}}</option>
+                  <option value="grothies" {{#if (eq system.weaponType "grothies")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.WeaponTypeGrothies'}}</option>
+                </select>
+              </td>
+              <td></td>
+            </tr>
+            <tr>
+              <td><label>{{localize 'ANDRAGATHIMA.LightWeapon'}}</label></td>
+              <td><input type="checkbox" name="system.isLight" {{#if system.isLight}}checked{{/if}}/></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td><label>{{localize 'ANDRAGATHIMA.RangedWeapon'}}</label></td>
+              <td><input type="checkbox" name="system.isRanged" {{#if system.isRanged}}checked{{/if}}/></td>
+              <td></td>
+            </tr>
+          </table>
+        </div>
+      </div>
+
+      {{!-- Effects Grid --}}
+      <div class="item-effects-section">
+        <div class="effects-grid">
+          {{#each item.effects as |effect|}}
+            <div class="effect-slot has-effect {{#if effect.disabled}}disabled{{/if}}" 
+                 data-effect-id="{{effect.id}}" 
+                 title="{{effect.tooltip}}">
+              <img src="{{effect.img}}" alt="{{effect.name}}" class="effect-image" width="36" height="36" draggable="true"/>
+              <button type="button" class="effect-delete" data-effect-id="{{effect.id}}" title="{{localize 'ANDRAGATHIMA.DeleteEffect'}}">×</button>
+            </div>
+          {{/each}}
+          
+          {{!-- Add Effect Slot --}}
+          <div class="effect-slot add-effect-slot" data-action="create" title="{{localize 'ANDRAGATHIMA.AddNewEffect'}}">
+            <i class="fas fa-plus"></i>
+          </div>
+        </div>
+        
+        {{!-- Equipment Effects Checkbox and Weapon Display Toggle --}}
+        <div class="equipment-effects-row">
+          <div class="equipment-effects-toggle">
+            <label class="checkbox">
+              {{localize 'ANDRAGATHIMA.Equipment'}}
+              <input type="checkbox" name="system.effectsRequireEquipment" {{#if (ne system.effectsRequireEquipment false)}}checked{{/if}}/>
+            </label>
+          </div>
+          
+          <div class="weapon-display-toggle">
+            <label class="checkbox">
+              {{localize 'ANDRAGATHIMA.EffectSheetShowOnToken'}}
+              <input type="checkbox" name="system.showOnToken" {{#if system.showOnToken}}checked{{/if}}/>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      {{!-- Description --}}
+      <div class="description-section">
+        <h3>{{localize 'ANDRAGATHIMA.DescriptionNotes'}}</h3>
+        <div class="form-group stacked description-text">
+          <textarea name="system.description" rows="6">{{system.description}}</textarea>
+        </div>
+      </div>
+
+    </div>
+  </section>
+</form>

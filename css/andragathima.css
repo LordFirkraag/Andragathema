@@ -1,0 +1,4460 @@
+/* ΑΝΔΡΑΓΑΘΗΜΑ System Styles */
+
+@import url('../assets/albertus/style.css');
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&display=swap');
+
+/* Essential Foundry VTT Tab System CSS */
+.andragathima .sheet-body .tab {
+  display: none !important;
+}
+
+/* Tab System - All active tabs */
+.andragathima .sheet-body .tab.active {
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  box-sizing: border-box;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Vertical tabs navigation - cleaned up */
+
+:root {
+  /* Main color palette */
+  --andragathima-primary: #8B7355;
+  --andragathima-secondary: #D4AF37;
+  --andragathima-accent: #C19A6B;
+  --andragathima-gold: #c5b358;
+  --andragathima-bronze: #B87333;
+  
+  /* Background and text */
+  --andragathima-bg: #e4e1cd;
+  --andragathima-text: #4a1d0c;
+  --andragathima-title: #996527;
+  
+  /* Legacy colors (consider removing if unused) */
+  --andragathima-dark: #3E2F23;
+  --andragathima-light: #F4E8D0;
+  --andragathima-parchment: #F0E2C4;
+  --andragathima-ink: #2C1810;
+  
+  /* Status colors */
+  --andragathima-penalty-red: #ef3129;
+}
+
+/* Ammunition Quantity Display */
+.andragathima.container .ammunition-quantity-overlay,
+.andragathima .ammunition-quantity-overlay {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  background: transparent;
+  color: var(--andragathima-bg);
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+  font-weight: normal;
+  padding: 2px 6px;
+  line-height: 1;
+  min-width: 18px;
+  text-align: center;
+  z-index: 999;
+  pointer-events: none;
+  text-shadow: 
+    -1px -1px 0 #000,  
+     1px -1px 0 #000,
+    -1px  1px 0 #000,
+     1px  1px 0 #000;
+  /* Ensure it doesn't get affected by flex properties */
+  flex: none;
+}
+
+/* Specific positioning for quick slots (inside item-image-container with flex) */
+.andragathima .quick-items .item-slot .item-image-container .ammunition-quantity-overlay {
+  bottom: 1px;
+  right: 1px;
+  font-size: 11px;
+  padding: 2px 4px;
+  min-width: 16px;
+  /* Ensure visibility in flexbox */
+  position: absolute !important;
+  z-index: 1000 !important;
+}
+
+/* Specific positioning for misc equipment slots (inside item-image-container) */
+.andragathima .misc-equipment-slot .item-image-container .ammunition-quantity-overlay {
+  bottom: 1px;
+  right: 1px;
+  font-size: 11px;
+  padding: 2px 4px;
+  min-width: 16px;
+}
+
+/* Specific positioning for equipment slots (inside item-image-container) */
+.andragathima .equipment-slots .item-slot .item-image-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.andragathima .equipment-slots .item-slot .item-image-container .ammunition-quantity-overlay {
+  bottom: 2px;
+  right: 2px;
+  font-size: 11px;
+  padding: 2px 5px;
+  min-width: 16px;
+}
+
+.andragathima .item-image-container {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+  height: 100%;
+  object-fit: scale-down;
+}
+
+/* Ensure proper positioning for quick slots */
+.andragathima .item-slot .item-image-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  flex-wrap: nowrap;
+}
+
+
+.andragathima .item-slot .item-image-container img {
+  flex-shrink: 0;
+}
+
+.andragathima .ammunition-properties-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 10px;
+  margin-top: 10px;
+  background: transparent !important;
+  border: none !important;
+}
+
+.andragathima .ammunition-properties-table tr {
+  background: transparent !important;
+  border: none !important;
+}
+
+.andragathima .ammunition-properties-table td {
+  padding: 6px 8px;
+  vertical-align: middle;
+  background: transparent !important;
+  border: none !important;
+}
+
+.andragathima .ammunition-properties-table td:first-child {
+  width: 30%;
+  font-weight: normal;
+}
+
+.andragathima .ammunition-properties-table td:nth-child(2) {
+  width: 60%;
+}
+
+.andragathima .ammunition-properties-table td:last-child {
+  width: 10%;
+  text-align: left;
+  font-size: 0.9em;
+  color: var(--andragathima-title);
+}
+
+.andragathima .ammunition-properties-table label {
+  font-weight: normal;
+  color: var(--andragathima-title);
+  font-family: 'Albertus Nova', 'Trajan Pro', 'Optima', 'Cinzel', Georgia, serif;
+  font-size: 0.9em;
+}
+
+.andragathima .ammunition-properties-table input[type="text"],
+.andragathima .ammunition-properties-table input[type="number"],
+.andragathima .ammunition-properties-table select {
+  width: 100%;
+  height: 28px;
+  padding: 4px 8px;
+  background: transparent;
+  border: 1px solid var(--andragathima-accent);
+  border-radius: 3px;
+  font-family: inherit;
+  font-size: 0.9em;
+}
+
+/* Ammunition sheet specific spacing */
+.andragathima .ammunition-details {
+  padding: 15px;
+}
+
+.andragathima .ammunition-properties .info-section:first-child {
+  margin-top: 0;
+}
+
+/* Ensure ammunition table is completely transparent */
+.andragathima .ammunition-properties-table,
+.andragathima .ammunition-properties-table tbody,
+.andragathima .ammunition-properties-table thead,
+.andragathima .ammunition-properties-table tfoot {
+  background: transparent !important;
+  border: none !important;
+  border-top: none !important;
+  border-bottom: none !important;
+  border-left: none !important;
+  border-right: none !important;
+}
+
+.andragathima .ammunition-properties-table tr:nth-child(odd),
+.andragathima .ammunition-properties-table tr:nth-child(even) {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+
+/* Custom Checkbox Styling for Weapon Sheet - Match Text Fields */
+.andragathima .weapon-properties-table input[type="checkbox"],
+.andragathima .checkbox-container input[type="checkbox"],
+.andragathima.item .equipment-effects-toggle input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  width: 16px;
+  height: 16px;
+  min-width: 16px;
+  min-height: 16px;
+  max-width: 16px;
+  max-height: 16px;
+  background: transparent;
+  border: 1px solid var(--andragathima-accent);
+  border-radius: 3px;
+  cursor: pointer;
+  position: relative;
+  margin: 0;
+  padding: 0;
+  vertical-align: middle;
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+
+.andragathima .weapon-properties-table input[type="checkbox"]:checked::after,
+.andragathima .checkbox-container input[type="checkbox"]:checked::after,
+.andragathima.item .equipment-effects-toggle input[type="checkbox"]:checked::after {
+  content: "✓";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--andragathima-text);
+  font-size: 12px;
+  font-weight: normal;
+  line-height: 1;
+}
+
+/* Clean Background */
+.andragathima .window-content {
+  background-image: url('../assets/backgroundparchment.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  color: var(--andragathima-text);
+  font-family: 'Palatino Linotype', 'Book Antiqua', Palatino, serif;
+}
+
+/* Instant Tooltips */
+.andragathima .item-tooltip {
+  transition-delay: 0ms !important;
+  animation-delay: 0ms !important;
+}
+
+.andragathima [title] {
+  position: relative;
+}
+
+/* Override Foundry's default tooltip delay */
+body .tooltip {
+  animation-delay: 0ms !important;
+  transition-delay: 0ms !important;
+}
+
+/* Custom rich tooltip styling */
+.andragathima-rich-tooltip {
+  background: var(--andragathima-parchment);
+  border: 2px solid var(--andragathima-bronze);
+  border-radius: 5px;
+  padding: 8px 12px;
+  font-family: 'Palatino Linotype', 'Book Antiqua', Palatino, serif;
+  color: var(--andragathima-text);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  max-width: 300px;
+  z-index: 9999;
+}
+
+.andragathima-rich-tooltip .item-name {
+  font-family: 'Albertus Nova', 'Trajan Pro', 'Optima', 'Cinzel', Georgia, serif;
+  font-weight: normal;
+  color: var(--andragathima-title);
+  margin-bottom: 4px;
+}
+
+.andragathima-rich-tooltip .item-type {
+  font-style: italic;
+  color: var(--andragathima-accent);
+  font-size: 0.9em;
+  margin-bottom: 6px;
+}
+
+.andragathima-rich-tooltip .item-details {
+  font-size: 0.85em;
+  line-height: 1.3;
+}
+
+.andragathima-rich-tooltip .item-property {
+  margin: 2px 0;
+}
+
+.andragathima-rich-tooltip .property-label {
+  font-weight: normal;
+  color: var(--andragathima-dark);
+}
+
+/* Headers with Clean Style */
+.andragathima h1,
+.andragathima h2,
+.andragathima h3,
+.andragathima h4 {
+  font-family: 'Albertus Nova', 'Trajan Pro', 'Optima', 'Cinzel', Georgia, serif;
+  color: var(--andragathima-title);
+  text-shadow: none;
+  border-bottom: 1px solid var(--andragathima-text);
+  background: linear-gradient(to right, var(--andragathima-text) 0%, var(--andragathima-text) 90%, transparent 100%);
+  background-repeat: no-repeat;
+  background-size: 100% 1px;
+  background-position: bottom;
+  border-bottom: none;
+  padding-bottom: 4px;
+  margin-bottom: 8px;
+}
+
+/* Sheet Header */
+.andragathima .sheet-header {
+  background: transparent;
+  color: var(--andragathima-text);
+  padding: 8px 15px;
+  border: none;
+  height: auto;
+  min-height: 60px;
+  max-height: 80px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.andragathima .profile-img {
+  border: none;
+  object-fit: contain;
+}
+
+.andragathima .sheet-header h1 {
+  color: var(--andragathima-title);
+  border: none;
+  text-shadow: none;
+  font-family: 'Albertus Nova', 'Trajan Pro', 'Optima', 'Cinzel', Georgia, serif;
+  font-size: 1.8em;
+}
+
+/* Character Name Field */
+.andragathima .char-name,
+.andragathima .sheet-header input[name="name"] {
+  font-family: 'Albertus Nova', 'Trajan Pro', 'Optima', 'Cinzel', Georgia, serif;
+  font-size: 1.5em;
+  font-weight: normal;
+  background: transparent;
+  border: none;
+  box-shadow: inset 0 0 0px #ffffff !important;
+  color: var(--andragathima-title);
+  text-align: center;
+  padding: 1px 20px !important;
+  margin: 0px !important;
+  height: 1.4em !important;
+  width: 100% !important;
+}
+
+/* Item sheet name field - same styling as effect sheets */
+.andragathima.item .sheet-header input[name="name"] {
+  font-size: 1.2em !important;
+}
+
+.andragathima .sheet-header input[name="name"]:focus {
+  outline: none;
+  border-bottom-color: var(--andragathima-text);
+}
+
+/* Header other inputs */
+.andragathima .sheet-header select,
+.andragathima .sheet-header input[type="number"] {
+  background: transparent;
+  border: 1px solid var(--andragathima-title);
+  border-radius: 3px;
+  color: var(--andragathima-text);
+  font-family: 'Palatino Linotype', serif;
+  padding: 3px 8px;
+}
+
+.andragathima .sheet-header select:focus,
+.andragathima .sheet-header input[type="number"]:focus {
+  outline: none;
+  border-color: var(--andragathima-text);
+}
+
+.andragathima .sheet-header label {
+  color: var(--andragathima-title);
+  font-family: 'Albertus Nova', 'Trajan Pro', 'Optima', 'Cinzel', Georgia, serif;
+  font-weight: normal;
+  font-size: 0.9em;
+}
+
+/* Header Character Info */
+.andragathima .header-character-info {
+  margin: 0 0 10px 0;
+  text-align: center;
+  font-family: 'Albertus Nova', serif;
+  color: var(--andragathima-text);
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+/* Sheet Layout with Vertical Tabs */
+.andragathima .sheet-layout {
+  display: flex;
+  height: auto !important;
+  max-height: auto !important;
+}
+
+/* Vertical Tabs */
+.andragathima .vertical-tabs {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px 0px 0 0px;
+  background: transparent;
+  width: 70px;
+  min-width: 70px;
+  flex-shrink: 0;
+  justify-content: flex-start;
+  align-items: center;
+  overflow-y: hidden !important;
+  height: auto !important;
+}
+
+.andragathima .vertical-tabs .item.tab-btn {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  margin: 5px 0px 5px;
+  padding: 0px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  border-radius: 4px;
+  transition: none;
+  transform: none;
+}
+
+.andragathima .vertical-tabs .item.tab-btn img {
+  width: 48px;
+  height: 48px;
+  border: none;
+  box-shadow: none;
+}
+
+.andragathima .vertical-tabs .item.tab-btn:hover img {
+  filter: brightness(120%);
+}
+
+.andragathima .vertical-tabs .item.tab-btn.active img {
+  filter: drop-shadow(0 0 4px var(--andragathima-secondary)) brightness(150%);
+}
+
+/* Sheet Body with Vertical Tabs */
+.andragathima .sheet-body {
+  flex: 1;
+  overflow: hidden;
+  padding: 10px;
+  height: 100%;
+  max-height: 100%;
+}
+
+/* Overview Layout - 3 Columns */
+.andragathima .overview-layout {
+  display: grid;
+  grid-template-columns: 180px 200px 1fr;
+  gap: 15px;
+  height: auto;
+  min-height: 400px;
+  padding: 0;
+}
+
+/* Left Column - Abilities */
+.andragathima .left-column {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.andragathima .abilities-column {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  height: 100%;
+  justify-content: flex-start;
+  padding-top: 10px;
+}
+
+.andragathima .ability-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  background: transparent;
+  margin-bottom: 4px;
+}
+
+.andragathima .ability-item.rollable {
+  cursor: pointer;
+  border-radius: 3px;
+  transition: background-color 0.2s ease;
+}
+
+/* Rollable spans and elements - only for right column stats */
+.andragathima .character-stats .rollable {
+  cursor: pointer;
+  border-radius: 3px;
+  transition: background-color 0.2s ease;
+  padding: 2px 4px;
+  margin: -2px -4px;
+}
+
+.andragathima .character-stats .stat-line.rollable:hover {
+  background: rgba(139, 115, 85, 0.1);
+}
+
+.andragathima .ability-name {
+  font-family: 'Albertus Nova', 'Trajan Pro', 'Optima', 'Cinzel', Georgia, serif;
+  font-weight: normal;
+  color: var(--andragathima-title);
+  font-size: 1.05em;
+  flex: 1;
+}
+
+.andragathima .ability-score {
+  font-size: 1.4em;
+  font-weight: normal;
+  color: var(--andragathima-text);
+  line-height: 1;
+  min-width: 28px;
+  text-align: center;
+}
+
+.andragathima .ability-mod {
+  font-size: 0.9em;
+  color: var(--andragathima-text);
+  font-weight: 400;
+  min-width: 32px;
+  text-align: center;
+}
+
+.andragathima .ability-divider {
+  height: 1px;
+  background: var(--andragathima-title);
+  margin: 12px 8px 8px 8px;
+  opacity: 0.6;
+}
+
+/* Center Column - Character Art */
+.andragathima .center-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  height: 100%;
+  padding-top: 10px;
+}
+
+.andragathima .character-art {
+  width: 210px;
+  height: 330px;
+  min-height: 280px;
+  max-height: 330px;
+  position: relative;
+  overflow: hidden;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+}
+
+
+.andragathima .character-art img {
+  width: 100%;
+  height: 100%;
+  object-fit: scale-down;
+  position: relative;
+  z-index: 1;
+  border: none;
+}
+
+/* Character Info below portrait */
+.andragathima .character-info {
+  margin-top: 15px;
+  text-align: center;
+  font-family: 'Albertus Nova', serif;
+  color: var(--andragathima-text);
+}
+
+.andragathima .character-race {
+  font-size: 16px;
+  font-weight: normal;
+  margin-bottom: 8px;
+  color: var(--andragathima-title)!important;
+}
+
+.andragathima .character-race-input {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  font-size: 16px;
+  font-weight: normal;
+  color: var(--andragathima-title)!important;
+  text-align: center;
+  width: 100%;
+  padding: 2px 4px;
+  font-family: inherit;
+}
+
+.andragathima .character-race-input::placeholder {
+  color: var(--andragathima-title)!important;
+}
+
+.andragathima .character-experience,
+.andragathima .character-level {
+  font-size: 14px;
+  margin-bottom: 5px;
+}
+
+/* Right Column - Scrollable Frame */
+.andragathima .right-column {
+  height: 390px;
+  width: 100%;
+  min-width: 200px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+  min-height: 0;
+}
+
+.andragathima .right-column:before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--andragathima-title);
+  mask:
+    radial-gradient(12px at 12px 12px,#0000 calc(98% - 1px),#000 calc(100% - 1px) 98%,#0000) -12px -12px,
+    linear-gradient(90deg,#000 2px,#0000 0) -1px 50% /100% calc(100% - 24px + 1px) repeat-x,
+    linear-gradient(      #000 2px,#0000 0) 50% -1px/calc(100% - 24px + 1px) 100% repeat-y;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.andragathima .right-column:after {
+  content: "";
+  position: absolute;
+  inset: 2px;
+  background: #e4e1cd;
+  clip-path: polygon(
+    12px 0%, calc(100% - 12px) 0%, 
+    100% 12px, 100% calc(100% - 12px), 
+    calc(100% - 12px) 100%, 12px 100%, 
+    0% calc(100% - 12px), 0% 12px
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+.andragathima .character-stats {
+  background: transparent;
+  padding: 15px;
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  border: none;
+  border-radius: 0;
+  min-height: 0;
+  position: relative;
+  z-index: 2;
+  margin: 8px;
+}
+
+.andragathima .stat-line {
+  font-family: 'Palatino Linotype', serif;
+  color: var(--andragathima-text);
+  font-size: 0.95em;
+  line-height: 1.2;
+  margin-bottom: 4px;
+}
+
+.andragathima .stat-line strong {
+  color: var(--andragathima-title);
+  font-weight: normal;
+}
+
+.andragathima .stat-line.specialized-resistance {
+  font-weight: normal;
+  margin-bottom: 4px;
+  line-height: 1.2;
+  margin-left: 10px;
+}
+
+.andragathima .stat-line + .stat-line.specialized-resistance {
+  margin-top: 0px;
+}
+
+.andragathima .stat-line.specialized-resistance:first-of-type {
+  margin-top: -4px;
+}
+
+.andragathima .armor-penalty-text {
+  color: var(--andragathima-penalty-red) !important;
+}
+
+.andragathima .weapon-proficiency-penalty {
+  color: var(--andragathima-penalty-red) !important;
+}
+
+/* Points tab tables */
+.andragathima .abilities-table,
+.andragathima .saves-table,
+.andragathima .combat-table,
+.andragathima .skills-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 10px;
+}
+
+.andragathima .abilities-table td,
+.andragathima .saves-table td,
+.andragathima .combat-table td,
+.andragathima .skills-table td {
+  padding: 2px 4px;
+  border: 1px solid #ccc;
+  line-height: 1.0;
+}
+
+/* DISABLED alternating backgrounds for ALL tables */
+.andragathima .abilities-table tr:nth-child(even),
+.andragathima .saves-table tr:nth-child(even),
+.andragathima .combat-table tr:nth-child(even),
+.andragathima .magic-table tr:nth-child(even),
+.andragathima .skills-table tr:nth-child(even),
+.andragathima .race-table tr:nth-child(even) {
+  background-color: transparent !important;
+}
+
+.andragathima .abilities-table tr:nth-child(odd),
+.andragathima .saves-table tr:nth-child(odd),
+.andragathima .combat-table tr:nth-child(odd),
+.andragathima .magic-table tr:nth-child(odd),
+.andragathima .skills-table tr:nth-child(odd),
+.andragathima .race-table tr:nth-child(odd) {
+  background-color: transparent !important;
+}
+
+.andragathima .abilities-table td:first-child,
+.andragathima .saves-table td:first-child,
+.andragathima .combat-table td:first-child,
+.andragathima .skills-table td:first-child {
+  width: 10%;
+  text-align: left;
+  padding-left: 4px;
+}
+
+.andragathima .abilities-table td:nth-child(2),
+.andragathima .saves-table td:nth-child(2),
+.andragathima .combat-table td:nth-child(2),
+.andragathima .skills-table td:nth-child(2) {
+  width: 30%;
+  text-align: left;
+  padding-left: 4px;
+}
+
+.andragathima .abilities-table td:nth-child(3),
+.andragathima .saves-table td:nth-child(3),
+.andragathima .combat-table td:nth-child(3),
+.andragathima .skills-table td:nth-child(3) {
+  width: 10%;
+  text-align: left;
+  padding-left: 2px;
+}
+
+.andragathima .abilities-table td:nth-child(4),
+.andragathima .saves-table td:nth-child(4),
+.andragathima .combat-table td:nth-child(4),
+.andragathima .skills-table td:nth-child(4) {
+  width: 50%;
+  text-align: left;
+  padding-left: 8px;
+}
+
+/* Notes Tab */
+.andragathima .notes-section {
+  padding: 20px;
+  height: calc(100% - 40px);
+  overflow: visible;
+}
+
+.andragathima .notes-textarea {
+  width: 100%;
+  height: 100%;
+  min-height: 400px;
+  border: none;
+  background: transparent;
+  outline: none;
+  box-shadow: none;
+  resize: none;
+  font-family: 'Palatino Linotype', 'Book Antiqua', Palatino, serif;
+  font-size: 1em;
+  color: var(--andragathima-text);
+  line-height: 1.6;
+  padding: 0;
+  margin: 0;
+}
+
+.andragathima .stat-divider {
+  height: 1px;
+  background: var(--andragathima-title);
+  margin: 8px 0;
+  opacity: 0.4;
+}
+
+/* Saving Throws */
+.andragathima .saves {
+  display: flex;
+  justify-content: space-around;
+  padding: 10px 0;
+  margin: 10px 0;
+}
+
+.andragathima .save {
+  text-align: center;
+  padding: 8px 15px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.andragathima .save-label {
+  font-family: 'Albertus Nova', 'Trajan Pro', 'Optima', 'Cinzel', Georgia, serif;
+  color: var(--andragathima-title);
+  font-weight: normal;
+}
+
+.andragathima .save-value {
+  color: var(--andragathima-text);
+  font-weight: normal;
+}
+
+/* Combat Stats */
+.andragathima .combat-stats,
+.andragathima .combat-values {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  padding: 10px 0;
+  margin: 10px 0;
+}
+
+/* Defense Section */
+.andragathima .defense-section {
+  padding: 10px 0;
+  margin: 10px 0;
+}
+
+.andragathima .defense-content {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  padding: 15px 0;
+}
+
+.andragathima .defense-shield-area {
+  flex: 0 0 auto;
+}
+
+.andragathima .saves-area {
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.andragathima .saves-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+  width: 100%;
+}
+
+.andragathima .save-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 12px;
+  background: rgba(153, 101, 39, 0.1);
+  border: 1px solid var(--andragathima-title);
+  border-radius: 4px;
+}
+
+.andragathima .save-label {
+  font-family: 'Albertus Nova', 'Trajan Pro', 'Optima', 'Cinzel', Georgia, serif;
+  font-weight: normal;
+  color: var(--andragathima-title);
+  font-size: 0.9em;
+}
+
+.andragathima .save-value {
+  font-family: 'Albertus Nova', 'Trajan Pro', 'Optima', 'Cinzel', Georgia, serif;
+  font-weight: normal;
+  color: var(--andragathima-text);
+  font-size: 1.1em;
+}
+
+.andragathima .defense-shield {
+  position: relative;
+  width: 4em;
+  height: 4em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--andragathima-title);
+}
+
+.andragathima .defense-shield:before, 
+.andragathima .defense-shield:after {
+  content: "";
+  border-radius: 0;
+  border-top-right-radius: 100% 100%;
+  border-bottom-right-radius: 125% 100%;
+  width: 2.51em;
+  height: 2.4em;
+  transform-origin: bottom left;
+  position: absolute;
+  bottom: -42.5%;
+  background: var(--andragathima-title);
+}
+
+.andragathima .defense-shield:before {
+  transform: scale(1,1) translateX(2em) rotate(-20deg);
+}
+
+.andragathima .defense-shield:after {
+  transform: scale(-1,1) translateX(-2.51em) rotate(-20deg);
+}
+
+.andragathima .defense-value {
+  font-family: 'Albertus Nova', 'Trajan Pro', 'Optima', 'Cinzel', Georgia, serif;
+  font-size: 1.2em;
+  font-weight: normal;
+  color: var(--andragathima-bg);
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+
+.andragathima .combat-stat,
+.andragathima .stat-block {
+  padding: 8px;
+  background: transparent;
+  border: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.andragathima .combat-stat-label,
+.andragathima .stat-block label {
+  font-weight: normal;
+  color: var(--andragathima-title);
+  font-family: 'Albertus Nova', 'Trajan Pro', 'Optima', 'Cinzel', Georgia, serif;
+  font-size: 0.9em;
+}
+
+.andragathima .combat-stat-value,
+.andragathima .stat-value {
+  font-size: 1.2em;
+  font-weight: normal;
+  color: var(--andragathima-text);
+}
+
+/* Resistances */
+.andragathima .resistances {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  padding: 10px;
+  background: rgba(244, 232, 208, 0.5);
+  border: 1px solid var(--andragathima-accent);
+  border-radius: 5px;
+  margin: 10px 0;
+}
+
+.andragathima .resistance {
+  text-align: center;
+  padding: 5px;
+  background: var(--andragathima-light);
+  border: 1px solid var(--andragathima-accent);
+  border-radius: 3px;
+  font-size: 0.9em;
+}
+
+.andragathima .resistance-label {
+  font-size: 0.75em;
+  color: var(--andragathima-dark);
+  font-weight: normal;
+}
+
+.andragathima .resistance-value {
+  font-size: 1.1em;
+  font-weight: normal;
+  color: var(--andragathima-bronze);
+}
+
+/* Skills Section */
+.andragathima .skills-list {
+  padding: 10px 0;
+}
+
+.andragathima .skill-item {
+  padding: 8px 0;
+  margin: 3px 0;
+  background: transparent;
+  border: none;
+}
+
+.andragathima .skill-name {
+  color: var(--andragathima-text);
+  font-family: 'Palatino Linotype', serif;
+}
+
+.andragathima .skill-level {
+  color: var(--andragathima-title);
+  font-weight: normal;
+}
+
+/* Equipment Section */
+.andragathima .inventory {
+  padding: 10px;
+  background: rgba(240, 226, 196, 0.3);
+  border: 2px solid var(--andragathima-bronze);
+  border-radius: 5px;
+}
+
+.andragathima .item-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.andragathima .item {
+  padding: 8px;
+  margin: 5px 0;
+  background: var(--andragathima-light);
+  border: 1px solid var(--andragathima-accent);
+  border-radius: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all 0.3s ease;
+}
+
+.andragathima .item:hover {
+  background: rgba(212, 175, 55, 0.2);
+  transform: translateX(3px);
+}
+
+.andragathima .item-name {
+  font-weight: normal;
+  color: var(--andragathima-dark);
+}
+
+.andragathima .item-controls {
+  display: flex;
+  gap: 5px;
+}
+
+.andragathima .item-control {
+  cursor: pointer;
+  color: var(--andragathima-bronze);
+  transition: color 0.3s ease;
+}
+
+.andragathima .item-control:hover {
+  color: var(--andragathima-gold);
+}
+
+/* Buttons */
+.andragathima button {
+  background: linear-gradient(135deg, var(--andragathima-primary), var(--andragathima-bronze));
+  color: var(--andragathima-light);
+  border: 1px solid var(--andragathima-gold);
+  border-radius: 2px;
+  padding: 5px 10px;
+  font-weight: 900;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.andragathima button:hover {
+  filter: brightness(120%);
+}
+
+/* Input Fields */
+.andragathima input[type="text"],
+.andragathima input[type="number"] {
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid var(--andragathima-accent);
+  border-radius: 3px;
+  padding: 3px 5px;
+  color: var(--andragathima-dark);
+  font-family: 'Palatino Linotype', serif;
+}
+
+.andragathima input[type="text"]:focus,
+.andragathima input[type="number"]:focus,
+.andragathima select:focus {
+  outline: none;
+  border-color: var(--andragathima-gold);
+  box-shadow: 0 0 5px rgba(212, 175, 55, 0.5);
+  background: rgba(255, 255, 255, 0.9);
+}
+
+/* Scrollbar Styling */
+.andragathima ::-webkit-scrollbar {
+  width: 10px;
+}
+
+.andragathima ::-webkit-scrollbar-track {
+  background: var(--andragathima-parchment);
+  border: 1px solid var(--andragathima-accent);
+  border-radius: 5px;
+}
+
+.andragathima ::-webkit-scrollbar-thumb {
+  background: var(--andragathima-bronze);
+  border-radius: 5px;
+}
+
+.andragathima ::-webkit-scrollbar-thumb:hover {
+  background: var(--andragathima-gold);
+}
+
+/* Roll Dialog */
+.andragathima-roll-dialog {
+  background: var(--andragathima-parchment);
+  border: 2px solid var(--andragathima-gold);
+  border-radius: 10px;
+  padding: 15px;
+}
+
+.andragathima-roll-dialog h3 {
+  font-family: 'Cinzel', serif;
+  color: var(--andragathima-dark);
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+/* Chat Message Styling */
+.andragathima-chat-message {
+  background: var(--andragathima-parchment);
+  border: 1px solid var(--andragathima-bronze);
+  border-radius: 5px;
+  padding: 10px;
+  margin: 5px 0;
+}
+
+.andragathima-chat-message .message-header {
+  font-family: 'Cinzel', serif;
+  font-weight: normal;
+  color: var(--andragathima-dark);
+  border-bottom: 1px solid var(--andragathima-gold);
+  padding-bottom: 5px;
+  margin-bottom: 8px;
+}
+
+.andragathima-chat-message .dice-result {
+  font-size: 1.3em;
+  font-weight: normal;
+  text-align: center;
+  padding: 10px;
+  background: rgba(212, 175, 55, 0.1);
+  border: 1px solid var(--andragathima-gold);
+  border-radius: 5px;
+  margin: 5px 0;
+}
+
+.andragathima-chat-message .success {
+  color: #2e7d32;
+  background: rgba(46, 125, 50, 0.1);
+}
+
+.andragathima-chat-message .failure {
+  color: #c62828;
+  background: rgba(198, 40, 40, 0.1);
+}
+
+.andragathima-chat-message .critical {
+  color: var(--andragathima-gold);
+  text-shadow: 0 0 5px rgba(212, 175, 55, 0.8);
+  animation: glow 1.5s ease-in-out infinite;
+}
+
+@keyframes glow {
+  0%, 100% { text-shadow: 0 0 5px rgba(212, 175, 55, 0.8); }
+  50% { text-shadow: 0 0 15px rgba(212, 175, 55, 1); }
+}
+
+/* Small buttons for Points tab - Image Button Style */
+.andragathima .small-btn {
+  display: inline-block;
+  outline: none;
+  border: none;
+  width: 24px;
+  height: 24px;
+  margin: 0 2px;
+  padding: 0;
+  cursor: pointer;
+  background-size: 24px 24px;
+  background-repeat: no-repeat;
+  background-position: center;
+  text-indent: -9999px; /* Hide text */
+  font-size: 0; /* Hide text completely */
+}
+
+/* Plus button styles */
+.andragathima .small-btn:not([data-ability]):not([data-save]):not([data-combat]):not([data-magic]):not([data-skill]),
+.andragathima .ability-increase,
+.andragathima .save-increase,
+.andragathima .combat-increase, 
+.andragathima .magic-increase,
+.andragathima .skill-increase {
+  background-image: url('../assets/PlusBtn.png');
+}
+
+/* Minus button styles */
+.andragathima .ability-decrease,
+.andragathima .save-decrease,
+.andragathima .combat-decrease,
+.andragathima .magic-decrease,
+.andragathima .skill-decrease {
+  background-image: url('../assets/MinusBtn.png');
+}
+
+.andragathima .small-btn:focus {
+  outline: none;
+}
+
+.andragathima .small-btn:hover {
+  /* No hover effects - keep same appearance as default state */
+  background-size: 24px 24px !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+  border: none !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+/* Ensure hover states match the button types */
+.andragathima .ability-increase:hover,
+.andragathima .save-increase:hover,
+.andragathima .combat-increase:hover,
+.andragathima .magic-increase:hover,
+.andragathima .skill-increase:hover {
+  background-image: url('../assets/PlusBtn.png') !important;
+}
+
+.andragathima .ability-decrease:hover,
+.andragathima .save-decrease:hover,
+.andragathima .combat-decrease:hover,
+.andragathima .magic-decrease:hover,
+.andragathima .skill-decrease:hover {
+  background-image: url('../assets/MinusBtn.png') !important;
+}
+
+/* Plus button active/pressed styles - MUST come after hover styles */
+.andragathima .ability-increase:active,
+.andragathima .save-increase:active,
+.andragathima .combat-increase:active,
+.andragathima .magic-increase:active,
+.andragathima .skill-increase:active {
+  background-image: url('../assets/PlusBtnAct.png') !important;
+}
+
+/* Minus button active/pressed styles - MUST come after hover styles */
+.andragathima .ability-decrease:active,
+.andragathima .save-decrease:active,
+.andragathima .combat-decrease:active,
+.andragathima .magic-decrease:active,
+.andragathima .skill-decrease:active {
+  background-image: url('../assets/MinusBtnAct.png') !important;
+}
+
+/* Star images styling to prevent vertical alignment issues */
+.andragathima .skill-star {
+  width: 24px !important;
+  height: 24px !important;
+  vertical-align: -7px !important;
+  border: none !important;
+  display: inline-block !important;
+  margin: 0 1px 0 2px !important;
+  padding: 0 !important;
+}
+
+/* Ensure skills table rows have consistent line height */
+.andragathima .skills-table td {
+  vertical-align: middle !important;
+  line-height: 1.2 !important;
+}
+
+/* Button containers */
+.andragathima .ability-buttons,
+.andragathima .save-buttons,
+.andragathima .combat-buttons,
+.andragathima .skill-buttons {
+  display: inline-flex;
+  gap: 2px;
+  margin-left: 8px;
+}
+
+/* Flexrow layouts for points tab */
+.andragathima .ability-edit,
+.andragathima .save-edit,
+.andragathima .combat-stat-edit,
+.andragathima .skill-edit {
+  display: flex;
+  align-items: center;
+  padding: 4px 0;
+  margin: 2px 0;
+  background: transparent;
+  border: none;
+}
+
+.andragathima .ability-label,
+.andragathima .save-label,
+.andragathima .stat-label {
+  color: var(--andragathima-text);
+  font-family: 'Palatino Linotype', serif;
+}
+
+/* Skills edit section specific styling */
+.andragathima .skills-edit {
+  padding: 10px 0;
+  background: transparent;
+  border: none;
+}
+
+/* Equipment Header - Money and Weight */
+.andragathima .equipment-header {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.andragathima .money-section,
+.andragathima .weight-section {
+  position: relative;
+  background: transparent;
+  padding: 15px;
+}
+
+.andragathima .money-section {
+  min-width: 380px;
+}
+
+.andragathima .money-section:before,
+.andragathima .weight-section:before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--andragathima-title);
+  mask:
+    radial-gradient(12px at 12px 12px,#0000 calc(98% - 1px),#000 calc(100% - 1px) 98%,#0000) -12px -12px,
+    linear-gradient(90deg,#000 2px,#0000 0) -1px 50% /100% calc(100% - 24px + 1px) repeat-x,
+    linear-gradient(      #000 2px,#0000 0) 50% -1px/calc(100% - 24px + 1px) 100% repeat-y;
+  pointer-events: none;
+}
+
+.andragathima .money-section label,
+.andragathima .weight-section label {
+  font-family: 'Albertus Nova', 'Trajan Pro', 'Optima', 'Cinzel', Georgia, serif;
+  font-weight: normal;
+  color: var(--andragathima-title);
+  font-size: 0.9em;
+  display: block;
+  margin-bottom: 5px;
+  position: relative;
+  z-index: 1;
+}
+
+.andragathima .money-input {
+  width: 100%;
+  height: 36px;
+  padding: 6px 8px;
+  border: 1px solid var(--andragathima-accent);
+  border-radius: 3px;
+  background: transparent;
+  color: var(--andragathima-text);
+  font-family: 'Palatino Linotype', serif;
+  font-size: 1.1em;
+  text-align: right;
+  box-sizing: border-box;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  position: relative;
+  z-index: 2;
+}
+
+.andragathima .money-input:focus {
+  outline: none;
+  border-color: var(--andragathima-gold);
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 0 5px rgba(212, 175, 55, 0.5);
+}
+
+.andragathima .money-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 5px;
+  background: transparent;
+  border: none;
+}
+
+.andragathima .money-table tr {
+  background: transparent;
+  border: none;
+}
+
+.andragathima .money-table td {
+  padding: 0;
+  vertical-align: middle;
+  background: transparent;
+  border: none;
+}
+
+.andragathima .money-table td:first-child {
+  width: auto;
+  padding-right: 8px;
+}
+
+.andragathima .money-table td:last-child {
+  width: 30px;
+  text-align: left;
+  font-weight: normal;
+  color: var(--andragathima-title);
+  white-space: nowrap;
+}
+
+.andragathima .currency-symbol {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 1.2em;
+  font-weight: normal;
+  color: var(--andragathima-title);
+  line-height: 1;
+}
+
+/* New encumbrance display layout */
+.andragathima .encumbrance-display {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  padding: 10px;
+}
+
+.andragathima .current-weight {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 5px;
+}
+
+.andragathima .weight-value {
+  font-family: 'Albertus Nova', 'Trajan Pro', 'Optima', 'Cinzel', Georgia, serif;
+  font-weight: normal;
+  color: var(--andragathima-text);
+  font-size: 1.2em;
+}
+
+.andragathima .encumbrance-status {
+  font-family: 'Albertus Nova', 'Trajan Pro', 'Optima', 'Cinzel', Georgia, serif;
+  font-weight: normal;
+  font-size: 1em;
+  transition: color 0.3s ease;
+}
+
+.andragathima .encumbrance-limits {
+  margin-top: 3px;
+}
+
+.andragathima .limits-text {
+  font-family: 'Palatino Linotype', serif;
+  font-size: 0.8em;
+  color: var(--andragathima-text);
+  opacity: 0.8;
+  font-style: italic;
+}
+
+/* Encumbrance status colors */
+.andragathima .encumbrance-status.encumbrance-light {
+  color: #2e7d32; /* Green for light load */
+}
+
+.andragathima .encumbrance-status.encumbrance-heavy {
+  color: #b8860b; /* Dark yellow for heavy load */
+}
+
+.andragathima .encumbrance-status.encumbrance-maximum {
+  color: var(--andragathima-penalty-red); /* Red for maximum load */
+}
+
+.andragathima .encumbrance-status.encumbrance-overloaded {
+  color: #b71c1c; /* Dark red for overloaded */
+  font-weight: 900;
+  text-shadow: 0 0 3px rgba(183, 28, 28, 0.5);
+  animation: pulse-overload 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse-overload {
+  0%, 100% { 
+    opacity: 1; 
+    transform: scale(1);
+  }
+  50% { 
+    opacity: 0.8; 
+    transform: scale(1.05);
+  }
+}
+
+/* Equipment Tab Layout */
+.andragathima .equipment-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  padding: 10px;
+  min-height: 400px;
+}
+
+.andragathima .quick-items-column,
+.andragathima .equipment-column {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.andragathima .quick-items-section {
+  position: relative;
+  background: transparent;
+  padding: 15px;
+  margin-bottom: 15px;
+  flex: 0 0 auto;
+}
+
+.andragathima .quick-items-section:before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--andragathima-title);
+  mask:
+    radial-gradient(12px at 12px 12px,#0000 calc(98% - 1px),#000 calc(100% - 1px) 98%,#0000) -12px -12px,
+    linear-gradient(90deg,#000 2px,#0000 0) -1px 50% /100% calc(100% - 24px + 1px) repeat-x,
+    linear-gradient(      #000 2px,#0000 0) 50% -1px/calc(100% - 24px + 1px) 100% repeat-y;
+}
+
+.andragathima .equipment-slots-section {
+  position: relative;
+  background: transparent;
+  padding: 15px;
+  height: auto;
+  overflow: visible;
+}
+
+.andragathima .equipment-slots-section:before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--andragathima-title);
+  mask:
+    radial-gradient(12px at 12px 12px,#0000 calc(98% - 1px),#000 calc(100% - 1px) 98%,#0000) -12px -12px,
+    linear-gradient(90deg,#000 2px,#0000 0) -1px 50% /100% calc(100% - 24px + 1px) repeat-x,
+    linear-gradient(      #000 2px,#0000 0) 50% -1px/calc(100% - 24px + 1px) 100% repeat-y;
+}
+
+.andragathima .miscellaneous-table-section {
+  position: relative;
+  background: transparent;
+  padding: 15px;
+  flex: 1;
+}
+
+.andragathima .miscellaneous-table-section:before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--andragathima-title);
+  mask:
+    radial-gradient(12px at 12px 12px,#0000 calc(98% - 1px),#000 calc(100% - 1px) 98%,#0000) -12px -12px,
+    linear-gradient(90deg,#000 2px,#0000 0) -1px 50% /100% calc(100% - 24px + 1px) repeat-x,
+    linear-gradient(      #000 2px,#0000 0) 50% -1px/calc(100% - 24px + 1px) 100% repeat-y;
+}
+
+.andragathima .quick-items-section h2,
+.andragathima .equipment-slots-section h2,
+.andragathima .miscellaneous-table-section h2 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  font-size: 1.2em;
+  color: var(--andragathima-title);
+  border-bottom: 1px solid var(--andragathima-title);
+  padding-bottom: 5px;
+  position: relative;
+  z-index: 1;
+}
+
+.andragathima .quick-items,
+.andragathima .equipment-slots,
+.andragathima .miscellaneous-table,
+.andragathima .misc-equipment-grid {
+  position: relative;
+  z-index: 1;
+}
+
+/* Miscellaneous Equipment Slots */
+.andragathima .misc-equipment-slots-section {
+  margin-bottom: 20px;
+}
+
+.andragathima .misc-equipment-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 60px);
+  gap: 10px;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 5px;
+  justify-content: center;
+}
+
+.andragathima .misc-equipment-slot {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  padding: 8px;
+  border: 1px solid var(--andragathima-title);
+  border-radius: 1px;
+  background: rgba(153, 101, 39, 0.1);
+  transition: all 0.2s ease;
+}
+
+
+.andragathima .misc-equipment-slot .item-image {
+  width: 40px;
+  height: 40px;
+  object-fit: scale-down !important;
+  border-radius: 3px;
+  margin-bottom: 4px;
+  cursor: grab;
+}
+
+.andragathima .misc-equipment-slot .item-image[draggable="true"]:active {
+  cursor: grabbing;
+}
+
+.andragathima .misc-equipment-slot .empty-slot-image {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  margin-bottom: 4px;
+  border: none;
+  border-radius: 0;
+  opacity: 0.5;
+  filter: sepia(1) hue-rotate(25deg) saturate(0.8);
+}
+
+.andragathima .misc-equipment-slot .item-name {
+  font-size: 10px;
+  text-align: center;
+  line-height: 1.2;
+  word-wrap: break-word;
+  max-width: 100%;
+}
+
+.andragathima .misc-equipment-slot .empty-slot-text {
+  font-size: 10px;
+  text-align: center;
+  line-height: 1.2;
+  word-wrap: break-word;
+  max-width: 100%;
+  font-style: italic;
+  opacity: 0.8;
+}
+
+.andragathima .misc-equipment-slot .item-delete {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 20px;
+  height: 20px;
+  background: none;
+  border: none;
+  outline: none;
+  box-shadow: none;
+  color: var(--andragathima-text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: normal;
+  cursor: pointer;
+  z-index: 10;
+  opacity: 0.6;
+  transition: opacity 0.2s ease;
+  padding: 0;
+  margin: 0;
+}
+
+.andragathima .misc-equipment-slot .item-delete:hover {
+  opacity: 1;
+}
+
+.andragathima .misc-equipment-slot .item-delete:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.andragathima .misc-equipment-slot .item-delete:active {
+  outline: none;
+  box-shadow: none;
+}
+
+
+.andragathima .quick-items {
+  display: grid;
+  grid-template-columns: repeat(4, 80px);
+  gap: 10px;
+  margin-bottom: 10px;
+  justify-content: center;
+}
+
+.andragathima .item-slot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  border: 1px solid var(--andragathima-title);
+  border-radius: 1px;
+  background: rgba(153, 101, 39, 0.1);
+  width: 80px;
+  height: 80px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+
+.andragathima .item-slot[draggable="true"] {
+  cursor: grab;
+}
+
+.andragathima .item-slot[draggable="true"]:active {
+  cursor: grabbing;
+}
+
+/* Show-on-token indicator - border around item slot */
+.andragathima .item-slot.show-on-token {
+  border: 1px solid var(--andragathima-gold) !important;
+  border-radius: 1px;
+  box-shadow: 0 0 4px inset rgba(255, 217, 0, 0.856);
+}
+
+.andragathima .item-slot.show-on-token .item-image-container {
+  margin: 2px;
+}
+
+/* Fix quantity overlay positioning when show-on-token is active */
+.andragathima .item-slot.show-on-token .item-image-container .ammunition-quantity-overlay {
+  bottom: -1px;
+}
+
+/* Remove item button for slots with items */
+.andragathima .item-slot .remove-item-btn {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 20px;
+  height: 20px;
+  background: none;
+  border: none;
+  outline: none;
+  box-shadow: none;
+  color: var(--andragathima-text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: normal;
+  cursor: pointer;
+  z-index: 10;
+  opacity: 0.6;
+  transition: opacity 0.2s ease;
+  padding: 0;
+  margin: 0;
+}
+
+.andragathima .item-slot .remove-item-btn:hover {
+  opacity: 1;
+}
+
+.andragathima .item-slot .remove-item-btn:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.andragathima .item-slot .remove-item-btn:active {
+  outline: none;
+  box-shadow: none;
+}
+
+.andragathima .item-slot label {
+  font-size: 0.8em;
+  color: var(--andragathima-title);
+  margin-bottom: 5px;
+  text-align: center;
+  font-weight: normal;
+}
+
+.andragathima .item-slot img {
+  border: none !important;
+  border-radius: 0;
+  margin-bottom: 5px;
+  object-fit: scale-down !important;
+}
+
+/* Remove borders from all item images */
+.andragathima .item img,
+.andragathima .inventory img,
+.andragathima .equipment img {
+  border: none !important;
+}
+
+.andragathima .item-slot .empty-belt-img,
+.andragathima .item-slot .empty-helm-img,
+.andragathima .item-slot .empty-gloves-img,
+.andragathima .item-slot .empty-boots-img,
+.andragathima .item-slot .empty-ring-img,
+.andragathima .item-slot .empty-armor-img,
+.andragathima .item-slot .empty-necklace-img,
+.andragathima .item-slot .empty-cloak-img,
+.andragathima .item-slot .empty-shield-img,
+.andragathima .item-slot .empty-slot-image {
+  border: none;
+  border-radius: 0;
+  opacity: 0.5;
+}
+
+.andragathima .item-slot .item-name {
+  font-size: 0.7em;
+  color: var(--andragathima-text);
+  text-align: center;
+  font-weight: normal;
+}
+
+.andragathima .item-slot .empty-slot {
+  font-size: 0.8em;
+  color: var(--andragathima-title);
+  opacity: 0.6;
+  font-style: italic;
+}
+
+.andragathima .item-slot .empty-belt-img,
+.andragathima .item-slot .empty-helm-img,
+.andragathima .item-slot .empty-gloves-img,
+.andragathima .item-slot .empty-boots-img,
+.andragathima .item-slot .empty-ring-img,
+.andragathima .item-slot .empty-armor-img,
+.andragathima .item-slot .empty-necklace-img,
+.andragathima .item-slot .empty-cloak-img,
+.andragathima .item-slot .empty-shield-img,
+.andragathima .item-slot .empty-slot-image {
+  /*opacity: 0.3;*/
+  filter: sepia(1) hue-rotate(25deg) saturate(0.8);
+}
+
+.andragathima .slot-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+  justify-content: space-between;
+}
+
+.andragathima .slot-row .item-slot {
+  flex: 1;
+}
+
+/* Trash Slot for removing items */
+.andragathima .trash-slot-container {
+  margin-top: 20px;
+  padding: 10px;
+  display: flex;
+  justify-content: center;
+}
+
+.andragathima .trash-slot {
+  width: 120px;
+  height: 80px;
+  border: 1px solid var(--andragathima-accent);
+  border-radius: 1px;
+  background: rgba(255, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.andragathima .trash-slot:hover {
+  background: rgba(255, 0, 0, 0.2);
+  border-color: #ff4444;
+}
+
+.andragathima .trash-slot label {
+  font-size: 0.8em;
+  font-weight: normal;
+  color: var(--andragathima-title);
+  margin-bottom: 5px;
+  text-align: center;
+}
+
+.andragathima .trash-slot .trash-icon {
+  font-size: 24px;
+  margin-bottom: 5px;
+}
+
+.andragathima .trash-slot .trash-text {
+  font-size: 0.7em;
+  color: var(--andragathima-text);
+  text-align: center;
+  line-height: 1.2;
+}
+
+/* Special sizing for head, torso and boots slots */
+.andragathima .head-row {
+  justify-content: center;
+}
+
+.andragathima .head-slot {
+  flex: 0 0 50%;
+  max-width: 50%;
+}
+
+.andragathima .torso-row {
+  justify-content: center;
+}
+
+.andragathima .torso-slot {
+  flex: 0 0 100%;
+  max-width: 100%;
+}
+
+.andragathima .boots-row {
+  justify-content: center;
+}
+
+.andragathima .boots-slot {
+  flex: 0 0 50%;
+  max-width: 50%;
+}
+
+/* Miscellaneous Items Table */
+.andragathima .miscellaneous-table {
+  display: flex;
+  flex-direction: column;
+}
+
+.andragathima .table-row {
+  display: grid;
+  grid-template-columns: 80% 20%;
+  gap: 5px;
+  margin-bottom: 3px;
+  align-items: center;
+}
+
+.andragathima .item-cell,
+.andragathima .weight-cell {
+  display: flex;
+  align-items: center;
+}
+
+.andragathima .item-cell input,
+.andragathima .weight-cell input {
+  width: 100%;
+  padding: 6px 8px;
+  border: 1px solid var(--andragathima-title);
+  border-radius: 3px;
+  background: rgba(244, 232, 208, 0.8);
+  color: var(--andragathima-text);
+  font-family: 'Palatino Linotype', serif;
+  font-size: 0.9em;
+}
+
+.andragathima .item-cell input:focus,
+.andragathima .weight-cell input:focus {
+  outline: none;
+  border-color: var(--andragathima-text);
+  background: rgba(244, 232, 208, 1);
+}
+
+.andragathima .weight-cell input {
+  text-align: center;
+  font-size: 0.85em;
+}
+
+/* Item Sheet Styles */
+.andragathima .item-subtitle {
+  font-style: italic;
+  color: var(--andragathima-title);
+  font-size: 0.9em;
+  text-align: center;
+  margin-top: 5px;
+}
+
+.andragathima .weapon-details {
+  padding: 15px;
+}
+
+.andragathima .weapon-properties {
+  margin-bottom: 20px;
+}
+
+.andragathima .info-section {
+  position: relative;
+  background: transparent;
+  padding: 15px;
+  margin-bottom: 15px;
+}
+
+.andragathima .info-section:before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--andragathima-title);
+  mask:
+    radial-gradient(12px at 12px 12px,#0000 calc(98% - 1px),#000 calc(100% - 1px) 98%,#0000) -12px -12px,
+    linear-gradient(90deg,#000 2px,#0000 0) -1px 50% /100% calc(100% - 24px + 1px) repeat-x,
+    linear-gradient(      #000 2px,#0000 0) 50% -1px/calc(100% - 24px + 1px) 100% repeat-y;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.andragathima .info-section h3 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  font-size: 1.2em;
+  color: var(--andragathima-title);
+  border-bottom: 1px solid var(--andragathima-title);
+  padding-bottom: 5px;
+  position: relative;
+  z-index: 1;
+}
+
+.andragathima .form-group {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  position: relative;
+  z-index: 1;
+}
+
+.andragathima .form-group.stacked {
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.andragathima .form-group label {
+  min-width: 120px;
+  font-weight: normal;
+  color: var(--andragathima-title);
+  font-family: 'Albertus Nova', 'Trajan Pro', 'Optima', 'Cinzel', Georgia, serif;
+  font-size: 0.9em;
+  margin-right: 10px;
+}
+
+.andragathima .form-fields {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* Weapon Sheet Table Layout */
+.andragathima .weapon-properties-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+  background: transparent;
+  border: none;
+}
+
+.andragathima .weapon-properties-table tr {
+  background: transparent;
+  border: none;
+}
+
+.andragathima .weapon-properties-table td {
+  padding: 6px 8px;
+  vertical-align: middle;
+  background: transparent;
+  border: none;
+}
+
+.andragathima .weapon-properties-table td:first-child {
+  width: 140px;
+  text-align: left;
+}
+
+.andragathima .weapon-properties-table td:nth-child(2) {
+  width: auto;
+  padding-right: 5px;
+}
+
+.andragathima .weapon-properties-table td:last-child {
+  width: 30px;
+  text-align: left;
+  font-weight: normal;
+  color: var(--andragathima-title);
+  white-space: nowrap;
+}
+
+.andragathima .weapon-properties-table label {
+  font-weight: normal;
+  color: var(--andragathima-title);
+  font-family: 'Albertus Nova', 'Trajan Pro', 'Optima', 'Cinzel', Georgia, serif;
+  font-size: 0.9em;
+}
+
+.andragathima .weapon-properties-table input[type="text"],
+.andragathima .weapon-properties-table input[type="number"],
+.andragathima .weapon-properties-table select {
+  width: 100%;
+  height: 28px;
+  padding: 4px 8px;
+  background: transparent;
+  border: 1px solid var(--andragathima-accent);
+  border-radius: 3px;
+  font-family: inherit;
+  font-size: 0.9em;
+}
+
+.andragathima .weapon-properties-table select {
+  cursor: pointer;
+}
+
+/* Armor Sheet Table Layout */
+.andragathima .armor-properties-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+  background: transparent;
+  border: none;
+}
+
+.andragathima .armor-properties-table tr {
+  background: transparent;
+  border: none;
+}
+
+.andragathima .armor-properties-table td {
+  padding: 6px 8px;
+  vertical-align: middle;
+  background: transparent;
+  border: none;
+}
+
+.andragathima .armor-properties-table td:first-child {
+  width: 140px;
+  text-align: left;
+}
+
+.andragathima .armor-properties-table td:nth-child(2) {
+  width: auto;
+  padding-right: 5px;
+}
+
+.andragathima .armor-properties-table td:last-child {
+  width: 30px;
+  text-align: left;
+  font-weight: normal;
+  color: var(--andragathima-title);
+  white-space: nowrap;
+}
+
+.andragathima .armor-properties-table label {
+  font-weight: normal;
+  color: var(--andragathima-title);
+  font-family: 'Albertus Nova', 'Trajan Pro', 'Optima', 'Cinzel', Georgia, serif;
+  font-size: 0.9em;
+}
+
+.andragathima .armor-properties-table input[type="text"],
+.andragathima .armor-properties-table input[type="number"],
+.andragathima .armor-properties-table select {
+  width: 100%;
+  height: 28px;
+  padding: 4px 8px;
+  background: transparent;
+  border: 1px solid var(--andragathima-accent);
+  border-radius: 3px;
+  font-family: inherit;
+  font-size: 0.9em;
+}
+
+.andragathima .armor-properties-table select {
+  cursor: pointer;
+}
+
+/* Equipment Sheet Table Layout */
+.andragathima .equipment-properties-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+  background: transparent;
+  border: none;
+}
+
+.andragathima .equipment-properties-table tr {
+  background: transparent;
+  border: none;
+}
+
+.andragathima .equipment-properties-table td {
+  padding: 6px 8px;
+  vertical-align: middle;
+  background: transparent;
+  border: none;
+}
+
+.andragathima .equipment-properties-table td:first-child {
+  width: 140px;
+  text-align: left;
+}
+
+.andragathima .equipment-properties-table td:nth-child(2) {
+  width: auto;
+  padding-right: 5px;
+}
+
+.andragathima .equipment-properties-table td:last-child {
+  width: 30px;
+  text-align: left;
+  font-weight: normal;
+  color: var(--andragathima-title);
+  white-space: nowrap;
+}
+
+.andragathima .equipment-properties-table label {
+  font-weight: normal;
+  color: var(--andragathima-title);
+  font-family: 'Albertus Nova', 'Trajan Pro', 'Optima', 'Cinzel', Georgia, serif;
+  font-size: 0.9em;
+}
+
+.andragathima .equipment-properties-table input[type="text"],
+.andragathima .equipment-properties-table input[type="number"],
+.andragathima .equipment-properties-table select {
+  width: 100%;
+  height: 28px;
+  padding: 4px 8px;
+  background: transparent;
+  border: 1px solid var(--andragathima-accent);
+  border-radius: 3px;
+  font-family: inherit;
+  font-size: 0.9em;
+}
+
+.andragathima .equipment-properties-table select {
+  cursor: pointer;
+}
+
+.andragathima .equipment-details {
+  padding: 15px;
+}
+
+.andragathima .armor-details {
+  padding: 15px;
+}
+
+/* Description*/
+.andragathima .description-section {
+  margin-top: 20px;
+  overflow-y: visible;
+}
+
+.andragathima .description-section textarea {
+  width: 100%;
+  min-height: 180px;
+  padding: 8px;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  font-family: inherit;
+  font-size: 0.9em;
+  resize: none;
+  line-height: 1.4;
+  color: var(--andragathima-text);
+  box-shadow: none;
+  overflow-y: visible;
+  overflow-x: hidden; /* Hide horizontal scrollbar */
+  box-sizing: border-box; /* Include padding in width/height calculations */
+}
+
+.andragathima .description-section textarea:focus {
+  outline: none;
+  border: none;
+  box-shadow: none;
+}
+
+.andragathima .range-fields {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.andragathima .range-fields input {
+  width: 60px;
+}
+
+.andragathima .description-section h3 {
+  margin-bottom: 10px;
+  font-size: 1.2em;
+  color: var(--andragathima-title);
+  border-bottom: 1px solid var(--andragathima-title);
+  padding-bottom: 5px;
+}
+
+.andragathima .description-text {
+  background: transparent;
+  border: none;
+}
+
+.andragathima .description-text .editor {
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+
+.andragathima .description-text .tox-tinymce {
+  border: none !important;
+  background: transparent !important;
+}
+
+.andragathima .description-text .tox-edit-area {
+  border: none !important;
+  background: transparent !important;
+}
+
+/* Hide default Foundry tooltips when custom tooltips are present */
+.andragathima [title]:not([title=""]) .tooltip,
+.andragathima .tooltip {
+  display: none !important;
+}
+
+/* Ensure custom rich tooltips have higher z-index than Foundry tooltips */
+.andragathima-rich-tooltip {
+  z-index: 10000 !important;
+  pointer-events: none;
+  transition: opacity 0.2s ease-in-out;
+  opacity: 0.95;
+  min-width: 200px;
+  max-width: 350px;
+}
+
+/* Hide any default Foundry tooltips when our custom ones are active */
+body.andragathima .tooltip {
+  display: none !important;
+}
+
+/* Better spacing for tooltip properties */
+.andragathima-rich-tooltip .item-property {
+  margin: 1px 0;
+  padding: 2px 4px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 2px;
+}
+
+/* Subtle alternating row shading */
+.andragathima-rich-tooltip .item-property:nth-child(even) {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.andragathima-rich-tooltip .property-label {
+  font-weight: bold;
+  color: var(--andragathima-title);
+  margin-right: 8px;
+  min-width: 100px; /* Reduced further to bring columns closer */
+  flex-shrink: 0;
+}
+
+/* Disable browser tooltips completely for elements with our custom tooltips */
+.andragathima [data-has-custom-tooltip] {
+  pointer-events: auto;
+}
+
+.andragathima [data-has-custom-tooltip]:hover::after {
+  content: none !important;
+}
+
+/* Points Tab Section Styles - Common styling for all sections */
+.andragathima .tab.points .race-edit-section,
+.andragathima .tab.points .abilities-edit-section,
+.andragathima .tab.points .saves-edit-section,
+.andragathima .tab.points .combat-edit-section,
+.andragathima .tab.points .magic-edit-section,
+.andragathima .tab.points .skills-edit-section,
+.andragathima .tab.status .status-edit-section {
+  margin: 10px 15px 20px 15px;
+  padding: 5px;
+  position: relative;
+  overflow: visible;
+}
+
+.andragathima .tab.points .race-edit-section:before,
+.andragathima .tab.points .abilities-edit-section:before,
+.andragathima .tab.points .saves-edit-section:before,
+.andragathima .tab.points .combat-edit-section:before,
+.andragathima .tab.points .magic-edit-section:before,
+.andragathima .tab.points .skills-edit-section:before,
+.andragathima .tab.status .status-edit-section:before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--andragathima-primary);
+  mask:
+    radial-gradient(12px at 12px 12px,#0000 calc(98% - 1px),#000 calc(100% - 1px) 98%,#0000) -12px -12px,
+    linear-gradient(90deg,#000 2px,#0000 0) -1px 50% /100% calc(100% - 24px + 1px) repeat-x,
+    linear-gradient(      #000 2px,#0000 0) 50% -1px/calc(100% - 24px + 1px) 100% repeat-y;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.andragathima .tab.points .race-edit-section:after,
+.andragathima .tab.points .abilities-edit-section:after,
+.andragathima .tab.points .saves-edit-section:after,
+.andragathima .tab.points .combat-edit-section:after,
+.andragathima .tab.points .magic-edit-section:after,
+.andragathima .tab.points .skills-edit-section:after,
+.andragathima .tab.status .status-edit-section:after {
+  content: "";
+  position: absolute;
+  inset: 2px;
+  background: var(--andragathima-bg);
+  clip-path: polygon(
+    12px 0%, calc(100% - 12px) 0%, 
+    100% 12px, 100% calc(100% - 12px), 
+    calc(100% - 12px) 100%, 12px 100%, 
+    0% calc(100% - 12px), 0% 12px
+  );
+  pointer-events: none;
+  z-index: 2;
+}
+
+.andragathima .tab.points .race-edit-section h2,
+.andragathima .tab.points .abilities-edit-section h2,
+.andragathima .tab.points .saves-edit-section h2,
+.andragathima .tab.points .combat-edit-section h2,
+.andragathima .tab.points .magic-edit-section h2,
+.andragathima .tab.points .skills-edit-section h2,
+.andragathima .tab.status .status-edit-section h2 {
+  position: relative;
+  z-index: 3;
+  margin: 15px 15px 10px 15px;
+  color: var(--andragathima-title);
+  font-family: 'Albertus Nova', 'Trajan Pro', 'Optima', 'Cinzel', Georgia, serif;
+  font-weight: normal;
+}
+
+.andragathima .tab.points .race-table,
+.andragathima .tab.points .abilities-table,
+.andragathima .tab.points .saves-table,
+.andragathima .tab.points .combat-table,
+.andragathima .tab.points .magic-table,
+.andragathima .tab.points .skills-table {
+  position: relative;
+  z-index: 3;
+  margin: 8px 15px 15px 15px;
+  padding: 20px;
+}
+
+/* Specific table styling */
+.andragathima .race-table,
+.andragathima .abilities-table,
+.andragathima .saves-table,
+.andragathima .combat-table,
+.andragathima .tab.points .magic-table,
+.andragathima .skills-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.andragathima .race-table td,
+.andragathima .abilities-table td,
+.andragathima .saves-table td,
+.andragathima .combat-table td,
+.andragathima .tab.points .magic-table td,
+.andragathima .skills-table td {
+  padding: 5px 10px;
+  vertical-align: middle;
+}
+
+/* Column widths: 30% names, 15% buttons, 55% dropdown/empty */
+.andragathima .race-table td:nth-child(1),
+.andragathima .abilities-table td:nth-child(1),
+.andragathima .saves-table td:nth-child(1),
+.andragathima .combat-table td:nth-child(1),
+.andragathima .tab.points .magic-table td:nth-child(1),
+.andragathima .skills-table td:nth-child(1) {
+  width: 45%;
+}
+
+.andragathima .race-table td:nth-child(2),
+.andragathima .abilities-table td:nth-child(2),
+.andragathima .saves-table td:nth-child(2),
+.andragathima .combat-table td:nth-child(2),
+.andragathima .tab.points .magic-table td:nth-child(2),
+.andragathima .skills-table td:nth-child(2) {
+  width: 15%;
+  text-align: center;
+}
+
+.andragathima .race-table td:nth-child(3),
+.andragathima .abilities-table td:nth-child(3),
+.andragathima .saves-table td:nth-child(3),
+.andragathima .combat-table td:nth-child(3),
+.andragathima .tab.points .magic-table td:nth-child(3),
+.andragathima .skills-table td:nth-child(3) {
+  width: 40%;
+}
+
+/* Button styling - make them horizontal */
+.andragathima .abilities-table .small-btn,
+.andragathima .saves-table .small-btn,
+.andragathima .combat-table .small-btn,
+.andragathima .tab.points .magic-table .small-btn,
+.andragathima .skills-table .small-btn {
+  display: inline-block;
+  margin: 0 2px;
+  padding: -2px -2px -2px -2px;
+  font-size: 24px;
+  font-weight: 900;
+  line-height: 0.6;
+  min-width: 20px;
+}
+
+.andragathima .race-dropdown-container {
+  margin: 10px 0;
+  margin-left: 20px;
+  position: relative;
+  z-index: 10;
+}
+
+/* Race dropdown styling for discrete appearance - larger than other dropdowns */
+.andragathima .size-dropdown,
+.andragathima .race-dropdown {
+  height: auto !important;
+  padding: 8px 12px;
+  font-family: inherit;
+  font-size: 0.85em;
+  line-height: 1;
+  font-weight: bold;
+  background: transparent !important;
+  border: 1px solid var(--andragathima-accent) !important;
+  border-radius: 4px;
+  color: var(--andragathima-text) !important;
+  width: 100%;
+  max-width: 300px;
+  position: relative;
+  z-index: 3;
+}
+
+.andragathima .element-dropdown,
+.andragathima .weapon-specialization-dropdown {
+  height: 22px !important;
+  padding: 0px 4px;
+  background: transparent;
+  border: 1px solid var(--andragathima-accent);
+  border-radius: 3px;
+  font-family: inherit;
+  font-size: 0.9em;
+  width: 200px;
+  cursor: pointer;
+  box-sizing: border-box;
+  line-height: 0.9;
+  vertical-align: top;
+}
+
+
+
+.andragathima .race-dropdown option.race-subcategory {
+  padding-left: 20px;
+}
+
+/* Race features styling */
+.andragathima .race-features {
+  margin-top: 10px;
+  margin-bottom: 20px;
+  margin-left: 20px;
+  position: relative;
+  z-index: 3;
+}
+
+.andragathima .race-feature {
+  font-family: 'Palatino Linotype', 'Book Antiqua', Palatino, serif;
+  font-size: 14px;
+  color: var(--andragathima-text);
+  font-weight: normal;
+  margin: 4px 0;
+  padding: 0;
+  background: none;
+  border: none;
+  border-radius: 0;
+  opacity: 1;
+  visibility: visible;
+  text-shadow: none;
+  position: relative;
+  z-index: 3;
+}
+
+/* Points tab table overrides - transparent with horizontal lines only */
+.andragathima .tab.points .race-table,
+.andragathima .tab.points .abilities-table,
+.andragathima .tab.points .saves-table,
+.andragathima .tab.points .combat-table,
+.andragathima .tab.points .magic-table,
+.andragathima .tab.points .skills-table {
+  background: transparent !important;
+  border: none !important;
+  width: calc(100% - 30px) !important;
+  margin: 8px 15px 15px 15px !important;
+}
+
+.andragathima .tab.points .race-table td,
+.andragathima .tab.points .abilities-table td,
+.andragathima .tab.points .saves-table td,
+.andragathima .tab.points .combat-table td,
+.andragathima .tab.points .magic-table td,
+.andragathima .tab.points .skills-table td {
+  background: transparent !important;
+  border: none !important;
+  border-bottom: 1px solid var(--andragathima-text) !important;
+}
+
+/* Remove bottom border from last row in each table */
+.andragathima .tab.points .race-table tr:last-child td,
+.andragathima .tab.points .abilities-table tr:last-child td,
+.andragathima .tab.points .saves-table tr:last-child td,
+.andragathima .tab.points .combat-table tr:last-child td,
+.andragathima .tab.points .magic-table tr:last-child td,
+.andragathima .tab.points .skills-table tr:last-child td {
+  border-bottom: none !important;
+}
+
+/* Remove alternating row backgrounds in Points tab */
+.andragathima .tab.points .race-table tr:nth-child(even) td,
+.andragathima .tab.points .abilities-table tr:nth-child(even) td,
+.andragathima .tab.points .saves-table tr:nth-child(even) td,
+.andragathima .tab.points .combat-table tr:nth-child(even) td,
+.andragathima .tab.points .magic-table tr:nth-child(even) td,
+.andragathima .tab.points .skills-table tr:nth-child(even) td,
+.andragathima .tab.points .race-table tr:nth-child(odd) td,
+.andragathima .tab.points .abilities-table tr:nth-child(odd) td,
+.andragathima .tab.points .saves-table tr:nth-child(odd) td,
+.andragathima .tab.points .combat-table tr:nth-child(odd) td,
+.andragathima .tab.points .magic-table tr:nth-child(odd) td,
+.andragathima .tab.points .skills-table tr:nth-child(odd) td {
+  background: transparent !important;
+}
+
+/* Magic Tab Content - only when active */
+.andragathima .tab.magic.active {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px;
+}
+
+/* Magic Tab Disabled State - Greyed out overlay */
+.andragathima .tab.magic.magic-disabled.active {
+  position: relative;
+}
+
+.andragathima .tab.magic.magic-disabled.active::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 1000;
+  pointer-events: none;
+}
+
+
+/* Magic Info Section - plain styling */
+.andragathima .tab.magic .magic-tab-info-section {
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  min-width: 500px;
+}
+
+.andragathima .tab.magic .magic-basic-info {
+  position: relative;
+  z-index: 3;
+  margin: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.andragathima .tab.magic .magic-ability-item {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 6px 8px;
+  background: transparent;
+  margin-bottom: 4px;
+}
+
+.andragathima .tab.magic .magic-ability-name {
+  font-family: 'Albertus Nova', 'Trajan Pro', 'Optima', 'Cinzel', Georgia, serif;
+  font-weight: normal;
+  color: var(--andragathima-title);
+  font-size: 1.05em;
+  width: 180px;
+  flex: none;
+}
+
+.andragathima .tab.magic .magic-ability-score {
+  font-size: 1.4em;
+  font-weight: normal;
+  color: var(--andragathima-text);
+  line-height: 1;
+  text-align: left;
+}
+
+/* Element Icons */
+.andragathima .tab.magic .magic-elements-icons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: nowrap;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 10px;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.andragathima .tab.magic .element-icon {
+  width: 72px;
+  height: 72px;
+  cursor: default;
+  border: none;
+  background: none;
+}
+
+.andragathima .tab.magic .magic-info-line:last-child {
+  margin-bottom: 0;
+}
+
+.andragathima .tab.magic .magic-basic-info strong {
+  color: var(--andragathima-title);
+}
+
+/* Spellbook Section with clipped corners */
+.andragathima .tab.magic .magic-tab-spellbook-section {
+  position: relative;
+  overflow: hidden;
+}
+
+.andragathima .tab.magic .magic-tab-spellbook-section:before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--andragathima-primary);
+  mask:
+    radial-gradient(12px at 12px 12px,#0000 calc(98% - 1px),#000 calc(100% - 1px) 98%,#0000) -12px -12px,
+    linear-gradient(90deg,#000 2px,#0000 0) -1px 50% /100% calc(100% - 24px + 1px) repeat-x,
+    linear-gradient(      #000 2px,#0000 0) 50% -1px/calc(100% - 24px + 1px) 100% repeat-y;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.andragathima .tab.magic .magic-tab-spellbook-section:after {
+  content: "";
+  position: absolute;
+  inset: 2px;
+  background: var(--andragathima-bg);
+  clip-path: polygon(
+    12px 0%, calc(100% - 12px) 0%, 
+    100% 12px, 100% calc(100% - 12px), 
+    calc(100% - 12px) 100%, 12px 100%, 
+    0% calc(100% - 12px), 0% 12px
+  );
+  pointer-events: none;
+  z-index: 2;
+}
+
+.andragathima .tab.magic .magic-tab-spellbook-section h2 {
+  position: relative;
+  z-index: 3;
+  margin: 15px 15px 10px 15px;
+  color: var(--andragathima-title);
+  font-family: 'Albertus Nova', 'Trajan Pro', 'Optima', 'Cinzel', Georgia, serif;
+  font-weight: normal;
+}
+
+/* Spellbook List */
+/* Spellbook Grid Layout */
+.andragathima .tab.magic .spellbook-grid {
+  position: relative;
+  z-index: 3;
+  margin: 8px 15px 15px 15px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+  gap: 8px;
+  min-height: 300px; /* Minimum height to prevent tab resizing */
+  align-content: start;
+}
+
+/* Spell Slots in Grid */
+.andragathima .tab.magic .spell-slot {
+  width: 60px;
+  height: 60px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+
+
+.andragathima .tab.magic .spell-slot img {
+  width: 80%;
+  height: 80%;
+  object-fit: scale-down !important;
+  border-radius: 4px;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.andragathima .tab.magic .spell-slot .item-delete {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 20px;
+  height: 20px;
+  background: none;
+  border: none;
+  outline: none;
+  box-shadow: none;
+  color: var(--andragathima-text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: normal;
+  cursor: pointer;
+  z-index: 10;
+  opacity: 0.6;
+  transition: opacity 0.2s ease;
+  padding: 0;
+  margin: 0;
+}
+
+.andragathima .tab.magic .spell-slot .item-delete:hover {
+  opacity: 1;
+}
+
+.andragathima .tab.magic .spell-slot .item-delete:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.andragathima .tab.magic .spell-slot .item-delete:active {
+  outline: none;
+  box-shadow: none;
+}
+
+/* Empty Message for Spellbook */
+.andragathima .tab.magic .spellbook-empty-message {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 40px;
+  color: var(--andragathima-text);
+  opacity: 0.7;
+  font-style: italic;
+  border-radius: 8px;
+  margin: 20px 0;
+}
+
+/* Spell Drag & Drop Styles */
+.andragathima .tab.magic .spell-slot img[draggable="true"] {
+  cursor: grab;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+/* Greyed Out Spells with insufficient effective degree */
+.andragathima .tab.magic .spell-slot.spell-insufficient img,
+.andragathima .tab.magic .spell-slot.spell-insufficient .spell-name {
+  opacity: 0.4;
+  filter: grayscale(70%);
+}
+
+.andragathima .tab.magic .spell-slot.spell-insufficient {
+  position: relative;
+}
+
+
+.andragathima .tab.magic .spell-slot img[draggable="true"]:hover {
+  cursor: grabbing;
+}
+
+.andragathima .tab.magic .spell-slot img[draggable="true"]:active {
+  cursor: grabbing;
+  transform: scale(0.95);
+  opacity: 0.8;
+}
+
+/* Drag Over Visual Feedback */
+.andragathima .tab.magic .spell-slot.spell-drag-over {
+  transform: scale(1.1);
+  background: rgba(196, 154, 107, 0.3);
+  border: 1px dashed var(--andragathima-accent);
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.andragathima .tab.magic .spell-slot.spell-drag-over::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  background: linear-gradient(45deg, transparent, rgba(212, 175, 55, 0.2), transparent);
+  border-radius: 8px;
+  z-index: -1;
+}
+
+/* Spell Sheet Styles */
+.andragathima .spell-properties {
+  margin-bottom: 20px;
+}
+
+/* Spell Sheet Layout */
+.andragathima .spell-details {
+  padding: 15px;
+}
+
+.andragathima .spell-properties {
+  margin-bottom: 20px;
+}
+
+.andragathima .spell-properties-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+  background: transparent;
+  border: none;
+}
+
+.andragathima .spell-properties-table tr {
+  background: transparent;
+  border: none;
+}
+
+.andragathima .spell-properties-table td {
+  padding: 6px 8px;
+  vertical-align: middle;
+  background: transparent;
+  border: none;
+}
+
+.andragathima .spell-properties-table td:first-child {
+  width: 140px;
+  text-align: left;
+}
+
+.andragathima .spell-properties-table td:nth-child(2) {
+  width: 150px;
+  padding-right: 5px;
+}
+
+.andragathima .spell-properties-table td:last-child {
+  width: 120px;
+  text-align: left;
+  font-weight: normal;
+  color: var(--andragathima-title);
+  white-space: nowrap;
+}
+
+.andragathima .spell-range-display {
+  color: var(--andragathima-title);
+  font-weight: normal;
+  font-size: 0.9em;
+}
+
+.andragathima .spell-properties-table label {
+  font-weight: normal;
+  color: var(--andragathima-title);
+  font-family: 'Albertus Nova', 'Trajan Pro', 'Optima', 'Cinzel', Georgia, serif;
+  font-size: 0.9em;
+}
+
+.andragathima .spell-properties-table input[type="text"],
+.andragathima .spell-properties-table input[type="number"],
+.andragathima .spell-properties-table select {
+  width: 100%;
+  height: 28px;
+  padding: 4px 8px;
+  background: transparent;
+  border: 1px solid var(--andragathima-accent);
+  border-radius: 3px;
+  font-family: inherit;
+  font-size: 0.9em;
+}
+
+.andragathima .spell-properties-table select {
+  cursor: pointer;
+}
+
+/* Consistent width for all dropdowns */
+.andragathima .spell-properties-table select[name="system.level"],
+.andragathima .spell-properties-table select[name="system.school"],
+.andragathima .spell-properties-table select[name="system.energy.type"],
+.andragathima .spell-properties-table select[name="system.range.type"],
+.andragathima .spell-properties-table select[name="system.area.type"],
+.andragathima .spell-properties-table select[name="system.duration.type"],
+.andragathima .spell-properties-table select[name="system.save.type"] {
+  width: 150px;
+}
+
+/* Checkbox and Radio button styling for spell sheet */
+.andragathima .checkbox-group,
+.andragathima .radio-group {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.andragathima .radio-group {
+  flex-direction: column;
+  gap: 8px;
+}
+
+.andragathima .checkbox-group label,
+.andragathima .radio-group label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: normal;
+  color: var(--andragathima-text);
+}
+
+.andragathima .spell-properties-table input[type="checkbox"],
+.andragathima .spell-properties-table input[type="radio"] {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  width: 18px;
+  height: 18px;
+  background: transparent;
+  border: 1px solid var(--andragathima-accent);
+  border-radius: 3px;
+  cursor: pointer;
+  position: relative;
+  min-width: 18px;
+}
+
+.andragathima .spell-properties-table input[type="radio"] {
+  border-radius: 50%;
+}
+
+.andragathima .spell-properties-table input[type="checkbox"]:checked::after,
+.andragathima .spell-properties-table input[type="radio"]:checked::after {
+  content: "✓";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--andragathima-text);
+  font-weight: normal;
+  font-size: 12px;
+}
+
+.andragathima .radio-group input[type="text"] {
+  margin-left: 5px;
+  width: 120px !important;
+}
+
+/* Make points tab a relative container for sticky positioning */
+.andragathima .tab.points {
+  position: relative;
+}
+
+/* Points Tab Header with Experience Points and Lock Button */
+.andragathima .points-header {
+  margin: 0 15px 15px 15px;
+  padding: 5px 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--andragathima-bg);
+  border-bottom: 1px solid var(--andragathima-title);
+}
+
+/* Experience Points Field */
+.andragathima .experience-points-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 0 0 auto;
+}
+
+.andragathima .experience-points-container label {
+  font-size: 14px;
+  font-weight: bold;
+  color: var(--andragathima-title);
+  margin: 0;
+  white-space: nowrap;
+}
+
+.andragathima .experience-points-field {
+  width: 80px;
+  height: 24px;
+  padding: 2px 6px;
+  border: 1px solid var(--andragathima-title);
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.8);
+  color: var(--andragathima-text);
+  font-size: 12px;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.andragathima .experience-points-field:focus {
+  outline: none;
+  border-color: var(--andragathima-title);
+  box-shadow: 0 0 3px rgba(153, 101, 39, 0.3);
+}
+
+/* Available Experience Points Display */
+.andragathima .available-experience-display {
+  flex: 1;
+  text-align: right;
+  padding: 0 15px;
+  margin-right: 10px;
+}
+
+.andragathima .available-experience-text {
+  font-size: 13px;
+  color: var(--andragathima-title);
+  font-weight: bold;
+}
+
+.andragathima .available-experience-value {
+  color: var(--andragathima-text);
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.andragathima .points-lock-toggle {
+  width: 32px;
+  height: 32px;
+  background: none !important;
+  background-color: transparent !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  cursor: pointer;
+  padding: 0 !important;
+  margin: 0 !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+}
+
+.andragathima .points-lock-toggle img {
+  width: 100%;
+  height: 100%;
+  object-fit: scale-down;
+  outline: none !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+
+.andragathima .points-lock-toggle img:focus,
+.andragathima .points-lock-toggle img:hover,
+.andragathima .points-lock-toggle img:active,
+.andragathima .points-lock-toggle img:focus-visible,
+.andragathima .points-lock-toggle img:focus-within {
+  top: 0 !important;
+}
+
+/* Disabled states for locked points tab - only affects minus buttons and race dropdown */
+.andragathima .tab.points[data-points-locked="true"] .race-dropdown,
+.andragathima .tab.points[data-points-locked="true"] .ability-decrease,
+.andragathima .tab.points[data-points-locked="true"] .save-decrease,
+.andragathima .tab.points[data-points-locked="true"] .combat-decrease,
+.andragathima .tab.points[data-points-locked="true"] .skill-decrease,
+.andragathima .tab.points[data-points-locked="true"] .magic-decrease {
+  pointer-events: none;
+  opacity: 0.5;
+  filter: grayscale(0.7);
+}
+
+/* GM and GM-assistant override for locked state - managed via JavaScript */
+
+/* GM/Assistant controls - will be managed via JavaScript based on user permissions */
+.andragathima .experience-points-container.hidden,
+.andragathima .points-lock-toggle.hidden {
+  display: none !important;
+}
+
+/* Utility class for removing default browser styling - can be applied where needed */
+.andragathima .no-border-shadow {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* Base disabled button styling - consolidated to reduce duplication */
+.andragathima .ability-decrease.disabled-by-lock,
+.andragathima .save-decrease.disabled-by-lock,
+.andragathima .combat-decrease.disabled-by-lock,
+.andragathima .skill-decrease.disabled-by-lock,
+.andragathima .magic-decrease.disabled-by-lock,
+.andragathima .ability-decrease.disabled-by-limit,
+.andragathima .save-decrease.disabled-by-limit,
+.andragathima .combat-decrease.disabled-by-limit,
+.andragathima .skill-decrease.disabled-by-limit,
+.andragathima .magic-decrease.disabled-by-limit,
+.andragathima .ability-increase.disabled-by-limit,
+.andragathima .save-increase.disabled-by-limit,
+.andragathima .combat-increase.disabled-by-limit,
+.andragathima .skill-increase.disabled-by-limit,
+.andragathima .magic-increase.disabled-by-limit,
+.andragathima .ability-increase.disabled-by-xp,
+.andragathima .save-increase.disabled-by-xp,
+.andragathima .combat-increase.disabled-by-xp,
+.andragathima .skill-increase.disabled-by-xp,
+.andragathima .magic-increase.disabled-by-xp {
+  opacity: 0.3 !important;
+  cursor: not-allowed !important;
+  filter: grayscale(1) !important;
+  pointer-events: none !important;
+  transition: none !important; /* Prevent CSS transitions that might cause flickering */
+}
+
+/* GM/Assistant button overrides - consolidated */
+.andragathima[data-gm="true"] .ability-decrease:not(.disabled-by-limit),
+.andragathima[data-gm="true"] .save-decrease:not(.disabled-by-limit),
+.andragathima[data-gm="true"] .combat-decrease:not(.disabled-by-limit),
+.andragathima[data-gm="true"] .skill-decrease:not(.disabled-by-limit),
+.andragathima[data-gm="true"] .magic-decrease:not(.disabled-by-limit),
+.andragathima[data-gm="true"] .ability-increase:not(.disabled-by-limit),
+.andragathima[data-gm="true"] .save-increase:not(.disabled-by-limit),
+.andragathima[data-gm="true"] .combat-increase:not(.disabled-by-limit),
+.andragathima[data-gm="true"] .skill-increase:not(.disabled-by-limit),
+.andragathima[data-gm="true"] .magic-increase:not(.disabled-by-limit) {
+  opacity: 1 !important;
+  cursor: pointer !important;
+  filter: none !important;
+  pointer-events: auto !important;
+}
+
+/* Status Tab Styling - Modifier Fields */
+.andragathima .tab.status .modifier-group {
+  position: relative;
+  z-index: 3;
+  margin: 15px 15px 25px 15px;
+}
+
+.andragathima .tab.status .modifier-group h3 {
+  font-family: 'Albertus Nova', 'Trajan Pro', 'Optima', 'Cinzel', Georgia, serif;
+  color: var(--andragathima-title);
+  font-size: 1.1em;
+  margin-bottom: 10px;
+  border-bottom: 1px solid var(--andragathima-primary);
+  padding-bottom: 5px;
+}
+
+.andragathima .tab.status .modifier-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+  gap: 10px;
+}
+
+.andragathima .tab.status .modifier-row label {
+  font-family: 'Palatino Linotype', serif;
+  color: var(--andragathima-text);
+  font-size: 0.95em;
+  min-width: 200px;
+  flex-shrink: 0;
+}
+
+.andragathima .tab.status .modifier-row input[type="number"] {
+  width: 80px;
+  height: 26px;
+  padding: 2px 8px;
+  border: 1px solid var(--andragathima-primary);
+  border-radius: 3px;
+  background: var(--andragathima-bg);
+  color: var(--andragathima-text);
+  font-family: 'Palatino Linotype', serif;
+  font-size: 0.9em;
+  text-align: center;
+}
+
+.andragathima .tab.status .modifier-row input[type="number"]:focus {
+  outline: none;
+  border-color: var(--andragathima-secondary);
+  box-shadow: 0 0 3px rgba(212, 175, 55, 0.3);
+}
+
+.andragathima .tab.status .modifier-row input[type="number"]::-webkit-outer-spin-button,
+.andragathima .tab.status .modifier-row input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.andragathima .tab.status .modifier-row input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield; /* Standard property for compatibility */
+}
+
+/* Status Modifier Color Coding */
+.andragathima .status-modifier-positive {
+  color: #28a745 !important; /* Green for positive modifiers */
+  font-weight: bold;
+}
+
+.andragathima .status-modifier-negative {
+  color: #dc3545 !important; /* Red for negative modifiers */
+  font-weight: bold;
+}
+
+/* Status Effects Section */
+.andragathima .tab.status .status-effects-section {
+  margin: 10px 15px 20px 15px;
+  padding: 5px;
+  position: relative;
+  overflow: visible;
+}
+
+.andragathima .tab.status .status-effects-section:before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--andragathima-primary);
+  mask:
+    radial-gradient(12px at 12px 12px,#0000 calc(98% - 1px),#000 calc(100% - 1px) 98%,#0000) -12px -12px,
+    linear-gradient(90deg,#000 2px,#0000 0) -1px 50% /100% calc(100% - 24px + 1px) repeat-x,
+    linear-gradient(      #000 2px,#0000 0) 50% -1px/calc(100% - 24px + 1px) 100% repeat-y;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.andragathima .tab.status .status-effects-section:after {
+  content: "";
+  position: absolute;
+  inset: 2px;
+  background: var(--andragathima-bg);
+  clip-path: polygon(
+    12px 0%, calc(100% - 12px) 0%, 
+    100% 12px, 100% calc(100% - 12px), 
+    calc(100% - 12px) 100%, 12px 100%, 
+    0% calc(100% - 12px), 0% 12px
+  );
+  pointer-events: none;
+  z-index: 2;
+}
+
+.andragathima .tab.status .status-effects-section h2 {
+  position: relative;
+  z-index: 3;
+  margin: 15px 15px 10px 15px;
+  color: var(--andragathima-title);
+  font-family: 'Albertus Nova', 'Trajan Pro', 'Optima', 'Cinzel', Georgia, serif;
+  font-weight: normal;
+}
+
+/* Active Effects Grid */
+.andragathima .active-effects-grid {
+  position: relative;
+  z-index: 3;
+  margin: 8px 15px 15px 15px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+/* Effect Slot Styling */
+.andragathima .effect-slot {
+  position: relative;
+  width: 42px;
+  height: 42px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+/* Effect Slot with effect */
+.andragathima .effect-slot.has-effect {
+  background: transparent;
+}
+
+/* Disabled effect */
+.andragathima .effect-slot.disabled {
+  opacity: 0.5;
+  filter: grayscale(100%);
+}
+
+/* Effect image */
+.andragathima .effect-slot .effect-image {
+  width: 36px;
+  height: 36px;
+  border: none;
+  object-fit: scale-down;
+  pointer-events: none;
+}
+
+/* Delete button (X) - same style as spells */
+.andragathima .effect-slot .effect-delete {
+  position: absolute;
+  top: 1px;
+  right: 1px;
+  width: 10px;
+  height: 10px;
+  background: none;
+  border: none;
+  outline: none;
+  box-shadow: none;
+  color: var(--andragathima-text);
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+  padding: 0;
+  margin: 0;
+}
+
+.andragathima .effect-slot .effect-delete:hover {
+  opacity: 1;
+}
+
+.andragathima .effect-slot .effect-delete:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.andragathima .effect-slot .effect-delete:active {
+  outline: none;
+  box-shadow: none;
+}
+
+/* Add effect slot */
+.andragathima .effect-slot.add-effect-slot {
+  background: rgba(196, 154, 107, 0.05);
+  border: 1px solid rgba(196, 154, 107, 0.4);
+  color: rgba(196, 154, 107, 0.6);
+  font-size: 14px;
+}
+
+.andragathima .effect-slot.add-effect-slot:hover {
+  background: rgba(196, 154, 107, 0.1);
+  color: rgba(196, 154, 107, 0.8);
+  border-color: rgba(196, 154, 107, 0.6);
+}
+
+/* Active Effect Items */
+.andragathima .active-effect-item {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  margin-bottom: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--andragathima-accent);
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.andragathima .active-effect-item:hover {
+  background: rgba(196, 154, 107, 0.2);
+  border-color: var(--andragathima-secondary);
+}
+
+.andragathima .active-effect-item.temporary {
+  border-left: 4px solid #ff6b6b;
+}
+
+.andragathima .active-effect-item.passive {
+  border-left: 4px solid #4ecdc4;
+}
+
+.andragathima .active-effect-item.inactive {
+  opacity: 0.5;
+  border-left: 4px solid #999;
+}
+
+/* Effect Icon */
+.andragathima .effect-icon {
+  width: 40px;
+  height: 40px;
+  margin-right: 12px;
+  flex-shrink: 0;
+}
+
+.andragathima .effect-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 4px;
+  border: none !important;
+}
+
+/* Effect Details */
+.andragathima .effect-details {
+  flex: 1;
+  min-width: 0;
+}
+
+.andragathima .effect-name {
+  margin: 0 0 4px 0;
+  font-size: 14px;
+  font-weight: bold;
+  color: var(--andragathima-title);
+}
+
+.andragathima .effect-changes {
+  margin-bottom: 4px;
+}
+
+.andragathima .effect-change {
+  font-size: 12px;
+  color: var(--andragathima-text);
+  margin-bottom: 2px;
+}
+
+.andragathima .effect-duration {
+  font-size: 11px;
+  color: var(--andragathima-accent);
+  font-style: italic;
+}
+
+/* Effect Controls */
+.andragathima .effect-controls {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.andragathima .effect-control {
+  width: 24px;
+  height: 24px;
+  background: none;
+  border: 1px solid var(--andragathima-accent);
+  border-radius: 3px;
+  color: var(--andragathima-accent);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  transition: all 0.2s ease;
+}
+
+.andragathima .effect-control:hover {
+  background: var(--andragathima-accent);
+  color: white;
+}
+
+/* Effect Controls Footer */
+.andragathima .effect-controls-footer {
+  position: relative;
+  z-index: 3;
+  margin: 8px 15px 15px 15px;
+  text-align: center;
+}
+
+.andragathima .effect-control.add-effect {
+  width: auto;
+  height: auto;
+  padding: 8px 16px;
+  background: var(--andragathima-secondary);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.andragathima .effect-control.add-effect:hover {
+  background: var(--andragathima-gold);
+}
+
+/* Empty State */
+.andragathima .empty-effects-message {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--andragathima-text);
+  opacity: 0.7;
+  font-style: italic;
+}
+
+/* Active Effect Sheet Styling */
+.andragathima.active-effect {
+  background: transparent;
+  color: var(--andragathima-text);
+}
+
+.andragathima.active-effect .sheet-header {
+  background: transparent;
+  color: var(--andragathima-text);
+  padding: 8px 15px;
+  border: none;
+  height: auto;
+  min-height: 60px;
+  max-height: 80px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.andragathima.active-effect .profile-img {
+  width: 64px;
+  height: 64px;
+  border: none !important;
+  cursor: pointer;
+  object-fit: contain;
+}
+
+.andragathima.active-effect .header-fields {
+  flex: 1;
+}
+
+.andragathima.active-effect .charname {
+  margin: 0;
+}
+
+.andragathima.active-effect .charname input {
+  font-family: 'Albertus Nova', 'Trajan Pro', 'Optima', 'Cinzel', Georgia, serif;
+  font-size: 1.2em;
+  font-weight: normal;
+  background: transparent;
+  border: none;
+  box-shadow: inset 0 0 0px #ffffff !important;
+  color: var(--andragathima-title);
+  text-align: center;
+  padding: 1px 20px !important;
+  margin: 0px !important;
+  height: 1.4em !important;
+  width: 100% !important;
+}
+
+
+.andragathima.active-effect .charname input:focus {
+  outline: none;
+  border-bottom-color: var(--andragathima-text);
+}
+
+.andragathima.active-effect .sheet-body {
+  background: transparent;
+}
+
+.andragathima.active-effect .info-section {
+  background: transparent;
+}
+
+/* Effect Changes List */
+.andragathima.active-effect .effect-change-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  padding: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--andragathima-accent);
+  border-radius: 4px;
+}
+
+.andragathima.active-effect .effect-attribute {
+  flex: 2;
+  padding: 4px 8px;
+  background: transparent;
+  border: 1px solid var(--andragathima-accent);
+  border-radius: 3px;
+  font-family: inherit;
+  font-size: 0.9em;
+}
+
+.andragathima.active-effect .effect-mode {
+  width: 60px;
+  padding: 0px 8px;
+  background: transparent;
+  border: 1px solid var(--andragathima-accent);
+  border-radius: 3px;
+  font-family: inherit;
+  font-size: 1.2em;
+  text-align: center;
+}
+
+.andragathima.active-effect .effect-value {
+  width: 80px;
+  padding: 4px 8px;
+  background: transparent;
+  border: 1px solid var(--andragathima-accent);
+  border-radius: 3px;
+  font-family: inherit;
+  font-size: 0.9em;
+  text-align: center;
+}
+
+.andragathima.active-effect .effect-change-delete {
+  background: none;
+  border: none;
+  width: 24px;
+  color: var(--andragathima-text);
+  cursor: pointer;
+  font-size: 16px;
+  padding: 4px;
+  line-height: 1;
+  vertical-align: baseline;
+}
+
+.andragathima.active-effect .effect-change-delete:hover {
+  box-shadow: none !important;
+}
+
+.andragathima.active-effect .add-effect-change {
+  background: rgba(255, 255, 255, 0.1) !important;
+  border: 1px solid var(--andragathima-accent) !important;
+  border-radius: 4px !important;
+  color: var(--andragathima-text) !important;
+  font-size: 22px !important;
+  font-weight: normal !important;
+  box-shadow: none !important;
+  height: 45px !important;
+  transition: all 0.2s ease !important;
+  padding: 0 !important;
+}
+
+.andragathima.active-effect .add-effect-change:hover {
+  background: rgba(255, 255, 255, 0.3)  !important;
+  color: var(--andragathima-text) !important;
+  box-shadow: none !important;
+}
+
+/* Duration Section */
+.andragathima.active-effect .duration-units {
+  width: 50%;
+  padding: 4px 8px;
+  background: transparent;
+  border: 1px solid var(--andragathima-accent);
+  border-radius: 3px;
+  font-family: inherit;
+  font-size: 0.9em;
+}
+
+.andragathima.active-effect .token-status-select {
+  width: 100%;
+  padding: 4px 8px;
+  background: transparent;
+  border: 1px solid var(--andragathima-accent);
+  border-radius: 3px;
+  font-family: inherit;
+  font-size: 0.9em;
+}
+
+.andragathima.active-effect .duration-value {
+  width: 50%;
+  padding: 4px 8px;
+  background: transparent;
+  border: 1px solid var(--andragathima-accent);
+  border-radius: 3px;
+  font-family: inherit;
+  font-size: 0.9em;
+  text-align: center;
+}
+
+/* Status Conditions */
+.andragathima.active-effect .status-conditions {
+  margin-top: 10px;
+}
+
+.andragathima.active-effect .status-conditions .checkbox-group {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.andragathima.active-effect .status-conditions label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9em;
+  color: var(--andragathima-text);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 3px;
+  transition: background 0.2s ease;
+}
+
+.andragathima.active-effect .status-conditions label:hover {
+  background: rgba(196, 154, 107, 0.2);
+}
+
+.andragathima.active-effect .status-conditions input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  width: 16px;
+  height: 16px;
+  background: transparent;
+  border: 1px solid var(--andragathima-accent);
+  border-radius: 3px;
+  cursor: pointer;
+  position: relative;
+  min-width: 16px;
+}
+
+.andragathima.active-effect .status-conditions input[type="checkbox"]:checked::after {
+  content: "✓";
+  position: absolute;
+  top: -2px;
+  left: 2px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--andragathima-text);
+  font-weight: normal;
+  font-size: 12px;
+}
+
+/* Main checkbox for disabled state */
+.andragathima.active-effect input[name="disabled"] {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  width: 18px;
+  height: 18px;
+  background: transparent;
+  border: 1px solid var(--andragathima-accent);
+  border-radius: 3px;
+  cursor: pointer;
+  position: relative;
+  min-width: 18px;
+  margin-right: 8px;
+}
+
+.andragathima.active-effect input[name="disabled"]:checked::after {
+  content: "✓";
+  position: absolute;
+  top: -2px;
+  left: 2px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--andragathima-text);
+  font-size: 14px;
+}
+
+/* Item Effects Grid - smaller version (36x36px) */
+.andragathima.item .item-effects-section {
+  margin: 10px 0;
+}
+
+.andragathima.item .effects-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin: 10px 0;
+  padding: 8px;
+  border: none;
+  background: transparent;
+}
+
+.andragathima.item .effect-slot {
+  position: relative;
+  width: 36px;
+  height: 36px;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.andragathima.item .effect-slot.has-effect {
+  background: transparent;
+}
+
+.andragathima.item .effect-slot.disabled {
+  opacity: 0.5;
+  filter: grayscale(100%);
+}
+
+.andragathima.item .effect-slot .effect-image {
+  width: 36px;
+  height: 36px;
+  border: none;
+  object-fit: scale-down;
+  pointer-events: none;
+}
+
+.andragathima.item .effect-slot .effect-delete {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  width: 10px;
+  height: 10px;
+  background: none;
+  border: none;
+  outline: none;
+  box-shadow: none;
+  color: var(--andragathima-text);
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+  padding: 0;
+  margin: 0;
+}
+
+.andragathima.item .effect-slot .effect-delete:hover {
+  opacity: 1;
+}
+
+.andragathima.item .effect-slot .effect-delete:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.andragathima.item .effect-slot .effect-delete:active {
+  outline: none;
+  box-shadow: none;
+}
+
+.andragathima.item .effect-slot.add-effect-slot {
+  background: rgba(196, 154, 107, 0.05);
+  border: 1px solid rgba(196, 154, 107, 0.4);
+  color: rgba(196, 154, 107, 0.6);
+  font-size: 14px;
+}
+
+.andragathima.item .effect-slot.add-effect-slot:hover {
+  background: rgba(196, 154, 107, 0.1);
+  color: rgba(196, 154, 107, 0.8);
+  border-color: rgba(196, 154, 107, 0.6);
+}
+
+/* Equipment Effects Row - contains both checkboxes */
+.andragathima.item .equipment-effects-row {
+  margin-top: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.andragathima.item .equipment-effects-toggle {
+  display: flex;
+  justify-content: center;
+}
+
+.andragathima.item .equipment-effects-toggle label {
+  font-family: 'Albertus Nova', 'Trajan Pro', 'Optima', 'Cinzel', Georgia, serif;
+  font-size: 14px;
+  color: var(--andragathima-title);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.andragathima.item .equipment-effects-toggle label input[type="checkbox"] {
+  flex: none !important;
+}
+
+/* Weapon Display Toggle */
+.andragathima.item .weapon-display-toggle {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.andragathima.item .weapon-display-toggle label {
+  font-family: 'Albertus Nova', 'Trajan Pro', 'Optima', 'Cinzel', Georgia, serif;
+  font-size: 14px;
+  color: var(--andragathima-title);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.andragathima.item .weapon-display-toggle label input[type="checkbox"] {
+  flex: none !important;
+}
+
+.andragathima.item .weapon-display-toggle input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  width: 16px;
+  height: 16px;
+  min-width: 16px;
+  min-height: 16px;
+  max-width: 16px;
+  max-height: 16px;
+  background: transparent;
+  border: 1px solid var(--andragathima-accent);
+  border-radius: 3px;
+  cursor: pointer;
+  position: relative;
+  margin: 0;
+}
+
+.andragathima.item .weapon-display-toggle input[type="checkbox"]:checked::after {
+  content: "✓";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--andragathima-text);
+  font-size: 12px;
+  font-weight: normal;
+  line-height: 1;
+}
+
+.andragathima.active-effect .disabled-section .checkbox-container input[type="checkbox"] {
+  flex: none !important;
+}
+
+
+/* Effect Sheet Duration and Status Section */
+.andragathima.active-effect .duration-status-section {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin: 15px 0;
+}
+
+.andragathima.active-effect .duration-status-section .form-group {
+  height: 26px;
+  display: flex;
+  align-items: left;
+  gap: 15px;
+  margin-bottom: 5px !important;
+}
+
+.andragathima.active-effect .duration-status-section .form-group label {
+  width: 150px !important;
+  font-family: "Albertus Nova", serif;
+  font-size: 16px;
+  color: var(--andragathima-title);
+  margin: 0 0 0 15px;
+  flex: none !important;
+}
+
+.andragathima.active-effect .duration-status-section .form-fields {
+  display: flex;
+  gap: 10px;
+  align-items: left;
+}
+
+.andragathima.active-effect .disabled-section {
+  height: 26px;
+  display: flex;
+  align-items: left;
+  gap: 15px;
+}
+
+.andragathima.active-effect .disabled-section label {
+  width: 150px !important;
+  font-family: "Albertus Nova", serif;
+  font-size: 16px;
+  color: var(--andragathima-title);
+  margin: 0 0 0 15px;
+  flex: none !important;
+}
+
+.andragathima.active-effect .disabled-section .checkbox-container {
+  display: flex;
+  align-items: center;
+}
+
+.andragathima.active-effect .disabled-section input[name="disabled"] {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  width: 16px;
+  height: 16px;
+  min-width: 16px;
+  min-height: 16px;
+  max-width: 16px;
+  max-height: 16px;
+  background: transparent;
+  border: 1px solid var(--andragathima-accent);
+  border-radius: 3px;
+  cursor: pointer;
+  position: relative;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  flex: none !important;
+}
+
+.andragathima.active-effect .disabled-section input[name="disabled"]:checked::after {
+  content: "✓";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--andragathima-text);
+  font-size: 12px;
+  font-weight: normal;
+  line-height: 1;
+}
+
+/* Dead character greyscale effect */
+.andragathima .character-art.dead-character img,
+.andragathima .profile-img.dead-character {
+  filter: grayscale(100%) brightness(80%) contrast(110%);
+  -webkit-filter: grayscale(100%) brightness(80%) contrast(110%);
+}
+
+/* Toggle Controls Container */
+.andragathima .toggle-controls {
+  margin-top: -10px;
+  padding: 8px;
+  text-align: right;
+  position: relative;
+  z-index: 10;
+}
+
+/* Individual Toggle Styling */
+.andragathima .target-numbers-toggle,
+.andragathima .hide-stats-toggle {
+  display: flex !important;
+  flex-direction: row-reverse;
+  justify-content: space-between;
+  padding: 5px;
+  margin: 0;
+}
+
+.andragathima .hide-stats-toggle {
+  margin-top: 2px;
+  text-align: right;
+}
+
+.andragathima .toggle-switch {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-size: 11px;
+  gap: 8px;
+}
+
+.andragathima .toggle-switch input[type="checkbox"] {
+  display: none;
+}
+
+.andragathima .toggle-slider {
+  position: relative;
+  width: 32px;
+  height: 16px;
+  background-color: transparent;
+  border: 1px solid var(--andragathima-text);
+  border-radius: 12px;
+  transition: background-color 0.3s;
+}
+
+.andragathima .toggle-slider::before {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 10px;
+  height: 10px;
+  background-color: var(--andragathima-text);
+  border-radius: 50%;
+  transition: transform 0.3s;
+}
+
+.andragathima .toggle-switch input:checked + .toggle-slider {
+  background-color: var(--andragathima-accent);
+}
+
+.andragathima .toggle-switch input:checked + .toggle-slider::before {
+  transform: translateX(16px);
+  background-color: white;
+}
+
+.andragathima .toggle-label {
+  color: var(--andragathima-text);
+  font-weight: normal;
+}
+
+/* Size dropdown styling */
+.andragathima .size-dropdown-container {
+  width: 30%;
+  margin: 10px 15px;
+  height: 40px;
+  position: relative;
+  z-index: 10;
+}
+
+/* ==========================================
+   Container Sheet Styling
+   ========================================== */
+
+.andragathima.container {
+  background: url(../assets/parchment.jpg) repeat;
+  background-size: 400px 400px;
+  color: var(--andragathima-text);
+  font-family: 'Albertus', serif;
+}
+
+.andragathima.container .sheet-header {
+  flex: 0 0 100px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: row;
+  align-items: normal;
+  justify-content: flex-start;
+  margin-bottom: 10px;
+  padding: 10px;
+}
+
+.andragathima.container .profile-img {
+  flex: 0 0 64px;
+  height: 64px;
+  object-fit: cover;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+.andragathima.container .header-fields {
+  flex: 1;
+  height: 64px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.andragathima.container .charname {
+  height: 32px;
+  margin: 0;
+}
+
+.andragathima.container .charname input {
+  font-family: 'Albertus Nova', 'Trajan Pro', 'Optima', 'Cinzel', Georgia, serif;
+  font-size: 1.2em;
+  font-weight: normal;
+  color: var(--andragathima-title);
+  background: transparent;
+  border: none;
+  height: 1.4em;
+  line-height: 1.4em;
+  margin: 0;
+  padding: 1px 20px;
+  width: 100%;
+  text-align: center;
+  box-shadow: none;
+}
+
+.andragathima.container .container-body {
+  padding: 10px;
+  height: auto;
+  min-height: 280px;
+  width: 360px;
+  overflow-y: auto;
+}
+
+.andragathima.container .container-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+}
+
+.andragathima.container .container-items-section {
+  width: 100%;
+  max-width: 600px;
+}
+
+
+.andragathima.container .container-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(5, 1fr);
+  gap: 10px;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 5px;
+  justify-content: center;
+}
+
+.andragathima.container .item-slot,
+.andragathima.container .misc-equipment-slot {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  padding: 8px;
+  border: 1px solid var(--andragathima-title);
+  border-radius: 1px;
+  background: rgba(153, 101, 39, 0.1);
+  transition: all 0.2s ease;
+}
+
+.andragathima.container .item-image-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.andragathima.container .item-image {
+  width: 40px;
+  height: 40px;
+  object-fit: scale-down !important;
+  border-radius: 3px;
+  margin-bottom: 4px;
+  cursor: grab;
+}
+
+.andragathima.container .item-image[draggable="true"]:active {
+  cursor: grabbing;
+}
+
+.andragathima.container .empty-slot-image {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  margin-bottom: 4px;
+  border: none;
+  border-radius: 0;
+  opacity: 0.5;
+  filter: sepia(1) hue-rotate(25deg) saturate(0.8);
+}
+
+.andragathima.container .item-delete {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 20px;
+  height: 20px;
+  background: none;
+  border: none;
+  outline: none;
+  box-shadow: none;
+  color: var(--andragathima-text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: normal;
+  cursor: pointer;
+  z-index: 10;
+  opacity: 0.6;
+  transition: opacity 0.2s ease;
+  padding: 0;
+  margin: 0;
+}
+
+.andragathima.container .item-delete:hover {
+  opacity: 1;
+}
+

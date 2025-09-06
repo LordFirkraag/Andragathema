@@ -1,0 +1,811 @@
+<form class="{{cssClass}} andragathima flexcol" autocomplete="off">
+
+  {{!-- Sheet Header --}}
+  <header class="sheet-header">
+    <img class="profile-img {{#if isDead}}dead-character{{/if}}" src="{{actor.prototypeToken.texture.src}}" data-edit="prototypeToken.texture.src" title="{{actor.name}}" height="100" width="100"/>
+    <div class="header-fields">
+      <h1 class="charname">
+        <input name="name" type="text" value="{{actor.name}}" placeholder="{{localize 'ANDRAGATHIMA.CharacterName'}}"/>
+      </h1>
+      <div class="header-character-info">
+        {{localize 'ANDRAGATHIMA.Level'}} {{system.characterLevel}}, {{system.details.experience.spent}} {{#if (eq system.details.experience.spent 1)}}{{localize 'ANDRAGATHIMA.ExperienceSingular'}}{{else}}{{localize 'ANDRAGATHIMA.Experience'}}{{/if}}
+      </div>
+    </div>
+  </header>
+
+  <div class="sheet-layout">
+    {{!-- Vertical Tab Navigation --}}
+    <nav class="vertical-tabs tabs" data-group="primary">
+      <a class="item tab-btn" data-tab="overview" title="{{localize 'ANDRAGATHIMA.Overview'}}">
+        <img src="systems/andragathima/assets/record.png" alt="Overview" />
+      </a>
+      <a class="item tab-btn" data-tab="equipment" title="{{localize 'ANDRAGATHIMA.Equipment'}}">
+        <img src="systems/andragathima/assets/inventory.png" alt="Equipment" />
+      </a>
+      <a class="item tab-btn" data-tab="magic" title="{{localize 'ANDRAGATHIMA.Magic'}}">
+        <img src="systems/andragathima/assets/sorcery.png" alt="Magic" />
+      </a>
+      <a class="item tab-btn" data-tab="status" title="{{localize 'ANDRAGATHIMA.Status'}}">
+        <img src="systems/andragathima/assets/status.png" alt="Status" />
+      </a>
+      <a class="item tab-btn" data-tab="points" title="{{localize 'ANDRAGATHIMA.Points'}}">
+        <img src="systems/andragathima/assets/points.png" alt="Points" />
+      </a>
+      <a class="item tab-btn" data-tab="notes" title="{{localize 'ANDRAGATHIMA.Notes'}}">
+        <img src="systems/andragathima/assets/bio.png" alt="Notes" />
+      </a>
+    </nav>
+
+  {{!-- Sheet Body --}}
+  <section class="sheet-body">
+
+    {{!-- Καταγραφή Tab --}}
+    <div class="tab overview" data-group="primary" data-tab="overview">
+      <div class="overview-layout">
+        
+        {{!-- Αριστερή Στήλη: Βασικές Ικανότητες --}}
+        <div class="left-column">
+          <div class="abilities-column">
+            <div class="ability-item">
+              <span class="ability-name">{{localize 'ANDRAGATHIMA.AbilityDyn'}}</span>
+              <span class="ability-score {{statusModifierClass system.abilities.dyn.statusMod}}">{{system.abilities.dyn.displayValue}}</span>
+              <span class="ability-mod">({{formatNumber system.abilities.dyn.mod sign=true}})</span>
+            </div>
+            
+            <div class="ability-item">
+              <span class="ability-name">{{localize 'ANDRAGATHIMA.AbilityEpi'}}</span>
+              <span class="ability-score {{statusModifierClass system.abilities.epi.statusMod}}">{{system.abilities.epi.displayValue}}</span>
+              <span class="ability-mod">({{formatNumber system.abilities.epi.mod sign=true}})</span>
+            </div>
+            
+            <div class="ability-item">
+              <span class="ability-name">{{localize 'ANDRAGATHIMA.AbilityKra'}}</span>
+              <span class="ability-score {{statusModifierClass system.abilities.kra.statusMod}}">{{system.abilities.kra.displayValue}}</span>
+              <span class="ability-mod">({{formatNumber system.abilities.kra.mod sign=true}})</span>
+            </div>
+            
+            <div class="ability-item">
+              <span class="ability-name">{{localize 'ANDRAGATHIMA.AbilityEyf'}}</span>
+              <span class="ability-score {{statusModifierClass system.abilities.eyf.statusMod}}">{{system.abilities.eyf.displayValue}}</span>
+              <span class="ability-mod">({{formatNumber system.abilities.eyf.mod sign=true}})</span>
+            </div>
+            
+            <div class="ability-item">
+              <span class="ability-name">{{localize 'ANDRAGATHIMA.AbilitySof'}}</span>
+              <span class="ability-score {{statusModifierClass system.abilities.sof.statusMod}}">{{system.abilities.sof.displayValue}}</span>
+              <span class="ability-mod">({{formatNumber system.abilities.sof.mod sign=true}})</span>
+            </div>
+            
+            <div class="ability-item">
+              <span class="ability-name">{{localize 'ANDRAGATHIMA.AbilityXar'}}</span>
+              <span class="ability-score {{statusModifierClass system.abilities.xar.statusMod}}">{{system.abilities.xar.displayValue}}</span>
+              <span class="ability-mod">({{formatNumber system.abilities.xar.mod sign=true}})</span>
+            </div>
+            
+            {{!-- Διαχωριστική Γραμμή --}}
+            <div class="ability-divider"></div>
+            
+            {{!-- Στοιχεία Μάχης --}}
+            <div class="ability-item">
+              <span class="ability-name">{{localize 'ANDRAGATHIMA.WeaponMelee'}}:</span>
+              <span class="ability-score {{statusModifierClass system.combat.melee.statusMod}}">{{system.combat.melee.displayValue}}</span>
+              <span class="ability-mod"></span>
+            </div>
+            
+            <div class="ability-item">
+              <span class="ability-name">{{localize 'ANDRAGATHIMA.WeaponRanged'}}:</span>
+              <span class="ability-score {{statusModifierClass system.combat.ranged.statusMod}}">{{system.combat.ranged.displayValue}}</span>
+              <span class="ability-mod"></span>
+            </div>
+          </div>
+        </div>
+
+        {{!-- Κεντρική Στήλη: Character Art --}}
+        <div class="center-column">
+          <div class="character-art {{#if isDead}}dead-character{{/if}}" data-edit="img">
+            <img src="{{actor.img}}" alt="{{actor.name}}" />
+          </div>
+          
+          {{!-- Character Info --}}
+          <div class="character-info">
+            <div class="character-race">
+              <input type="text" name="system.details.displayTitle" value="{{system.details.displayTitle}}" 
+                     placeholder="{{currentRaceName}}"
+                     class="character-race-input" />
+            </div>
+          </div>
+        </div>
+
+        {{!-- Δεξιά Στήλη: Χαρακτηριστικά (Scrollable Text) --}}
+        <div class="right-column">
+          <div class="character-stats">
+            
+            <div class="stat-line">
+              <strong>{{localize 'ANDRAGATHIMA.Defense'}}:</strong> <span {{#if (or system.hasArmorPenalty system.hasEncumbrancePenalty system.hasShieldPenalty)}}class="armor-penalty-text"{{/if}}><span class="{{statusModifierClass (default flags.andragathima.modifiers.combat.meleeDefense 0)}}">{{formatNumber system.combat.melee.defense sign=true}}</span>/<span class="{{statusModifierClass (default flags.andragathima.modifiers.combat.rangedDefense 0)}}">{{formatNumber system.combat.ranged.defense sign=true}}</span></span>
+            </div>
+
+            <div class="stat-line">
+              <strong>{{localize 'ANDRAGATHIMA.Resistance'}}:</strong> <span class="{{statusModifierClass (default flags.andragathima.modifiers.resistances.base 0)}}">{{formatNumber system.baseResistance sign=true}}</span>
+            </div>
+            {{#if system.specializedResistances.length}}
+            {{#each system.specializedResistances}}
+            <div class="stat-line specialized-resistance">
+              {{this.label}} {{formatNumber this.value sign=true}}
+            </div>
+            {{/each}}
+            {{/if}}
+
+            <div class="stat-line">
+              <strong>{{localize 'ANDRAGATHIMA.SavingThrows'}}:</strong> {{localize 'ANDRAGATHIMA.SaveAntAbbr'}} <span {{#if system.hasEncumbrancePenalty}}class="armor-penalty-text"{{/if}} class="{{statusModifierClass system.saves.ant.statusMod}}">{{formatNumber system.saves.ant.value sign=true}}</span>, {{localize 'ANDRAGATHIMA.SaveMyaAbbr'}} <span class="{{statusModifierClass system.saves.mya.statusMod}}">{{formatNumber system.saves.mya.value sign=true}}</span>, {{localize 'ANDRAGATHIMA.SaveSomAbbr'}} <span class="{{statusModifierClass system.saves.som.statusMod}}">{{formatNumber system.saves.som.value sign=true}}</span>
+            </div>
+
+            <div class="stat-line">
+              <strong>{{localize 'ANDRAGATHIMA.GrappleStability'}}:</strong> <span class="{{statusModifierClass (default flags.andragathima.modifiers.other.pali 0)}}">{{formatNumber system.combat.pali.value sign=true}}</span>/<span class="{{statusModifierClass (default flags.andragathima.modifiers.other.eystatheia 0)}}">{{formatNumber system.combat.eystatheia.value sign=true}}</span>
+            </div>
+
+            <div class="stat-divider"></div>
+
+            <div class="stat-line">
+              <strong>{{localize 'ANDRAGATHIMA.Movement'}}:</strong> <span class="{{statusModifierClass system.combat.speed.statusMod}}">{{system.combat.speed.value}} m</span>{{#if system.combat.speed.encumbranceNote}}{{system.combat.speed.encumbranceNote}}{{/if}}{{#if system.combat.speed.canRunNote}}{{system.combat.speed.canRunNote}}{{/if}}{{#if system.combat.speed.swim}}, {{localize 'ANDRAGATHIMA.MovementSwim'}} {{system.combat.speed.swim}} m{{/if}}{{#if system.combat.speed.fly}}, {{localize 'ANDRAGATHIMA.MovementFly'}} {{system.combat.speed.fly}} m{{#if system.combat.speed.flyQuality}} ({{#if (eq system.combat.speed.flyQuality "poor")}}{{localize 'ANDRAGATHIMA.FlightPoor'}}{{else if (eq system.combat.speed.flyQuality "good")}}{{localize 'ANDRAGATHIMA.FlightGood'}}{{else if (eq system.combat.speed.flyQuality "perfect")}}{{localize 'ANDRAGATHIMA.FlightPerfect'}}{{/if}}){{/if}}{{/if}}{{#if system.combat.speed.climb}}, {{localize 'ANDRAGATHIMA.MovementClimb'}} {{system.combat.speed.climb}} m{{/if}}{{#if system.combat.speed.burrow}}, {{localize 'ANDRAGATHIMA.MovementBurrow'}} {{system.combat.speed.burrow}} m{{/if}}
+            </div>
+
+            <div class="stat-line">
+              <strong>{{localize 'ANDRAGATHIMA.Initiative'}}:</strong> <span class="{{statusModifierClass system.combat.initiative.statusMod}}">{{formatNumber system.combat.initiative.value sign=true}}</span>
+            </div>
+
+            {{!-- Όπλα από γρήγορα αντικείμενα --}}
+            {{#each quickWeapons}}
+            <div class="stat-line weapon-name">
+              <strong>{{this.name}}</strong>
+            </div>
+            <div class="stat-line weapon-attack specialized-resistance">
+              {{localize 'ANDRAGATHIMA.AttackWithColon'}} <span{{#if this.system.hasAnyNonShieldPenalty}} class="weapon-proficiency-penalty"{{/if}}>{{formatNumber this.system.meleeAttackWithPenalty sign=true}}{{#if this.system.hasRange}}/{{formatNumber this.system.rangedAttackWithPenalty sign=true}}{{else}}/—{{/if}}</span>
+            </div>
+            <div class="stat-line weapon-damage specialized-resistance">
+              {{localize 'ANDRAGATHIMA.DamageWithColon'}} {{formatNumber this.system.weaponDamage sign=true}} {{this.system.damageTypeDisplay}}
+            </div>
+            {{#if (and this.system.range.displayText (ne this.system.range.displayText ""))}}
+            <div class="stat-line weapon-range specialized-resistance">
+              {{localize 'ANDRAGATHIMA.RangeDisplay'}} {{this.system.range.displayText}} m
+            </div>
+            {{/if}}
+            {{/each}}
+
+            {{!-- Όπλα από σλοτ ασπίδας --}}
+            {{#each shieldWeapons}}
+            <div class="stat-line weapon-name">
+              <strong>{{this.name}} {{localize 'ANDRAGATHIMA.SecondHand'}}</strong>
+            </div>
+            <div class="stat-line weapon-attack specialized-resistance">
+              {{localize 'ANDRAGATHIMA.AttackWithColon'}} <span{{#if this.system.hasAnyNonShieldPenalty}} class="weapon-proficiency-penalty"{{/if}}>{{formatNumber this.system.meleeAttackWithPenalty sign=true}}{{#if this.system.hasRange}}/{{formatNumber this.system.rangedAttackWithPenalty sign=true}}{{else}}/—{{/if}}</span>
+            </div>
+            <div class="stat-line weapon-damage specialized-resistance">
+              {{localize 'ANDRAGATHIMA.DamageWithColon'}} {{formatNumber this.system.weaponDamage sign=true}} {{this.system.damageTypeDisplay}}
+            </div>
+            {{#if (and this.system.range.displayText (ne this.system.range.displayText ""))}}
+            <div class="stat-line weapon-range specialized-resistance">
+              {{localize 'ANDRAGATHIMA.RangeDisplay'}} {{this.system.range.displayText}} m
+            </div>
+            {{/if}}
+            {{/each}}
+
+            {{#if raceFeatures}}
+            <div class="stat-divider"></div>
+
+            {{#each raceFeatures}}
+            <div class="stat-line">
+              {{this}}
+            </div>
+            {{/each}}
+            {{/if}}
+
+            <div class="stat-divider"></div>
+
+            {{#each system.skills as |skill key|}}
+            {{#if skill.hasSkill}}
+            <div class="stat-line">
+              {{skill.name}}{{#if (gt skill.level 1)}}{{#if (eq skill.level 2)}} ++{{else if (eq skill.level 3)}} +++{{else}} {{#each (range skill.level) as |dot|}}+{{/each}}{{/if}}{{/if}}{{#if (and (eq key "eidikeysi_sta_opla") skill.category)}} ({{#if (eq skill.category "aspida_varia")}}{{localize "ANDRAGATHIMA.WeaponTypeAspida"}}{{else if (eq skill.category "aspida_elafria")}}{{localize "ANDRAGATHIMA.WeaponTypeAspida"}}{{else if (eq skill.category "vallistra")}}{{localize "ANDRAGATHIMA.WeaponTypeVallistra"}}{{else if (eq skill.category "dory")}}{{localize "ANDRAGATHIMA.WeaponTypeDory"}}{{else if (eq skill.category "drepani")}}{{localize "ANDRAGATHIMA.WeaponTypeDrepani"}}{{else if (eq skill.category "longi")}}{{localize "ANDRAGATHIMA.WeaponTypeLongi"}}{{else if (eq skill.category "macheri")}}{{localize "ANDRAGATHIMA.WeaponTypeMacheri"}}{{else if (eq skill.category "mastigio")}}{{localize "ANDRAGATHIMA.WeaponTypeMastigio"}}{{else if (eq skill.category "pyrovolo")}}{{localize "ANDRAGATHIMA.WeaponTypePyrovolo"}}{{else if (eq skill.category "ravdi")}}{{localize "ANDRAGATHIMA.WeaponTypeRavdi"}}{{else if (eq skill.category "riptari")}}{{localize "ANDRAGATHIMA.WeaponTypeRiptari"}}{{else if (eq skill.category "ropalo")}}{{localize "ANDRAGATHIMA.WeaponTypeRopalo"}}{{else if (eq skill.category "sfendoni")}}{{localize "ANDRAGATHIMA.WeaponTypeSfendoni"}}{{else if (eq skill.category "spathi")}}{{localize "ANDRAGATHIMA.WeaponTypeSpathi"}}{{else if (eq skill.category "toxo")}}{{localize "ANDRAGATHIMA.WeaponTypeToxo"}}{{else if (eq skill.category "tsekoiri")}}{{localize "ANDRAGATHIMA.WeaponTypeTsekoiri"}}{{else if (eq skill.category "frageli")}}{{localize "ANDRAGATHIMA.WeaponTypeFrageli"}}{{else if (eq skill.category "autosxedio")}}{{localize "ANDRAGATHIMA.WeaponTypeAutosxedio"}}{{else if (eq skill.category "grothies")}}{{localize "ANDRAGATHIMA.WeaponTypeGrothies"}}{{else}}{{skill.category}}{{/if}}){{/if}}
+            </div>
+            {{/if}}
+            {{/each}}
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    {{!-- Εξοπλισμός Tab --}}
+    <div class="tab equipment" data-group="primary" data-tab="equipment">
+      
+      {{!-- Πάνω Πεδία: Χρήματα και Φόρτος --}}
+      <div class="equipment-header">
+        <div class="money-section">
+          <label>{{localize 'ANDRAGATHIMA.Money'}}:</label>
+          <table class="money-table">
+            <tr>
+              <td><input type="text" name="system.equipment.money" class="money-input" placeholder="{{localize 'ANDRAGATHIMA.SilverCoinsPlaceholder'}}" value="{{system.equipment.money}}"></td>
+              <td><span class="currency-symbol">Ӿ</span></td>
+            </tr>
+          </table>
+        </div>
+        <div class="weight-section">
+          <label>{{localize 'ANDRAGATHIMA.Encumbrance'}}:</label>
+          <div class="encumbrance-display">
+            <div class="current-weight">
+              <span class="weight-value">{{system.equipment.totalWeight}} kg</span>
+              <span class="encumbrance-status encumbrance-{{system.equipment.encumbranceStatus}}">{{system.equipment.encumbranceLabel}}</span>
+            </div>
+            <div class="encumbrance-limits">
+              <span class="limits-text">{{localize 'ANDRAGATHIMA.Limits'}} {{system.attributes.encumbrance.light}}/{{system.attributes.encumbrance.heavy}}/{{system.attributes.encumbrance.max}} kg</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="equipment-layout">
+        {{!-- Αριστερή Στήλη: Γρήγορα Αντικείμενα και Ποικίλα --}}
+        <div class="quick-items-column">
+          <div class="quick-items-section">
+            <h2>{{localize 'ANDRAGATHIMA.QuickItems'}}</h2>
+            <div class="quick-items grid grid-4col">
+              {{#each system.equipment.quickItems as |item index|}}
+              <div class="item-slot" data-slot-type="quick" data-slot-index="{{index}}">
+                {{#if item.name}}
+                  <div class="item-image-container">
+                    <img src="{{item.img}}" title="{{item.tooltip}}" width="48" height="48" draggable="true" data-item-id="{{item.id}}" data-slot-type="quick" data-slot-index="{{index}}"/>
+                    {{#if (eq item.type "ammunition")}}
+                      <div class="ammunition-quantity-overlay">{{item.system.quantity}}</div>
+                    {{/if}}
+                  </div>
+                {{else}}
+                  <img src="systems/andragathima/assets/quickslot.png" alt="Empty quick slot" class="empty-slot-image">
+                {{/if}}
+              </div>
+              {{/each}}
+            </div>
+          </div>
+
+          {{!-- Ποικίλα Αντικείμενα Slots --}}
+          <div class="misc-equipment-slots-section">
+            <h2>{{localize 'ANDRAGATHIMA.MiscellaneousItems'}}</h2>
+            <div class="misc-equipment-grid">
+              {{#each miscEquipmentSlots}}
+                <div class="misc-equipment-slot" data-slot-index="{{@index}}">
+                  {{#if this}}
+                    <div class="item-image-container">
+                      <img src="{{this.img}}" alt="{{this.name}}" title="{{this.tooltip}}" class="item-image" 
+                           draggable="true" data-item-id="{{this._id}}" data-item-uuid="{{this.uuid}}" 
+                           data-slot-type="misc" data-slot-index="{{@index}}">
+                      {{#if (eq this.type "ammunition")}}
+                        <div class="ammunition-quantity-overlay">{{this.system.quantity}}</div>
+                      {{/if}}
+                    </div>
+                    <button class="item-delete" data-item-id="{{this._id}}" title="{{localize 'ANDRAGATHIMA.Delete'}}">✕</button>
+                  {{else}}
+                    <img src="systems/andragathima/assets/itemslot.png" alt="Empty slot" class="empty-slot-image">
+                  {{/if}}
+                </div>
+              {{/each}}
+            </div>
+          </div>
+        </div>
+
+        {{!-- Δεξιά Στήλη: Θέσεις Εξοπλισμού --}}
+        <div class="equipment-column">
+          <div class="equipment-slots-section">
+            <h2>{{localize 'ANDRAGATHIMA.Equipment'}}</h2>
+            <div class="equipment-slots">
+              
+              {{!-- Κεφάλι --}}
+              <div class="slot-row head-row flexrow">
+                <div class="item-slot head-slot" data-slot-type="head">
+                  {{#if system.equipment.slots.head.name}}
+                    <div class="item-image-container">
+                      <img src="{{system.equipment.slots.head.img}}" title="{{system.equipment.slots.head.tooltip}}" width="48" height="48" draggable="true" data-item-id="{{system.equipment.slots.head.id}}" data-slot-type="head"/>
+                      {{#if (eq system.equipment.slots.head.type "ammunition")}}
+                        <div class="ammunition-quantity-overlay">{{system.equipment.slots.head.system.quantity}}</div>
+                      {{/if}}
+                    </div>
+                  {{else}}
+                  <img src="systems/andragathima/assets/helm.png" title="{{localize 'ANDRAGATHIMA.EmptyHead'}}" width="48" height="48" class="empty-helm-img"/>
+                  {{/if}}
+                </div>
+              </div>
+
+              {{!-- Περιδέραιο - Πανωφόρι --}}
+              <div class="slot-row flexrow">
+                <div class="item-slot" data-slot-type="necklace">
+                  {{#if system.equipment.slots.necklace.name}}
+                    <div class="item-image-container">
+                      <img src="{{system.equipment.slots.necklace.img}}" title="{{system.equipment.slots.necklace.tooltip}}" width="48" height="48" draggable="true" data-item-id="{{system.equipment.slots.necklace.id}}" data-slot-type="necklace"/>
+                      {{#if (eq system.equipment.slots.necklace.type "ammunition")}}
+                        <div class="ammunition-quantity-overlay">{{system.equipment.slots.necklace.system.quantity}}</div>
+                      {{/if}}
+                    </div>
+                  {{else}}
+                  <img src="systems/andragathima/assets/necklace.png" title="{{localize 'ANDRAGATHIMA.EmptyNecklace'}}" width="48" height="48" class="empty-necklace-img"/>
+                  {{/if}}
+                </div>
+                
+                <div class="item-slot" data-slot-type="cloak">
+                  {{#if system.equipment.slots.cloak.name}}
+                    <div class="item-image-container">
+                      <img src="{{system.equipment.slots.cloak.img}}" title="{{system.equipment.slots.cloak.tooltip}}" width="48" height="48" draggable="true" data-item-id="{{system.equipment.slots.cloak.id}}" data-slot-type="cloak"/>
+                      {{#if (eq system.equipment.slots.cloak.type "ammunition")}}
+                        <div class="ammunition-quantity-overlay">{{system.equipment.slots.cloak.system.quantity}}</div>
+                      {{/if}}
+                    </div>
+                  {{else}}
+                  <img src="systems/andragathima/assets/cloak.png" title="{{localize 'ANDRAGATHIMA.EmptyCloak'}}" width="48" height="48" class="empty-cloak-img"/>
+                  {{/if}}
+                </div>
+              </div>
+
+              {{!-- Κορμός - Ασπίδα --}}
+              <div class="slot-row flexrow">
+                <div class="item-slot" data-slot-type="torso">
+                  {{#if system.equipment.slots.torso.name}}
+                    <div class="item-image-container">
+                      <img src="{{system.equipment.slots.torso.img}}" title="{{system.equipment.slots.torso.tooltip}}" width="48" height="48" draggable="true" data-item-id="{{system.equipment.slots.torso.id}}" data-slot-type="torso"/>
+                      {{#if (eq system.equipment.slots.torso.type "ammunition")}}
+                        <div class="ammunition-quantity-overlay">{{system.equipment.slots.torso.system.quantity}}</div>
+                      {{/if}}
+                    </div>
+                  {{else}}
+                  <img src="systems/andragathima/assets/armor.png" title="{{localize 'ANDRAGATHIMA.EmptyTorso'}}" width="48" height="48" class="empty-armor-img"/>
+                  {{/if}}
+                </div>
+                
+                <div class="item-slot" data-slot-type="shield">
+                  {{#if system.equipment.slots.shield.name}}
+                    <div class="item-image-container">
+                      <img src="{{system.equipment.slots.shield.img}}" title="{{system.equipment.slots.shield.tooltip}}" width="48" height="48" draggable="true" data-item-id="{{system.equipment.slots.shield.id}}" data-slot-type="shield"/>
+                      {{#if (eq system.equipment.slots.shield.type "ammunition")}}
+                        <div class="ammunition-quantity-overlay">{{system.equipment.slots.shield.system.quantity}}</div>
+                      {{/if}}
+                    </div>
+                  {{else}}
+                  <img src="systems/andragathima/assets/shield.png" title="{{localize 'ANDRAGATHIMA.EmptyShield'}}" width="48" height="48" class="empty-shield-img"/>
+                  {{/if}}
+                </div>
+              </div>
+
+              {{!-- Γάντια - Ζώνη --}}
+              <div class="slot-row flexrow">
+                <div class="item-slot" data-slot-type="gloves">
+                  {{#if system.equipment.slots.gloves.name}}
+                    <div class="item-image-container">
+                      <img src="{{system.equipment.slots.gloves.img}}" title="{{system.equipment.slots.gloves.tooltip}}" width="48" height="48" draggable="true" data-item-id="{{system.equipment.slots.gloves.id}}" data-slot-type="gloves"/>
+                      {{#if (eq system.equipment.slots.gloves.type "ammunition")}}
+                        <div class="ammunition-quantity-overlay">{{system.equipment.slots.gloves.system.quantity}}</div>
+                      {{/if}}
+                    </div>
+                  {{else}}
+                  <img src="systems/andragathima/assets/gloves.png" title="{{localize 'ANDRAGATHIMA.EmptyGloves'}}" width="48" height="48" class="empty-gloves-img"/>
+                  {{/if}}
+                </div>
+                
+                <div class="item-slot" data-slot-type="belt">
+                  {{#if system.equipment.slots.belt.name}}
+                    <div class="item-image-container">
+                      <img src="{{system.equipment.slots.belt.img}}" title="{{system.equipment.slots.belt.tooltip}}" width="48" height="48" draggable="true" data-item-id="{{system.equipment.slots.belt.id}}" data-slot-type="belt"/>
+                      {{#if (eq system.equipment.slots.belt.type "ammunition")}}
+                        <div class="ammunition-quantity-overlay">{{system.equipment.slots.belt.system.quantity}}</div>
+                      {{/if}}
+                    </div>
+                  {{else}}
+                  <img src="systems/andragathima/assets/belt.png" title="{{localize 'ANDRAGATHIMA.EmptyBelt'}}" width="48" height="48" class="empty-belt-img"/>
+                  {{/if}}
+                </div>
+              </div>
+
+              {{!-- Δαχτυλίδι Δεξί - Αριστερό --}}
+              <div class="slot-row flexrow">
+                <div class="item-slot" data-slot-type="ringRight">
+                  {{#if system.equipment.slots.ringRight.name}}
+                    <div class="item-image-container">
+                      <img src="{{system.equipment.slots.ringRight.img}}" title="{{system.equipment.slots.ringRight.tooltip}}" width="48" height="48" draggable="true" data-item-id="{{system.equipment.slots.ringRight.id}}" data-slot-type="ringRight"/>
+                      {{#if (eq system.equipment.slots.ringRight.type "ammunition")}}
+                        <div class="ammunition-quantity-overlay">{{system.equipment.slots.ringRight.system.quantity}}</div>
+                      {{/if}}
+                    </div>
+                  {{else}}
+                  <img src="systems/andragathima/assets/ring.png" title="{{localize 'ANDRAGATHIMA.EmptyRingRight'}}" width="48" height="48" class="empty-ring-img"/>
+                  {{/if}}
+                </div>
+                
+                <div class="item-slot" data-slot-type="ringLeft">
+                  {{#if system.equipment.slots.ringLeft.name}}
+                    <div class="item-image-container">
+                      <img src="{{system.equipment.slots.ringLeft.img}}" title="{{system.equipment.slots.ringLeft.tooltip}}" width="48" height="48" draggable="true" data-item-id="{{system.equipment.slots.ringLeft.id}}" data-slot-type="ringLeft"/>
+                      {{#if (eq system.equipment.slots.ringLeft.type "ammunition")}}
+                        <div class="ammunition-quantity-overlay">{{system.equipment.slots.ringLeft.system.quantity}}</div>
+                      {{/if}}
+                    </div>
+                  {{else}}
+                  <img src="systems/andragathima/assets/ring.png" title="{{localize 'ANDRAGATHIMA.EmptyRingLeft'}}" width="48" height="48" class="empty-ring-img"/>
+                  {{/if}}
+                </div>
+              </div>
+
+              {{!-- Μπότες --}}
+              <div class="slot-row boots-row flexrow">
+                <div class="item-slot boots-slot" data-slot-type="boots">
+                  {{#if system.equipment.slots.boots.name}}
+                    <div class="item-image-container">
+                      <img src="{{system.equipment.slots.boots.img}}" title="{{system.equipment.slots.boots.tooltip}}" width="48" height="48" draggable="true" data-item-id="{{system.equipment.slots.boots.id}}" data-slot-type="boots"/>
+                      {{#if (eq system.equipment.slots.boots.type "ammunition")}}
+                        <div class="ammunition-quantity-overlay">{{system.equipment.slots.boots.system.quantity}}</div>
+                      {{/if}}
+                    </div>
+                  {{else}}
+                  <img src="systems/andragathima/assets/boots.png" title="{{localize 'ANDRAGATHIMA.EmptyBoots'}}" width="48" height="48" class="empty-boots-img"/>
+                  {{/if}}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {{!-- {{localize 'ANDRAGATHIMA.Status'}} Tab --}}
+    <div class="tab status" data-group="primary" data-tab="status">
+      <div class="status-effects-section">
+        <h2>{{localize "ANDRAGATHIMA.Conditions"}}</h2>
+        
+        {{!-- Active Effects Grid --}}
+        <div class="active-effects-grid">
+          {{#each effects.allEffects as |effect index|}}
+            <div class="effect-slot has-effect {{#if effect.disabled}}disabled{{/if}}" 
+                 data-effect-id="{{effect.id}}" 
+                 title="{{effect.tooltip}}">
+              <img src="{{effect.img}}" alt="{{effect.name}}" class="effect-image" width="48" height="48" draggable="true">
+              <button type="button" class="effect-delete" data-effect-id="{{effect.id}}">×</button>
+            </div>
+          {{/each}}
+          
+          {{!-- Add Effect Slot (always last) --}}
+          <div class="effect-slot add-effect-slot" data-action="create" title="{{localize 'ANDRAGATHIMA.AddNewStatusEffect'}}">
+            <i class="fas fa-plus"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {{!-- Πόντοι Tab --}}
+    <div class="tab points" data-group="primary" data-tab="points">
+      {{!-- Experience Points and Lock/Unlock Button --}}
+      <div class="points-header">
+        <div class="experience-points-container">
+          <label for="experience-points">{{localize 'ANDRAGATHIMA.ExperiencePointsAbbr'}}</label>
+          <input type="number" name="system.details.experience.value" value="{{system.details.experience.value}}" class="experience-points-field" min="0" step="1" />
+        </div>
+        <div class="available-experience-display">
+          <span class="available-experience-text">{{localize 'ANDRAGATHIMA.AvailableExperiencePoints'}} <span class="available-experience-value">{{system.details.experience.remaining}}</span></span>
+        </div>
+        <button class="points-lock-toggle" type="button" data-locked="{{system.pointsLocked}}" title="{{#if system.pointsLocked}}{{localize 'ANDRAGATHIMA.Unlock'}}{{else}}{{localize 'ANDRAGATHIMA.Lock'}}{{/if}}">
+          <img src="systems/andragathima/assets/{{#if system.pointsLocked}}lock.png{{else}}unlock.png{{/if}}" alt="{{#if system.pointsLocked}}Locked{{else}}Unlocked{{/if}}" />
+        </button>
+      </div>
+      
+      {{!-- Γένος --}}
+      <div class="race-edit-section">
+        <h2>{{localize 'ANDRAGATHIMA.Race'}}</h2>
+        <div class="race-dropdown-container">
+          <select name="system.details.race.value" class="race-dropdown">
+            <option value="anthropos" {{#if (or (eq system.details.race.value "anthropos") (not system.details.race.value))}}selected{{/if}}>{{localize 'ANDRAGATHIMA.RaceHuman'}}</option>
+            <option value="anthropaki" {{#if (eq system.details.race.value "anthropaki")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.RaceHalfling'}}</option>
+            <option value="nanos" {{#if (eq system.details.race.value "nanos")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.RaceDwarf'}}</option>
+            <option value="exoristos_nanos" {{#if (eq system.details.race.value "exoristos_nanos")}}selected{{/if}} class="race-subcategory">{{localize 'ANDRAGATHIMA.RaceExiledDwarf'}}</option>
+            <option value="ntouergki" {{#if (eq system.details.race.value "ntouergki")}}selected{{/if}} class="race-subcategory">{{localize 'ANDRAGATHIMA.RaceDuergar'}}</option>
+            <option value="xotiko" {{#if (eq system.details.race.value "xotiko")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.RaceElf'}}</option>
+            <option value="misoxotiko" {{#if (eq system.details.race.value "misoxotiko")}}selected{{/if}} class="race-subcategory">{{localize 'ANDRAGATHIMA.RaceHalfElf'}}</option>
+          </select>
+        </div>
+        {{#if raceFeatures}}
+        <div class="race-features">
+          {{#each raceFeatures}}
+          <div class="race-feature">{{this}}</div>
+          {{/each}}
+        </div>
+        {{/if}}
+      </div>
+      
+      {{!-- Βασικές Ικανότητες με Κουμπιά --}}
+      <div class="abilities-edit-section">
+        <h2>{{localize 'ANDRAGATHIMA.BaseAbilities'}}</h2>
+        <table class="abilities-table">
+          <tr>
+            <td>{{localize 'ANDRAGATHIMA.AbilityDyn'}} ({{localize 'ANDRAGATHIMA.AbilityDynAbbr'}}): {{#if system.abilities.dyn.totalValue}}{{system.abilities.dyn.totalValue}}{{else}}{{system.abilities.dyn.value}}{{/if}}</td>
+            <td>
+              <button class="ability-decrease small-btn" data-ability="dyn" type="button">−</button>
+              <button class="ability-increase small-btn" data-ability="dyn" type="button">+</button>
+            </td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>{{localize 'ANDRAGATHIMA.AbilityEpi'}} ({{localize 'ANDRAGATHIMA.AbilityEpiAbbr'}}): {{#if system.abilities.epi.totalValue}}{{system.abilities.epi.totalValue}}{{else}}{{system.abilities.epi.value}}{{/if}}</td>
+            <td>
+              <button class="ability-decrease small-btn" data-ability="epi" type="button">−</button>
+              <button class="ability-increase small-btn" data-ability="epi" type="button">+</button>
+            </td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>{{localize 'ANDRAGATHIMA.AbilityKra'}} ({{localize 'ANDRAGATHIMA.AbilityKraAbbr'}}): {{#if system.abilities.kra.totalValue}}{{system.abilities.kra.totalValue}}{{else}}{{system.abilities.kra.value}}{{/if}}</td>
+            <td>
+              <button class="ability-decrease small-btn" data-ability="kra" type="button">−</button>
+              <button class="ability-increase small-btn" data-ability="kra" type="button">+</button>
+            </td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>{{localize 'ANDRAGATHIMA.AbilityEyf'}} ({{localize 'ANDRAGATHIMA.AbilityEyfAbbr'}}): {{#if system.abilities.eyf.totalValue}}{{system.abilities.eyf.totalValue}}{{else}}{{system.abilities.eyf.value}}{{/if}}</td>
+            <td>
+              <button class="ability-decrease small-btn" data-ability="eyf" type="button">−</button>
+              <button class="ability-increase small-btn" data-ability="eyf" type="button">+</button>
+            </td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>{{localize 'ANDRAGATHIMA.AbilitySof'}} ({{localize 'ANDRAGATHIMA.AbilitySofAbbr'}}): {{#if system.abilities.sof.totalValue}}{{system.abilities.sof.totalValue}}{{else}}{{system.abilities.sof.value}}{{/if}}</td>
+            <td>
+              <button class="ability-decrease small-btn" data-ability="sof" type="button">−</button>
+              <button class="ability-increase small-btn" data-ability="sof" type="button">+</button>
+            </td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>{{localize 'ANDRAGATHIMA.AbilityXar'}} ({{localize 'ANDRAGATHIMA.AbilityXarAbbr'}}): {{#if system.abilities.xar.totalValue}}{{system.abilities.xar.totalValue}}{{else}}{{system.abilities.xar.value}}{{/if}}</td>
+            <td>
+              <button class="ability-decrease small-btn" data-ability="xar" type="button">−</button>
+              <button class="ability-increase small-btn" data-ability="xar" type="button">+</button>
+            </td>
+            <td></td>
+          </tr>
+        </table>
+      </div>
+
+      {{!-- Ζαριές Αποφυγής με Κουμπιά --}}
+      <div class="saves-edit-section">
+        <h2>{{localize 'ANDRAGATHIMA.SavingThrows'}}</h2>
+        <table class="saves-table">
+          <tr>
+            <td>{{localize 'ANDRAGATHIMA.SaveAnt'}} ({{localize 'ANDRAGATHIMA.SaveAntAbbr'}}): {{system.saves.ant.base}}</td>
+            <td>
+              <button class="save-decrease small-btn" data-save="ant" type="button">−</button>
+              <button class="save-increase small-btn" data-save="ant" type="button">+</button>
+            </td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>{{localize 'ANDRAGATHIMA.SaveMya'}} ({{localize 'ANDRAGATHIMA.SaveMyaAbbr'}}): {{system.saves.mya.base}}</td>
+            <td>
+              <button class="save-decrease small-btn" data-save="mya" type="button">−</button>
+              <button class="save-increase small-btn" data-save="mya" type="button">+</button>
+            </td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>{{localize 'ANDRAGATHIMA.SaveSom'}} ({{localize 'ANDRAGATHIMA.SaveSomAbbr'}}): {{system.saves.som.base}}</td>
+            <td>
+              <button class="save-decrease small-btn" data-save="som" type="button">−</button>
+              <button class="save-increase small-btn" data-save="som" type="button">+</button>
+            </td>
+            <td></td>
+          </tr>
+        </table>
+      </div>
+
+      {{!-- Ικανότητες Μάχης με Κουμπιά --}}
+      <div class="combat-edit-section">
+        <h2>{{localize 'ANDRAGATHIMA.CombatAbilities'}}</h2>
+        <table class="combat-table">
+          <tr>
+            <td>{{localize 'ANDRAGATHIMA.WeaponMelee'}}: {{system.combat.melee.value}}</td>
+            <td>
+              <button class="combat-decrease small-btn" data-combat="melee" type="button">−</button>
+              <button class="combat-increase small-btn" data-combat="melee" type="button">+</button>
+            </td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>{{localize 'ANDRAGATHIMA.WeaponRanged'}}: {{system.combat.ranged.value}}</td>
+            <td>
+              <button class="combat-decrease small-btn" data-combat="ranged" type="button">−</button>
+              <button class="combat-increase small-btn" data-combat="ranged" type="button">+</button>
+            </td>
+            <td></td>
+          </tr>
+        </table>
+      </div>
+
+      {{!-- Ικανότητες Μαγείας με Κουμπιά (εμφανίζεται πάντα για την αρχική ρύθμιση) --}}
+      <div class="magic-edit-section">
+        <h2>{{localize 'ANDRAGATHIMA.MagicAbilities'}}</h2>
+        <table class="magic-table">
+          <tr>
+            <td>{{localize 'ANDRAGATHIMA.MageLevel'}}: <span>{{system.magic.level.value}}</span></td>
+            <td>
+              <button class="magic-decrease small-btn" data-magic="level" type="button">−</button>
+              <button class="magic-increase small-btn" data-magic="level" type="button">+</button>
+            </td>
+            <td>
+              {{#if (gt system.magic.level.value 0)}}
+                <select name="system.magic.element.value" class="element-dropdown">
+                  <option value="">{{localize 'ANDRAGATHIMA.SelectOne'}}</option>
+                  <option value="air" {{#if (eq system.magic.element.value "air")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.ElementAir'}}</option>
+                  <option value="earth" {{#if (eq system.magic.element.value "earth")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.ElementEarth'}}</option>
+                  <option value="water" {{#if (eq system.magic.element.value "water")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.ElementWater'}}</option>
+                  <option value="fire" {{#if (eq system.magic.element.value "fire")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.ElementFire'}}</option>
+                </select>
+              {{/if}}
+            </td>
+          </tr>
+          <tr>
+            <td>{{localize 'ANDRAGATHIMA.MagicDegree'}}: <span>{{system.magic.degree.value}}</span></td>
+            <td>
+              <button class="magic-decrease small-btn" data-magic="degree" type="button">−</button>
+              <button class="magic-increase small-btn" data-magic="degree" type="button">+</button>
+            </td>
+            <td></td>
+          </tr>
+        </table>
+      </div>
+
+      {{!-- Δεξιότητες με Κουμπιά --}}
+      <div class="skills-edit-section">
+        <h2>{{localize 'ANDRAGATHIMA.Skills'}}</h2>
+        <table class="skills-table">
+          {{#each system.skills as |skill key|}}
+          <tr>
+            <td>{{skill.name}}
+              {{#if skill.hasSkill}}
+                {{#if (eq skill.level 1)}}
+                  <img src="systems/andragathima/assets/star.png" class="skill-star" alt="★" />
+                {{else if (eq skill.level 2)}}
+                  <img src="systems/andragathima/assets/star.png" class="skill-star" alt="★" /><img src="systems/andragathima/assets/star.png" class="skill-star" alt="★" />
+                {{else if (eq skill.level 3)}}
+                  <img src="systems/andragathima/assets/star.png" class="skill-star" alt="★" /><img src="systems/andragathima/assets/star.png" class="skill-star" alt="★" /><img src="systems/andragathima/assets/star.png" class="skill-star" alt="★" />
+                {{else}}
+                  {{skill.level}}
+                {{/if}}
+              {{/if}}
+            </td>
+            <td>
+              <button class="skill-decrease small-btn" data-skill="{{key}}" type="button">−</button>
+              <button class="skill-increase small-btn" data-skill="{{key}}" type="button">+</button>
+            </td>
+            <td>
+              {{#if (eq key "eidikeysi_sta_opla")}}
+                {{#if skill.hasSkill}}
+                  <select name="system.skills.eidikeysi_sta_opla.category" class="weapon-specialization-dropdown">
+                    <option value="">{{localize 'ANDRAGATHIMA.SelectOne'}}</option>
+                    <option value="aspida_varia" {{#if (eq skill.category "aspida_varia")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.WeaponTypeAspida'}}</option>
+                    <option value="aspida_elafria" {{#if (eq skill.category "aspida_elafria")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.WeaponTypeAspida'}}</option>
+                    <option value="vallistra" {{#if (eq skill.category "vallistra")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.WeaponTypeVallistra'}}</option>
+                    <option value="dory" {{#if (eq skill.category "dory")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.WeaponTypeDory'}}</option>
+                    <option value="drepani" {{#if (eq skill.category "drepani")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.WeaponTypeDrepani'}}</option>
+                    <option value="longi" {{#if (eq skill.category "longi")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.WeaponTypeLongi'}}</option>
+                    <option value="macheri" {{#if (eq skill.category "macheri")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.WeaponTypeMacheri'}}</option>
+                    <option value="mastigio" {{#if (eq skill.category "mastigio")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.WeaponTypeMastigio'}}</option>
+                    <option value="pyrovolo" {{#if (eq skill.category "pyrovolo")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.WeaponTypePyrovolo'}}</option>
+                    <option value="ravdi" {{#if (eq skill.category "ravdi")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.WeaponTypeRavdi'}}</option>
+                    <option value="riptari" {{#if (eq skill.category "riptari")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.WeaponTypeRiptari'}}</option>
+                    <option value="ropalo" {{#if (eq skill.category "ropalo")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.WeaponTypeRopalo'}}</option>
+                    <option value="sfendoni" {{#if (eq skill.category "sfendoni")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.WeaponTypeSfendoni'}}</option>
+                    <option value="spathi" {{#if (eq skill.category "spathi")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.WeaponTypeSpathi'}}</option>
+                    <option value="toxo" {{#if (eq skill.category "toxo")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.WeaponTypeToxo'}}</option>
+                    <option value="tsekoiri" {{#if (eq skill.category "tsekoiri")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.WeaponTypeTsekoiri'}}</option>
+                    <option value="frageli" {{#if (eq skill.category "frageli")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.WeaponTypeFrageli'}}</option>
+                    <option value="autosxedio" {{#if (eq skill.category "autosxedio")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.WeaponTypeAutosxedio'}}</option>
+                    <option value="grothies" {{#if (eq skill.category "grothies")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.WeaponTypeGrothies'}}</option>
+                  </select>
+                {{/if}}
+              {{/if}}
+            </td>
+          </tr>
+          {{/each}}
+        </table>
+      </div>
+    </div>
+
+    {{!-- Σημειώσεις Tab --}}
+    <div class="tab notes" data-group="primary" data-tab="notes">
+      <div class="notes-section">
+        <textarea name="system.notes" class="notes-textarea" placeholder="{{localize 'ANDRAGATHIMA.NotesPlaceholder'}}">{{system.notes}}</textarea>
+      </div>
+    </div>
+
+    {{!-- Μαγεία Tab --}}
+    <div class="tab magic {{#unless (and (gt system.magic.degree.value 0) (gt system.magic.level.value 0))}}magic-disabled{{/unless}}" data-group="primary" data-tab="magic">
+      
+      {{!-- Magic Info Section --}}
+      <div class="magic-tab-info-section">
+        <div class="magic-basic-info">
+          <div class="magic-ability-item">
+            <span class="magic-ability-name">{{localize 'ANDRAGATHIMA.MageLevel'}}</span>
+            <span class="magic-ability-score {{statusModifierClass system.magic.level.statusMod}}">{{default system.magic.level.totalValue system.magic.level.value}}</span>
+          </div>
+          <div class="magic-ability-item">
+            <span class="magic-ability-name">{{localize 'ANDRAGATHIMA.MagicDegree'}}</span>
+            <span class="magic-ability-score {{statusModifierClass system.magic.degree.statusMod}}">{{default system.magic.degree.totalValue system.magic.degree.value}}</span>
+          </div>
+        </div>
+        <div class="magic-elements-icons">
+          {{#if (and system.skills.stoixeiaki_kataktisi.hasSkill (gt system.skills.stoixeiaki_kataktisi.level 0))}}
+            {{#if (gte system.skills.stoixeiaki_kataktisi.level 2)}}
+              {{!-- Στοιχειακή κατάκτηση ++ : Όλα τα στοιχεία --}}
+              <img src="systems/andragathima/assets/air.png" class="element-icon" title="{{localize 'ANDRAGATHIMA.ElementAir'}}" alt="{{localize 'ANDRAGATHIMA.ElementAir'}}" />
+              <img src="systems/andragathima/assets/earth.png" class="element-icon" title="{{localize 'ANDRAGATHIMA.ElementEarth'}}" alt="{{localize 'ANDRAGATHIMA.ElementEarth'}}" />
+              <img src="systems/andragathima/assets/water.png" class="element-icon" title="{{localize 'ANDRAGATHIMA.ElementWater'}}" alt="{{localize 'ANDRAGATHIMA.ElementWater'}}" />
+              <img src="systems/andragathima/assets/fire.png" class="element-icon" title="{{localize 'ANDRAGATHIMA.ElementFire'}}" alt="{{localize 'ANDRAGATHIMA.ElementFire'}}" />
+            {{else}}
+              {{!-- Στοιχειακή κατάκτηση 1: Στοιχείο + 2 άλλα (όχι αντίθετο) --}}
+              {{#if (eq system.magic.element.value "air")}}
+                <img src="systems/andragathima/assets/air.png" class="element-icon" title="{{localize 'ANDRAGATHIMA.ElementAir'}}" alt="{{localize 'ANDRAGATHIMA.ElementAir'}}" />
+                <img src="systems/andragathima/assets/water.png" class="element-icon" title="{{localize 'ANDRAGATHIMA.ElementWater'}}" alt="{{localize 'ANDRAGATHIMA.ElementWater'}}" />
+                <img src="systems/andragathima/assets/fire.png" class="element-icon" title="{{localize 'ANDRAGATHIMA.ElementFire'}}" alt="{{localize 'ANDRAGATHIMA.ElementFire'}}" />
+              {{else if (eq system.magic.element.value "earth")}}
+                <img src="systems/andragathima/assets/earth.png" class="element-icon" title="{{localize 'ANDRAGATHIMA.ElementEarth'}}" alt="{{localize 'ANDRAGATHIMA.ElementEarth'}}" />
+                <img src="systems/andragathima/assets/water.png" class="element-icon" title="{{localize 'ANDRAGATHIMA.ElementWater'}}" alt="{{localize 'ANDRAGATHIMA.ElementWater'}}" />
+                <img src="systems/andragathima/assets/fire.png" class="element-icon" title="{{localize 'ANDRAGATHIMA.ElementFire'}}" alt="{{localize 'ANDRAGATHIMA.ElementFire'}}" />
+              {{else if (eq system.magic.element.value "water")}}
+                <img src="systems/andragathima/assets/water.png" class="element-icon" title="{{localize 'ANDRAGATHIMA.ElementWater'}}" alt="{{localize 'ANDRAGATHIMA.ElementWater'}}" />
+                <img src="systems/andragathima/assets/air.png" class="element-icon" title="{{localize 'ANDRAGATHIMA.ElementAir'}}" alt="{{localize 'ANDRAGATHIMA.ElementAir'}}" />
+                <img src="systems/andragathima/assets/earth.png" class="element-icon" title="{{localize 'ANDRAGATHIMA.ElementEarth'}}" alt="{{localize 'ANDRAGATHIMA.ElementEarth'}}" />
+              {{else if (eq system.magic.element.value "fire")}}
+                <img src="systems/andragathima/assets/fire.png" class="element-icon" title="{{localize 'ANDRAGATHIMA.ElementFire'}}" alt="{{localize 'ANDRAGATHIMA.ElementFire'}}" />
+                <img src="systems/andragathima/assets/air.png" class="element-icon" title="{{localize 'ANDRAGATHIMA.ElementAir'}}" alt="{{localize 'ANDRAGATHIMA.ElementAir'}}" />
+                <img src="systems/andragathima/assets/earth.png" class="element-icon" title="{{localize 'ANDRAGATHIMA.ElementEarth'}}" alt="{{localize 'ANDRAGATHIMA.ElementEarth'}}" />
+              {{/if}}
+            {{/if}}
+          {{else}}
+            {{!-- Χωρίς Στοιχειακή κατάκτηση --}}
+            {{#if system.magic.element.value}}
+              {{#if (eq system.magic.element.value "air")}}
+                <img src="systems/andragathima/assets/air.png" class="element-icon" title="{{localize 'ANDRAGATHIMA.ElementAir'}}" alt="{{localize 'ANDRAGATHIMA.ElementAir'}}" />
+              {{/if}}
+              {{#if (eq system.magic.element.value "earth")}}
+                <img src="systems/andragathima/assets/earth.png" class="element-icon" title="{{localize 'ANDRAGATHIMA.ElementEarth'}}" alt="{{localize 'ANDRAGATHIMA.ElementEarth'}}" />
+              {{/if}}
+              {{#if (eq system.magic.element.value "water")}}
+                <img src="systems/andragathima/assets/water.png" class="element-icon" title="{{localize 'ANDRAGATHIMA.ElementWater'}}" alt="{{localize 'ANDRAGATHIMA.ElementWater'}}" />
+              {{/if}}
+              {{#if (eq system.magic.element.value "fire")}}
+                <img src="systems/andragathima/assets/fire.png" class="element-icon" title="{{localize 'ANDRAGATHIMA.ElementFire'}}" alt="{{localize 'ANDRAGATHIMA.ElementFire'}}" />
+              {{/if}}
+            {{/if}}
+          {{/if}}
+        </div>
+      </div>
+
+      {{!-- Spellbook Section --}}
+      <div class="magic-tab-spellbook-section">
+        <h2>{{localize 'ANDRAGATHIMA.Spellbook'}}</h2>
+        <div class="spellbook-grid">
+          {{#each spells as |spell index|}}
+            <div class="spell-slot filled {{#if spell.isInsufficient}}spell-insufficient{{/if}}" 
+                 data-item-id="{{spell._id}}" 
+                 data-spell-index="{{index}}">
+              <img src="{{spell.img}}" alt="{{spell.name}}" title="{{spell.tooltip}}" 
+                   draggable="true" 
+                   data-item-id="{{spell._id}}" 
+                   data-spell-index="{{index}}" />
+              <button class="item-delete" data-item-id="{{spell._id}}" title="{{localize 'ANDRAGATHIMA.Delete'}}">✕</button>
+            </div>
+          {{/each}}
+          {{#unless spells.length}}
+          <div class="spellbook-empty-message">
+            <p>{{localize 'ANDRAGATHIMA.EmptySpellbookMessage'}}</p>
+          </div>
+          {{/unless}}
+        </div>
+      </div>
+    </div>
+
+  </section>
+  </div>
+</form>
