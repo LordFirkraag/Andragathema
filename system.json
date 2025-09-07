@@ -4,7 +4,7 @@
   "description": "Greek Fantasy RPG System for FoundryVTT",
   "version": "1.0.0",
   "manifest": "https://github.com/LordFirkraag/andragathema/releases/latest/download/system.json",
-  "download": "https://github.com/LordFirkraag/andragathema/releases/download/1.0.0/system.zip",
+  "download": "https://github.com/LordFirkraag/andragathema/archive/ref/tags/1.0.0.zip",
   "url": "https://andragathema.blogspot.com/",
   "compatibility": {
     "minimum": "12",
