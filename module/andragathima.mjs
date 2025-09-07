@@ -658,8 +658,16 @@ async function updateTokenCustomOverlay(token, effectsToShow) {
     const iconTexture = await loadTexture(effect.icon);
     if (iconTexture) {
       const sprite = new PIXI.Sprite(iconTexture);
-      sprite.width = gridSize;
-      sprite.height = gridSize;
+      
+      // Scale down to fit within gridSize while maintaining aspect ratio
+      const aspectRatio = iconTexture.width / iconTexture.height;
+      if (iconTexture.width > iconTexture.height) {
+        sprite.width = Math.min(gridSize, iconTexture.width);
+        sprite.height = sprite.width / aspectRatio;
+      } else {
+        sprite.height = Math.min(gridSize, iconTexture.height);
+        sprite.width = sprite.height * aspectRatio;
+      }
       
       // Position from bottom-right edge: right-to-left columns, bottom-to-top rows
       // Since overlay starts at (tokenSize, tokenSize), we need negative offsets
@@ -769,11 +777,17 @@ async function updateTokenWeaponOverlay(token, itemsToShow) {
     if (iconTexture) {
       const sprite = new PIXI.Sprite(iconTexture);
       
-      // Keep original size - no scaling
-      sprite.width = iconTexture.width;
-      sprite.height = iconTexture.height;
+      // Scale down to fit within 50x50 while maintaining aspect ratio
+      const aspectRatio = iconTexture.width / iconTexture.height;
+      if (iconTexture.width > iconTexture.height) {
+        sprite.width = Math.min(itemSize, iconTexture.width);
+        sprite.height = sprite.width / aspectRatio;
+      } else {
+        sprite.height = Math.min(itemSize, iconTexture.height);
+        sprite.width = sprite.height * aspectRatio;
+      }
       
-      // Center the sprite within the theoretical 50x50 square
+      // Center the sprite within the 50x50 square
       const offsetX = (itemSize - sprite.width) / 2;
       const offsetY = (itemSize - sprite.height) / 2;
       sprite.position.set(offsetX, offsetY);
