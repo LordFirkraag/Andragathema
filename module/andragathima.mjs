@@ -189,6 +189,14 @@ Hooks.once("ready", async function() {
   Hooks.on("deleteItem", onDeleteItem);
   Hooks.on("createItem", onCreateItem);
   
+  // Register hook for world time changes to check torch duration
+  Hooks.on("updateWorldTime", onUpdateWorldTime);
+  
+  // Start periodic torch duration checks (every 30 seconds)
+  if (game.user.isGM) {
+    setInterval(checkAllTorchDurations, 30000); // 30 seconds
+  }
+  
   // Register hook for when tokens are created or rendered
   Hooks.on("createToken", onCreateToken);
   Hooks.on("renderToken", onRenderToken);
@@ -753,6 +761,14 @@ async function updateTokenWeaponOverlay(token, itemsToShow) {
     token.removeChild(existingWeaponOverlay);
   }
   
+  // Check if any visible weapon is a torch (Δαυλός or Πυρσός) and manage lighting
+  const hasTorchVisible = itemsToShow.some(item => {
+    const name = item.name.toLowerCase();
+    return name.includes('δαυλός') || name.includes('πυρσός') || name.includes('δαυλος') || name.includes('πυρσος');
+  });
+  
+  await updateTokenTorchLighting(token, hasTorchVisible);
+  
   // If no items to show, we're done
   if (itemsToShow.length === 0) {
     return;
@@ -798,6 +814,65 @@ async function updateTokenWeaponOverlay(token, itemsToShow) {
   
   // Add overlay to token
   token.addChild(weaponOverlay);
+}
+
+/**
+ * Update token lighting based on torch visibility
+ */
+async function updateTokenTorchLighting(token, hasTorchVisible) {
+  if (!token.document) return;
+  
+  const currentLightConfig = token.document.light;
+  
+  if (hasTorchVisible) {
+    // Torch lighting settings as specified
+    const torchConfig = {
+      bright: 10,           // 10m bright light radius
+      dim: 20,             // 20m dim light radius  
+      color: "#ff8400",    // Light color
+      alpha: 0.5,          // Color intensity
+      animation: {
+        type: "flame",     // Flame animation (torch effect)
+        speed: 5,          // Animation speed
+        intensity: 1       // Animation intensity
+      },
+      coloration: 10,      // Natural light technique (based on order in list)
+      luminosity: 0.5,     // Luminosity
+      attenuation: 1,      // Attenuation 
+      shadows: 0.5         // Shadows
+    };
+    
+    // Mark this as torch light and update, record start time
+    const currentGameTime = game.time.worldTime;
+    await token.document.update({ 
+      light: torchConfig,
+      flags: { 
+        andragathima: { 
+          torchLight: true,
+          torchStartTime: currentGameTime
+        } 
+      }
+    });
+    console.log(`Torch lighting applied to token ${token.name || token.id} at game time ${currentGameTime}`);
+  } else {
+    // Only remove lighting if it was created by our torch system
+    const isTorchLight = token.document.flags?.andragathima?.torchLight;
+    if (isTorchLight && (currentLightConfig.bright > 0 || currentLightConfig.dim > 0)) {
+      // Remove torch lighting (set radii to 0)
+      await token.document.update({ 
+        light: {
+          bright: 0,
+          dim: 0
+        },
+        flags: { 
+          andragathima: { 
+            torchLight: false 
+          } 
+        }
+      });
+      console.log(`Torch lighting removed from token ${token.name || token.id}`);
+    }
+  }
 }
 
 
@@ -1902,9 +1977,164 @@ function registerSystemSettings() {
     default: true,
     type: Boolean
   });
+  
+  // Torch duration setting (in minutes)
+  game.settings.register("andragathima", "torchDurationMinutes", {
+    name: "ANDRAGATHIMA.Settings.TorchDuration",
+    hint: "ANDRAGATHIMA.Settings.TorchDurationHint",
+    scope: "world",
+    config: true,
+    default: 60,
+    type: Number,
+    range: {
+      min: 1,
+      max: 480,
+      step: 1
+    }
+  });
 }
 
 // Initialize settings on init hook
 Hooks.once("init", () => {
   registerSystemSettings();
 });
+
+/* -------------------------------------------- */
+/*  Torch Duration Management                   */
+/* -------------------------------------------- */
+
+/**
+ * Handle world time updates to check torch duration
+ */
+async function onUpdateWorldTime(currentTime, deltaTime) {
+  // Only check if time has actually advanced
+  if (deltaTime <= 0) return;
+  
+  console.log(`World time updated: current=${currentTime}, delta=${deltaTime}`);
+  
+  // Check all tokens on the current scene for expired torches
+  await checkAllTorchDurations();
+}
+
+/**
+ * Check all tokens for expired torches (used by both time update and periodic checks)
+ */
+async function checkAllTorchDurations() {
+  if (!canvas || !canvas.tokens || !game.time) return;
+  
+  const currentTime = game.time.worldTime;
+  
+  for (const token of canvas.tokens.placeables) {
+    await checkTorchDuration(token, currentTime);
+  }
+}
+
+/**
+ * Check if a token's torch has expired and handle destruction
+ */
+async function checkTorchDuration(token, currentTime) {
+  if (!token.document || !token.actor) return;
+  
+  const torchStartTime = token.document.flags?.andragathima?.torchStartTime;
+  const isTorchLight = token.document.flags?.andragathima?.torchLight;
+  
+  // Skip if this token doesn't have an active torch
+  if (!isTorchLight || !torchStartTime) return;
+  
+  // Calculate elapsed time in seconds
+  const elapsedTime = currentTime - torchStartTime;
+  const torchDurationMinutes = game.settings.get("andragathima", "torchDurationMinutes");
+  const TORCH_DURATION = torchDurationMinutes * 60; // Convert minutes to seconds
+  
+  if (elapsedTime >= TORCH_DURATION) {
+    console.log(`Torch expired for token ${token.name || token.id}. Elapsed: ${elapsedTime}s`);
+    
+    // Find and destroy the torch item
+    const torchItem = findTorchItem(token.actor);
+    if (torchItem) {
+      await destroyTorchItem(token.actor, torchItem);
+    }
+    
+    // Remove torch lighting
+    await token.document.update({ 
+      light: {
+        bright: 0,
+        dim: 0
+      },
+      flags: { 
+        andragathima: { 
+          torchLight: false,
+          torchStartTime: null
+        } 
+      }
+    });
+    
+    // Show notification to the token's owner
+    const owners = token.actor.ownership ? Object.entries(token.actor.ownership)
+      .filter(([userId, level]) => level >= CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER)
+      .map(([userId]) => userId) : [];
+      
+    for (const userId of owners) {
+      const user = game.users.get(userId);
+      if (user && user.active) {
+        ui.notifications.warn(`Ο δαυλός του ${token.name || token.actor.name} έσβησε και καταστράφηκε!`, 
+          { permanent: false, userId: userId });
+      }
+    }
+  }
+}
+
+/**
+ * Find a torch item (Δαυλός or Πυρσός) in an actor's inventory
+ */
+function findTorchItem(actor) {
+  for (const item of actor.items) {
+    if (item.type === 'weapon' && item.system.showOnToken) {
+      const name = item.name.toLowerCase();
+      if (name.includes('δαυλός') || name.includes('πυρσός') || 
+          name.includes('δαυλος') || name.includes('πυρσος')) {
+        return item;
+      }
+    }
+  }
+  return null;
+}
+
+/**
+ * Destroy a torch item from an actor's inventory
+ */
+async function destroyTorchItem(actor, torchItem) {
+  try {
+    // First, find and clear the torch from quick items
+    const quickItems = actor.system.equipment?.quickItems || [];
+    const updatedQuickItems = quickItems.map(quickItem => {
+      if (quickItem.id === torchItem.id) {
+        // Clear the quick item slot
+        return { id: "", name: "", img: "", tooltip: "" };
+      }
+      return quickItem;
+    });
+    
+    // Update the actor's quick items to remove the reference
+    await actor.update({
+      "system.equipment.quickItems": updatedQuickItems
+    });
+    
+    // Also check and clear shield slot if needed
+    const shieldSlot = actor.system.equipment?.slots?.shield;
+    if (shieldSlot && shieldSlot.id === torchItem.id) {
+      await actor.update({
+        "system.equipment.slots.shield": { id: "", name: "", img: "", tooltip: "" }
+      });
+    }
+    
+    // Now remove the item from the actor
+    await torchItem.delete();
+    console.log(`Destroyed torch item "${torchItem.name}" from ${actor.name}`);
+    
+    // Force update token status effects to remove weapon overlay
+    updateTokenStatusEffects(actor);
+  } catch (error) {
+    console.error("Error destroying torch item:", error);
+  }
+}
