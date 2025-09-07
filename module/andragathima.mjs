@@ -521,7 +521,7 @@ async function updateTokenDyingEffect(token, isDying, activeWounds = 0) {
       contrastSprite.position.set(0, 0);
       
       // Apply contrast filter to this sprite
-      const contrastFilter = new PIXI.filters.ColorMatrixFilter();
+      const contrastFilter = new PIXI.ColorMatrixFilter();
       contrastFilter.contrast(1.1); // 10% increase in contrast
       contrastSprite.filters = [contrastFilter];
       
@@ -593,7 +593,7 @@ async function updateTokenDeadEffect(token, isDead) {
     const hasGreyscale = token.mesh.filters.some(filter => filter.andragathimaDeadFilter);
     
     if (!hasGreyscale) {
-      const greyscaleFilter = new PIXI.filters.ColorMatrixFilter();
+      const greyscaleFilter = new PIXI.ColorMatrixFilter();
       greyscaleFilter.desaturate();
       greyscaleFilter.andragathimaDeadFilter = true;
       token.mesh.filters.push(greyscaleFilter);
@@ -603,7 +603,7 @@ async function updateTokenDeadEffect(token, isDead) {
     const hasContrast = token.mesh.filters.some(filter => filter.andragathimaDeadContrastFilter);
     
     if (!hasContrast) {
-      const contrastFilter = new PIXI.filters.ColorMatrixFilter();
+      const contrastFilter = new PIXI.ColorMatrixFilter();
       contrastFilter.contrast(1.05); // 5% increase in contrast
       contrastFilter.andragathimaDeadContrastFilter = true;
       token.mesh.filters.push(contrastFilter);

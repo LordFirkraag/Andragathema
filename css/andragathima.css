@@ -1419,15 +1419,16 @@ body .tooltip {
 
 .andragathima .money-input {
   width: 100%;
-  height: 36px;
-  padding: 6px 8px;
+  max-width: 72px;
+  height: 32px;
+  padding: 4px 6px;
   border: 1px solid var(--andragathima-accent);
   border-radius: 3px;
   background: transparent;
   color: var(--andragathima-text);
   font-family: 'Palatino Linotype', serif;
-  font-size: 1.1em;
-  text-align: right;
+  font-size: 1em;
+  text-align: center;
   box-sizing: border-box;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   position: relative;
@@ -1461,26 +1462,31 @@ body .tooltip {
   border: none;
 }
 
-.andragathima .money-table td:first-child {
+.andragathima .money-table td:nth-child(odd) {
+  width: 28px;
+  padding-right: 2px;
+  text-align: center;
+}
+
+.andragathima .money-table td:nth-child(even) {
   width: auto;
-  padding-right: 8px;
+  padding-right: 4px;
 }
 
-.andragathima .money-table td:last-child {
-  width: 30px;
-  text-align: left;
-  font-weight: normal;
-  color: var(--andragathima-title);
-  white-space: nowrap;
+.andragathima .money-table td:nth-child(6) {
+  padding-right: 0;
 }
 
-.andragathima .currency-symbol {
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: 1.2em;
-  font-weight: normal;
-  color: var(--andragathima-title);
-  line-height: 1;
+.andragathima .money-table .coin-icon {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  border: none !important;
+  border-radius: 0;
+  cursor: help;
 }
+
+/* Removed currency-symbol styles as we now use coin images */
 
 /* New encumbrance display layout */
 .andragathima .encumbrance-display {

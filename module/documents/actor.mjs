@@ -842,11 +842,15 @@ export class AndragathimaActor extends Actor {
   /**
    * Calculate total weight from all equipment including miscellaneous items
    */
-  _calculateTotalWeight(systemData) {
+   _calculateTotalWeight(systemData) {
     // Skip complex weight calculations for containers - they have their own method
     if (this.type === 'container') return;
     
     let totalWeight = 0;
+    
+    // Add weight from coins
+    const coinWeight = this._calculateCoinWeight(systemData);
+    totalWeight += coinWeight;
     
     // Add weight from items in inventory
     for (let item of this.items) {
@@ -885,6 +889,26 @@ export class AndragathimaActor extends Actor {
         systemData.equipment.encumbranceLabel = game.i18n.localize('ANDRAGATHIMA.EncumbranceLight');
       }
     }
+  }
+
+  /**
+   * Calculate weight from coins (gold: 0.003 kg each, silver: 0.0036 kg each, copper: 0.002 kg each)
+   */
+  _calculateCoinWeight(systemData) {
+    const gold = parseInt(systemData.equipment?.gold || 0) || 0;
+    const silver = parseInt(systemData.equipment?.silver || 0) || 0;
+    const copper = parseInt(systemData.equipment?.copper || 0) || 0;
+    
+    const goldWeight = gold * 0.003;
+    const silverWeight = silver * 0.0036;
+    const copperWeight = copper * 0.002;
+    
+    // Store individual coin weights for tooltip display
+    systemData.equipment.goldWeight = Math.round(goldWeight * 1000) / 1000; // Round to 3 decimal places
+    systemData.equipment.silverWeight = Math.round(silverWeight * 1000) / 1000;
+    systemData.equipment.copperWeight = Math.round(copperWeight * 1000) / 1000;
+    
+    return goldWeight + silverWeight + copperWeight;
   }
 
   /**

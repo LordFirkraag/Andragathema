@@ -247,8 +247,12 @@
           <label>{{localize 'ANDRAGATHIMA.Money'}}:</label>
           <table class="money-table">
             <tr>
-              <td><input type="text" name="system.equipment.money" class="money-input" placeholder="{{localize 'ANDRAGATHIMA.SilverCoinsPlaceholder'}}" value="{{system.equipment.money}}"></td>
-              <td><span class="currency-symbol">Ӿ</span></td>
+              <td><img src="systems/andragathima/assets/gp.png" alt="Gold" width="24" height="24" class="coin-icon" title="{{localize 'ANDRAGATHIMA.GoldCoinWeight'}} {{system.equipment.goldWeight}} kg" /></td>
+              <td><input type="text" name="system.equipment.gold" class="money-input" placeholder="0" value="{{system.equipment.gold}}"></td>
+              <td><img src="systems/andragathima/assets/sp.png" alt="Silver" width="24" height="24" class="coin-icon" title="{{localize 'ANDRAGATHIMA.SilverCoinWeight'}} {{system.equipment.silverWeight}} kg" /></td>
+              <td><input type="text" name="system.equipment.silver" class="money-input" placeholder="0" value="{{system.equipment.silver}}"></td>
+              <td><img src="systems/andragathima/assets/cp.png" alt="Copper" width="24" height="24" class="coin-icon" title="{{localize 'ANDRAGATHIMA.CopperCoinWeight'}} {{system.equipment.copperWeight}} kg" /></td>
+              <td><input type="text" name="system.equipment.copper" class="money-input" placeholder="0" value="{{system.equipment.copper}}"></td>
             </tr>
           </table>
         </div>
