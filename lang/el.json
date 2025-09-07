@@ -738,6 +738,11 @@
     "DefaultSpellSchool": "Μαγεία",
     
     "TooltipErrorLoadingData": "Σφάλμα φόρτωσης δεδομένων",
-    "TooltipUnknownActor": "Άγνωστος"
+    "TooltipUnknownActor": "Άγνωστος",
+    
+    "Settings": {
+      "ShowTokenTooltips": "Πληροφορίες μάρκας",
+      "ShowTokenTooltipsHint": "Εμφανίζει τα χαρακτηριστικά μάχης όταν περνάς το ποντίκι πάνω από μάρκες"
+    }
   }
 }

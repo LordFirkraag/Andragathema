@@ -1078,6 +1078,12 @@ function setupTokenTooltipEvents(token) {
 function showTokenTooltip(token, event) {
   console.log("showTokenTooltip called for:", token.actor?.name);
   
+  // Check if tooltips are enabled in settings
+  if (!game.settings.get("andragathima", "showTokenTooltips")) {
+    console.log("Token tooltips are disabled in settings");
+    return;
+  }
+  
   if (!token.actor) {
     console.warn("Missing actor for token");
     return;
@@ -1866,3 +1872,25 @@ async function preloadHandlebarsTemplates() {
     "systems/andragathima/templates/actor/parts/actor-effects.html",
   ]);
 }
+
+/* -------------------------------------------- */
+/*  System Settings                             */
+/* -------------------------------------------- */
+
+// Register system settings
+function registerSystemSettings() {
+  // Token tooltip on/off setting
+  game.settings.register("andragathima", "showTokenTooltips", {
+    name: "ANDRAGATHIMA.Settings.ShowTokenTooltips",
+    hint: "ANDRAGATHIMA.Settings.ShowTokenTooltipsHint",
+    scope: "world",
+    config: true,
+    default: true,
+    type: Boolean
+  });
+}
+
+// Initialize settings on init hook
+Hooks.once("init", () => {
+  registerSystemSettings();
+});

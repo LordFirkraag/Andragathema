@@ -722,6 +722,11 @@
     "DefaultSpellSchool": "Magic",
     
     "TooltipErrorLoadingData": "Error loading data",
-    "TooltipUnknownActor": "Unknown"
+    "TooltipUnknownActor": "Unknown",
+    
+    "Settings": {
+      "ShowTokenTooltips": "Show Token Tooltips",
+      "ShowTokenTooltipsHint": "Shows information (name, HP, defense) when hovering over tokens"
+    }
   }
 }
