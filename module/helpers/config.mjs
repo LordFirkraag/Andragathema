@@ -410,300 +410,7 @@ ANDRAGATHIMA.stageThreshold = 5;
  * @type {Object[]}
  */
 ANDRAGATHIMA.statusEffects = [
-  {
-    id: "blinded",
-    name: "ANDRAGATHIMA.StatusBlinded",
-    description: "ANDRAGATHIMA.StatusBlindedDesc",
-    icon: "systems/andragathima/assets/conditions/blind.png",
-    changes: [
-      {
-        key: "system.combat.meleeDefense",
-        mode: 2, // ADD
-        value: -4  // -2 original penalty + -2 to make it red
-      },
-      {
-        key: "system.combat.rangedDefense", 
-        mode: 2, // ADD
-        value: -4  // -2 original penalty + -2 to make it red
-      },
-      {
-        key: "system.saves.ant.modifier",
-        mode: 2, // ADD  
-        value: -4
-      },
-      {
-        key: "system.other.speedMultiplier",
-        mode: 5, // OVERRIDE
-        value: 0.67
-      },
-      {
-        key: "system.other.ignoreMeleeCoefficient",
-        mode: 5, // OVERRIDE
-        value: true
-      },
-      {
-        key: "system.other.ignoreRangedCoefficient", 
-        mode: 5, // OVERRIDE
-        value: true
-      },
-      {
-        key: "system.other.ignoreShieldCoefficient",
-        mode: 5, // OVERRIDE
-        value: true
-      },
-      {
-        key: "system.other.canRun",
-        mode: 5, // OVERRIDE
-        value: false
-      }
-    ]
-  },
-  {
-    id: "charmed",
-    name: "ANDRAGATHIMA.StatusCharmed",
-    description: "ANDRAGATHIMA.StatusCharmedDesc",
-    icon: "systems/andragathima/assets/conditions/charm.png",
-    changes: []
-  },
-  {
-    id: "deafened",
-    name: "ANDRAGATHIMA.StatusDeafened",
-    description: "ANDRAGATHIMA.StatusDeafenedDesc",
-    icon: "systems/andragathima/assets/conditions/deaf.png",
-    changes: [
-      {
-        key: "system.other.initiative",
-        mode: 2, // ADD
-        value: -4
-      }
-    ]
-  },
-  {
-    id: "frightened",
-    name: "ANDRAGATHIMA.StatusFrightened",
-    description: "ANDRAGATHIMA.StatusFrightenedDesc",
-    icon: "systems/andragathima/assets/conditions/frightened.png",
-    changes: [
-      {
-        key: "system.combat.meleeAttack.modifier",
-        mode: 2, // ADD
-        value: -2
-      },
-      {
-        key: "system.combat.rangedAttack.modifier",
-        mode: 2, // ADD
-        value: -2
-      }
-    ]
-  },
-  {
-    id: "grappled",
-    name: "ANDRAGATHIMA.StatusGrappled",
-    description: "ANDRAGATHIMA.StatusGrappledDesc",
-    icon: "systems/andragathima/assets/conditions/grapple.png", 
-    changes: [
-      {
-        key: "system.other.ignoreMeleeCoefficient",
-        mode: 5, // OVERRIDE
-        value: true
-      },
-      {
-        key: "system.other.ignoreRangedCoefficient",
-        mode: 5, // OVERRIDE
-        value: true
-      }
-    ]
-  },
-  {
-    id: "helpless",
-    name: "ANDRAGATHIMA.StatusHelpless",
-    description: "ANDRAGATHIMA.StatusHelplessDesc",
-    icon: "systems/andragathima/assets/conditions/helpless.png",
-    changes: [
-      {
-        key: "system.other.ignoreMeleeCoefficient",
-        mode: 5, // OVERRIDE
-        value: true
-      },
-      {
-        key: "system.other.ignoreRangedCoefficient",
-        mode: 5, // OVERRIDE
-        value: true
-      },
-      {
-        key: "system.other.ignoreShieldCoefficient",
-        mode: 5, // OVERRIDE
-        value: true
-      },
-      {
-        key: "system.combat.rangedDefense",
-        mode: 2, // ADD
-        value: -4
-      }
-    ]
-  },
-  {
-    id: "poisoned",
-    name: "ANDRAGATHIMA.StatusPoisoned",
-    description: "ANDRAGATHIMA.StatusPoisonedDesc",
-    icon: "systems/andragathima/assets/conditions/poison.png",
-    changes: []
-  },
-  {
-    id: "prone",
-    name: "ANDRAGATHIMA.StatusProne",
-    description: "ANDRAGATHIMA.StatusProneDesc",
-    icon: "systems/andragathima/assets/conditions/prone.png",
-    changes: [
-      {
-        key: "system.combat.meleeDefense",
-        mode: 2, // ADD
-        value: -4
-      },
-      {
-        key: "system.combat.rangedDefense",
-        mode: 2, // ADD  
-        value: 4
-      },
-      {
-        key: "system.combat.meleeAttack.modifier",
-        mode: 2, // ADD
-        value: -4
-      }
-    ]
-  },
-  {
-    id: "stunned",
-    name: "ANDRAGATHIMA.StatusStunned",
-    description: "ANDRAGATHIMA.StatusStunnedDesc",
-    icon: "systems/andragathima/assets/conditions/stun.png", 
-    changes: [
-      {
-        key: "system.combat.meleeDefense",
-        mode: 2, // ADD
-        value: -2
-      },
-      {
-        key: "system.combat.rangedDefense",
-        mode: 2, // ADD
-        value: -2
-      },
-      {
-        key: "system.other.ignoreMeleeCoefficient",
-        mode: 5, // OVERRIDE
-        value: true
-      },
-      {
-        key: "system.other.ignoreRangedCoefficient",
-        mode: 5, // OVERRIDE
-        value: true
-      },
-      {
-        key: "system.other.ignoreShieldCoefficient",
-        mode: 5, // OVERRIDE
-        value: true
-      }
-    ]
-  },
-  {
-    id: "unconscious",
-    name: "ANDRAGATHIMA.StatusUnconscious",
-    description: "ANDRAGATHIMA.StatusUnconsciousDesc",
-    icon: "systems/andragathima/assets/conditions/coma.png",
-    changes: [
-      
-    ]
-  },
-  {
-    id: "drunk",
-    name: "ANDRAGATHIMA.StatusDrunk",
-    description: "ANDRAGATHIMA.StatusDrunkDesc",
-    icon: "systems/andragathima/assets/conditions/intoxication.png",
-    changes: [
-      {
-        key: "system.other.initiative",
-        mode: 2, // ADD
-        value: -4
-      },
-      {
-        key: "system.combat.meleeAttack.modifier",
-        mode: 2, // ADD
-        value: -4
-      },
-      {
-        key: "system.combat.rangedAttack.modifier",
-        mode: 2, // ADD
-        value: -4
-      },
-      {
-        key: "system.combat.meleeDefense",
-        mode: 2, // ADD
-        value: -4
-      },
-      {
-        key: "system.combat.rangedDefense",
-        mode: 2, // ADD
-        value: -4
-      },
-      {
-        key: "system.other.ignoreDexterityInDamage",
-        mode: 5, // OVERRIDE
-        value: true
-      }
-    ]
-  },
-  {
-    id: "dead",
-    name: "ANDRAGATHIMA.StatusDead",
-    description: "ANDRAGATHIMA.StatusDeadDesc",
-    icon: "systems/andragathima/assets/conditions/death.png",
-    changes: []
-  },
-  {
-    id: "dying",
-    name: "ANDRAGATHIMA.StatusDying",
-    description: "ANDRAGATHIMA.StatusDyingDesc",
-    icon: "systems/andragathima/assets/conditions/blood.png",
-    changes: []
-  },
-  {
-    id: "trapped",
-    name: "ANDRAGATHIMA.StatusTrapped",
-    description: "ANDRAGATHIMA.StatusTrappedDesc",
-    icon: "systems/andragathima/assets/conditions/trap.png",
-    changes: [
-      {
-        key: "system.combat.meleeAttack.modifier",
-        mode: 2, // ADD
-        value: -2
-      },
-      {
-        key: "system.combat.rangedAttack.modifier",
-        mode: 2, // ADD
-        value: -2
-      },
-      {
-        key: "system.combat.meleeDefense",
-        mode: 2, // ADD
-        value: -2
-      },
-      {
-        key: "system.combat.rangedDefense",
-        mode: 2, // ADD
-        value: -2
-      },
-      {
-        key: "system.saves.ant.modifier",
-        mode: 2, // ADD
-        value: -2
-      },
-      {
-        key: "system.other.cannotMove",
-        mode: 5, // OVERRIDE
-        value: true
-      }
-    ]
-  },
+  // 5 λαβωματιές πρώτα
   {
     id: "wounded",
     name: "ANDRAGATHIMA.StatusWounded",
@@ -891,6 +598,301 @@ ANDRAGATHIMA.statusEffects = [
         key: "system.saves.som.modifier",
         mode: 2, // ADD
         value: -1
+      }
+    ]
+  },
+  // Υπόλοιπα conditions με τη σειρά που ζητήθηκε
+  {
+    id: "stunned",
+    name: "ANDRAGATHIMA.StatusStunned",
+    description: "ANDRAGATHIMA.StatusStunnedDesc",
+    icon: "systems/andragathima/assets/conditions/stun.png", 
+    changes: [
+      {
+        key: "system.combat.meleeDefense",
+        mode: 2, // ADD
+        value: -2
+      },
+      {
+        key: "system.combat.rangedDefense",
+        mode: 2, // ADD
+        value: -2
+      },
+      {
+        key: "system.other.ignoreMeleeCoefficient",
+        mode: 5, // OVERRIDE
+        value: true
+      },
+      {
+        key: "system.other.ignoreRangedCoefficient",
+        mode: 5, // OVERRIDE
+        value: true
+      },
+      {
+        key: "system.other.ignoreShieldCoefficient",
+        mode: 5, // OVERRIDE
+        value: true
+      }
+    ]
+  },
+  {
+    id: "helpless",
+    name: "ANDRAGATHIMA.StatusHelpless",
+    description: "ANDRAGATHIMA.StatusHelplessDesc",
+    icon: "systems/andragathima/assets/conditions/helpless.png",
+    changes: [
+      {
+        key: "system.other.ignoreMeleeCoefficient",
+        mode: 5, // OVERRIDE
+        value: true
+      },
+      {
+        key: "system.other.ignoreRangedCoefficient",
+        mode: 5, // OVERRIDE
+        value: true
+      },
+      {
+        key: "system.other.ignoreShieldCoefficient",
+        mode: 5, // OVERRIDE
+        value: true
+      },
+      {
+        key: "system.combat.rangedDefense",
+        mode: 2, // ADD
+        value: -4
+      }
+    ]
+  },
+  {
+    id: "unconscious",
+    name: "ANDRAGATHIMA.StatusUnconscious",
+    description: "ANDRAGATHIMA.StatusUnconsciousDesc",
+    icon: "systems/andragathima/assets/conditions/coma.png",
+    changes: [
+      
+    ]
+  },
+  {
+    id: "dying",
+    name: "ANDRAGATHIMA.StatusDying",
+    description: "ANDRAGATHIMA.StatusDyingDesc",
+    icon: "systems/andragathima/assets/conditions/blood.png",
+    changes: []
+  },
+  {
+    id: "dead",
+    name: "ANDRAGATHIMA.StatusDead",
+    description: "ANDRAGATHIMA.StatusDeadDesc",
+    icon: "systems/andragathima/assets/conditions/death.png",
+    changes: []
+  },
+  {
+    id: "frightened",
+    name: "ANDRAGATHIMA.StatusFrightened",
+    description: "ANDRAGATHIMA.StatusFrightenedDesc",
+    icon: "systems/andragathima/assets/conditions/frightened.png",
+    changes: [
+      {
+        key: "system.combat.meleeAttack.modifier",
+        mode: 2, // ADD
+        value: -2
+      },
+      {
+        key: "system.combat.rangedAttack.modifier",
+        mode: 2, // ADD
+        value: -2
+      }
+    ]
+  },
+  {
+    id: "poisoned",
+    name: "ANDRAGATHIMA.StatusPoisoned",
+    description: "ANDRAGATHIMA.StatusPoisonedDesc",
+    icon: "systems/andragathima/assets/conditions/poison.png",
+    changes: []
+  },
+  {
+    id: "charmed",
+    name: "ANDRAGATHIMA.StatusCharmed",
+    description: "ANDRAGATHIMA.StatusCharmedDesc",
+    icon: "systems/andragathima/assets/conditions/charm.png",
+    changes: []
+  },
+  {
+    id: "deafened",
+    name: "ANDRAGATHIMA.StatusDeafened",
+    description: "ANDRAGATHIMA.StatusDeafenedDesc",
+    icon: "systems/andragathima/assets/conditions/deaf.png",
+    changes: [
+      {
+        key: "system.other.initiative",
+        mode: 2, // ADD
+        value: -4
+      }
+    ]
+  },
+  {
+    id: "blinded",
+    name: "ANDRAGATHIMA.StatusBlinded",
+    description: "ANDRAGATHIMA.StatusBlindedDesc",
+    icon: "systems/andragathima/assets/conditions/blind.png",
+    changes: [
+      {
+        key: "system.combat.meleeDefense",
+        mode: 2, // ADD
+        value: -4  // -2 original penalty + -2 to make it red
+      },
+      {
+        key: "system.combat.rangedDefense", 
+        mode: 2, // ADD
+        value: -4  // -2 original penalty + -2 to make it red
+      },
+      {
+        key: "system.saves.ant.modifier",
+        mode: 2, // ADD  
+        value: -4
+      },
+      {
+        key: "system.other.speedMultiplier",
+        mode: 5, // OVERRIDE
+        value: 0.67
+      },
+      {
+        key: "system.other.ignoreMeleeCoefficient",
+        mode: 5, // OVERRIDE
+        value: true
+      },
+      {
+        key: "system.other.ignoreRangedCoefficient", 
+        mode: 5, // OVERRIDE
+        value: true
+      },
+      {
+        key: "system.other.ignoreShieldCoefficient",
+        mode: 5, // OVERRIDE
+        value: true
+      },
+      {
+        key: "system.other.canRun",
+        mode: 5, // OVERRIDE
+        value: false
+      }
+    ]
+  },
+  {
+    id: "trapped",
+    name: "ANDRAGATHIMA.StatusTrapped",
+    description: "ANDRAGATHIMA.StatusTrappedDesc",
+    icon: "systems/andragathima/assets/conditions/trap.png",
+    changes: [
+      {
+        key: "system.combat.meleeAttack.modifier",
+        mode: 2, // ADD
+        value: -2
+      },
+      {
+        key: "system.combat.rangedAttack.modifier",
+        mode: 2, // ADD
+        value: -2
+      },
+      {
+        key: "system.combat.meleeDefense",
+        mode: 2, // ADD
+        value: -2
+      },
+      {
+        key: "system.combat.rangedDefense",
+        mode: 2, // ADD
+        value: -2
+      },
+      {
+        key: "system.saves.ant.modifier",
+        mode: 2, // ADD
+        value: -2
+      },
+      {
+        key: "system.other.cannotMove",
+        mode: 5, // OVERRIDE
+        value: true
+      }
+    ]
+  },
+  {
+    id: "drunk",
+    name: "ANDRAGATHIMA.StatusDrunk",
+    description: "ANDRAGATHIMA.StatusDrunkDesc",
+    icon: "systems/andragathima/assets/conditions/intoxication.png",
+    changes: [
+      {
+        key: "system.other.initiative",
+        mode: 2, // ADD
+        value: -4
+      },
+      {
+        key: "system.combat.meleeAttack.modifier",
+        mode: 2, // ADD
+        value: -4
+      },
+      {
+        key: "system.combat.rangedAttack.modifier",
+        mode: 2, // ADD
+        value: -4
+      },
+      {
+        key: "system.combat.meleeDefense",
+        mode: 2, // ADD
+        value: -4
+      },
+      {
+        key: "system.combat.rangedDefense",
+        mode: 2, // ADD
+        value: -4
+      },
+      {
+        key: "system.other.ignoreDexterityInDamage",
+        mode: 5, // OVERRIDE
+        value: true
+      }
+    ]
+  },
+  {
+    id: "prone",
+    name: "ANDRAGATHIMA.StatusProne",
+    description: "ANDRAGATHIMA.StatusProneDesc",
+    icon: "systems/andragathima/assets/conditions/prone.png",
+    changes: [
+      {
+        key: "system.combat.meleeDefense",
+        mode: 2, // ADD
+        value: -4
+      },
+      {
+        key: "system.combat.rangedDefense",
+        mode: 2, // ADD  
+        value: 4
+      },
+      {
+        key: "system.combat.meleeAttack.modifier",
+        mode: 2, // ADD
+        value: -4
+      }
+    ]
+  },
+  {
+    id: "grappled",
+    name: "ANDRAGATHIMA.StatusGrappled",
+    description: "ANDRAGATHIMA.StatusGrappledDesc",
+    icon: "systems/andragathima/assets/conditions/grapple.png", 
+    changes: [
+      {
+        key: "system.other.ignoreMeleeCoefficient",
+        mode: 5, // OVERRIDE
+        value: true
+      },
+      {
+        key: "system.other.ignoreRangedCoefficient",
+        mode: 5, // OVERRIDE
+        value: true
       }
     ]
   },
