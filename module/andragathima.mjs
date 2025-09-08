@@ -711,10 +711,13 @@ function getWeaponsForDisplay(actor) {
   
   // Get quick items (positions 1-8)
   const quickItems = actor.system.equipment?.quickItems || [];
+  
   for (let i = 0; i < quickItems.length && i < 8; i++) {
     const quickItem = quickItems[i];
-    if (quickItem.id) {
+    
+    if (quickItem && quickItem.id) {
       const item = actor.items.get(quickItem.id);
+      
       if (item && (item.type === 'weapon' || item.type === 'ammunition') && item.system.showOnToken) {
         itemsToShow.push({
           name: item.name,
@@ -730,8 +733,10 @@ function getWeaponsForDisplay(actor) {
   
   // Check shield slot
   const shieldSlot = actor.system.equipment?.slots?.shield;
+  
   if (shieldSlot && shieldSlot.id) {
     const item = actor.items.get(shieldSlot.id);
+    
     if (item && (item.type === 'weapon' || item.type === 'ammunition') && item.system.showOnToken) {
       itemsToShow.push({
         name: item.name,
@@ -744,11 +749,14 @@ function getWeaponsForDisplay(actor) {
     }
   }
   
+  // Filter out any invalid items before sorting
+  const validItems = itemsToShow.filter(item => item && item.id && item.name && item.position);
+  
   // Sort by position - shield slot (9) should be drawn last (in back)
   // Quick items 8, 7, 6... 1 should be drawn in that order (1 on top)
-  itemsToShow.sort((a, b) => b.position - a.position);
+  validItems.sort((a, b) => b.position - a.position);
   
-  return itemsToShow;
+  return validItems;
 }
 
 /**
@@ -763,14 +771,18 @@ async function updateTokenWeaponOverlay(token, itemsToShow) {
   
   // Check if any visible weapon is a torch (Δαυλός or Πυρσός) and manage lighting
   const hasTorchVisible = itemsToShow.some(item => {
+    if (!item || !item.name) return false;
     const name = item.name.toLowerCase();
     return name.includes('δαυλός') || name.includes('πυρσός') || name.includes('δαυλος') || name.includes('πυρσος');
   });
   
   await updateTokenTorchLighting(token, hasTorchVisible);
   
-  // If no items to show, we're done
-  if (itemsToShow.length === 0) {
+  // Filter out any undefined/null items that might have been destroyed
+  const validItems = itemsToShow.filter(item => item && item.name && item.icon);
+  
+  // If no valid items to show, we're done
+  if (validItems.length === 0) {
     return;
   }
   
@@ -785,30 +797,39 @@ async function updateTokenWeaponOverlay(token, itemsToShow) {
   weaponOverlay.position.set(-10, tokenSize + 10 - itemSize);
   
   // Create item icons stacked on top of each other
-  for (let i = 0; i < itemsToShow.length; i++) {
-    const item = itemsToShow[i];
+  for (let i = 0; i < validItems.length; i++) {
+    const item = validItems[i];
     
-    // Create item icon sprite
-    const iconTexture = await loadTexture(item.icon);
-    if (iconTexture) {
-      const sprite = new PIXI.Sprite(iconTexture);
-      
-      // Scale down to fit within 50x50 while maintaining aspect ratio
-      const aspectRatio = iconTexture.width / iconTexture.height;
-      if (iconTexture.width > iconTexture.height) {
-        sprite.width = Math.min(itemSize, iconTexture.width);
-        sprite.height = sprite.width / aspectRatio;
-      } else {
-        sprite.height = Math.min(itemSize, iconTexture.height);
-        sprite.width = sprite.height * aspectRatio;
+    // Double-check item validity before proceeding
+    if (!item || !item.id || !item.name || !item.icon) {
+      continue;
+    }
+    
+    try {
+      // Create item icon sprite
+      const iconTexture = await loadTexture(item.icon);
+      if (iconTexture) {
+        const sprite = new PIXI.Sprite(iconTexture);
+        
+        // Scale down to fit within 50x50 while maintaining aspect ratio
+        const aspectRatio = iconTexture.width / iconTexture.height;
+        if (iconTexture.width > iconTexture.height) {
+          sprite.width = Math.min(itemSize, iconTexture.width);
+          sprite.height = sprite.width / aspectRatio;
+        } else {
+          sprite.height = Math.min(itemSize, iconTexture.height);
+          sprite.width = sprite.height * aspectRatio;
+        }
+        
+        // Center the sprite within the 50x50 square
+        const offsetX = (itemSize - sprite.width) / 2;
+        const offsetY = (itemSize - sprite.height) / 2;
+        sprite.position.set(offsetX, offsetY);
+        
+        weaponOverlay.addChild(sprite);
       }
-      
-      // Center the sprite within the 50x50 square
-      const offsetX = (itemSize - sprite.width) / 2;
-      const offsetY = (itemSize - sprite.height) / 2;
-      sprite.position.set(offsetX, offsetY);
-      
-      weaponOverlay.addChild(sprite);
+    } catch (error) {
+      console.error(`Error creating sprite for item:`, error);
     }
   }
   
@@ -842,22 +863,75 @@ async function updateTokenTorchLighting(token, hasTorchVisible) {
       shadows: 0.5         // Shadows
     };
     
-    // Mark this as torch light and update, record start time
+    // Check if torch is already lit to avoid resetting start time
+    const currentFlags = token.document.flags?.andragathima || {};
+    const isAlreadyLit = currentFlags.torchLight && currentFlags.activeTorchId;
+    
+    // Get the currently equipped torch item and calculate its total usage
     const currentGameTime = game.time.worldTime;
-    await token.document.update({ 
-      light: torchConfig,
-      flags: { 
+    const torchItem = findTorchItem(token.actor);
+    const totalTorchUsage = calculateTorchTotalUsage(token, torchItem, currentGameTime);
+    
+    // Check if torch is worn out (>80% used) and adjust brightness
+    const torchDurationMinutes = game.settings.get("andragathima", "torchDurationMinutes");
+    const TORCH_DURATION = torchDurationMinutes * 60;
+    const usagePercentage = totalTorchUsage / TORCH_DURATION;
+    
+    if (usagePercentage > 0.8) {
+      // Dim torch settings for worn torches
+      torchConfig.bright = 5;
+      torchConfig.dim = 10;
+      console.log(`Torch is worn out (${Math.round(usagePercentage * 100)}% used) - reduced brightness applied`);
+    }
+    
+    // Only update flags if torch wasn't already lit, or if we're changing torch items
+    const needsFlagUpdate = !isAlreadyLit || currentFlags.activeTorchId !== torchItem?.id;
+    const updateData = { light: torchConfig };
+    
+    if (needsFlagUpdate) {
+      updateData.flags = { 
         andragathima: { 
           torchLight: true,
-          torchStartTime: currentGameTime
+          torchStartTime: isAlreadyLit ? currentFlags.torchStartTime : currentGameTime,
+          activeTorchId: torchItem?.id,
+          torchDimmed: currentFlags.torchDimmed || false
         } 
-      }
-    });
-    console.log(`Torch lighting applied to token ${token.name || token.id} at game time ${currentGameTime}`);
+      };
+    }
+    
+    await token.document.update(updateData);
+    console.log(`Torch lighting applied to token ${token.name || token.id} at game time ${currentGameTime}. Torch total usage: ${totalTorchUsage}s`);
   } else {
     // Only remove lighting if it was created by our torch system
     const isTorchLight = token.document.flags?.andragathima?.torchLight;
     if (isTorchLight && (currentLightConfig.bright > 0 || currentLightConfig.dim > 0)) {
+      // Calculate time spent with torch on and save to the torch item
+      const torchStartTime = token.document.flags?.andragathima?.torchStartTime;
+      const activeTorchId = token.document.flags?.andragathima?.activeTorchId;
+      const currentGameTime = game.time.worldTime;
+      
+      if (torchStartTime && activeTorchId) {
+        const torchItem = token.actor.items.get(activeTorchId);
+        if (torchItem) {
+          const existingAccumulated = torchItem.flags?.andragathima?.accumulatedTime || 0;
+          const sessionTime = currentGameTime - torchStartTime;
+          const newAccumulatedTime = existingAccumulated + sessionTime;
+          
+          // Only save if session time > 0 (prevent duplicate saves)
+          if (sessionTime > 0) {
+            // Save accumulated time to the torch item
+            await torchItem.update({
+              flags: {
+                andragathima: {
+                  accumulatedTime: newAccumulatedTime
+                }
+              }
+            });
+            console.log(`Torch usage time updated for item ${torchItem.name}: ${newAccumulatedTime}s total`);
+          }
+        }
+      }
+      
       // Remove torch lighting (set radii to 0)
       await token.document.update({ 
         light: {
@@ -866,7 +940,10 @@ async function updateTokenTorchLighting(token, hasTorchVisible) {
         },
         flags: { 
           andragathima: { 
-            torchLight: false 
+            torchLight: false,
+            torchStartTime: null,
+            activeTorchId: null,
+            torchDimmed: false
           } 
         }
       });
@@ -2017,6 +2094,27 @@ async function onUpdateWorldTime(currentTime, deltaTime) {
 }
 
 /**
+ * Calculate total torch usage time (accumulated + current session if active)
+ */
+function calculateTorchTotalUsage(token, torchItem, currentTime) {
+  if (!torchItem) return 0;
+  
+  const torchAccumulatedTime = torchItem.flags?.andragathima?.accumulatedTime || 0;
+  const torchStartTime = token.document.flags?.andragathima?.torchStartTime;
+  const activeTorchId = token.document.flags?.andragathima?.activeTorchId;
+  const isTorchLight = token.document.flags?.andragathima?.torchLight;
+  
+  // If this torch is currently active, add current session time
+  if (isTorchLight && torchStartTime && activeTorchId === torchItem.id) {
+    const currentSessionTime = currentTime - torchStartTime;
+    return torchAccumulatedTime + currentSessionTime;
+  }
+  
+  // Otherwise return just the accumulated time
+  return torchAccumulatedTime;
+}
+
+/**
  * Check all tokens for expired torches (used by both time update and periodic checks)
  */
 async function checkAllTorchDurations() {
@@ -2036,26 +2134,49 @@ async function checkTorchDuration(token, currentTime) {
   if (!token.document || !token.actor) return;
   
   const torchStartTime = token.document.flags?.andragathima?.torchStartTime;
+  const activeTorchId = token.document.flags?.andragathima?.activeTorchId;
   const isTorchLight = token.document.flags?.andragathima?.torchLight;
   
   // Skip if this token doesn't have an active torch
-  if (!isTorchLight || !torchStartTime) return;
+  if (!isTorchLight || !torchStartTime || !activeTorchId) return;
   
-  // Calculate elapsed time in seconds
-  const elapsedTime = currentTime - torchStartTime;
+  // Get the active torch item and calculate its total usage
+  const torchItem = token.actor.items.get(activeTorchId);
+  if (!torchItem) return;
+  
+  const totalElapsedTime = calculateTorchTotalUsage(token, torchItem, currentTime);
   const torchDurationMinutes = game.settings.get("andragathima", "torchDurationMinutes");
   const TORCH_DURATION = torchDurationMinutes * 60; // Convert minutes to seconds
+  const usagePercentage = totalElapsedTime / TORCH_DURATION;
   
-  if (elapsedTime >= TORCH_DURATION) {
-    console.log(`Torch expired for token ${token.name || token.id}. Elapsed: ${elapsedTime}s`);
+  // Check if torch needs dimming (80% usage) but hasn't been dimmed yet
+  if (usagePercentage > 0.8 && usagePercentage < 1.0) {
+    const currentLight = token.document.light;
+    const isDimmed = token.document.flags?.andragathima?.torchDimmed;
     
-    // Find and destroy the torch item
-    const torchItem = findTorchItem(token.actor);
-    if (torchItem) {
-      await destroyTorchItem(token.actor, torchItem);
+    // Only dim if it's currently at full brightness (bright: 10) and not already marked as dimmed
+    if (currentLight.bright === 10 && !isDimmed) {
+      await token.document.update({
+        light: {
+          ...currentLight,
+          bright: 5,
+          dim: 10
+        },
+        flags: {
+          andragathima: {
+            ...token.document.flags.andragathima,
+            torchDimmed: true
+          }
+        }
+      });
+      console.log(`Torch dimmed for token ${token.name || token.id} due to ${Math.round(usagePercentage * 100)}% usage`);
     }
+  }
+  
+  if (totalElapsedTime >= TORCH_DURATION) {
+    console.log(`Torch expired for token ${token.name || token.id}. Total elapsed: ${totalElapsedTime}s`);
     
-    // Remove torch lighting
+    // Remove torch lighting first
     await token.document.update({ 
       light: {
         bright: 0,
@@ -2064,10 +2185,22 @@ async function checkTorchDuration(token, currentTime) {
       flags: { 
         andragathima: { 
           torchLight: false,
-          torchStartTime: null
+          torchStartTime: null,
+          activeTorchId: null,
+          torchDimmed: false
         } 
       }
     });
+    
+    // Destroy the torch item in a separate try-catch to isolate errors
+    try {
+      if (torchItem) {
+        await destroyTorchItem(token.actor, torchItem);
+      }
+    } catch (error) {
+      console.error("Error in torch destruction (isolated):", error);
+      // Continue with the rest of the function even if destruction fails
+    }
     
     // Show notification to the token's owner
     const owners = token.actor.ownership ? Object.entries(token.actor.ownership)
@@ -2104,10 +2237,19 @@ function findTorchItem(actor) {
  * Destroy a torch item from an actor's inventory
  */
 async function destroyTorchItem(actor, torchItem) {
+  if (!torchItem || !torchItem.id || !actor) {
+    console.warn("Invalid parameters passed to destroyTorchItem");
+    return;
+  }
+  
   try {
     // First, find and clear the torch from quick items
     const quickItems = actor.system.equipment?.quickItems || [];
     const updatedQuickItems = quickItems.map(quickItem => {
+      // Handle potentially undefined/null quickItems
+      if (!quickItem) {
+        return { id: "", name: "", img: "", tooltip: "" };
+      }
       if (quickItem.id === torchItem.id) {
         // Clear the quick item slot
         return { id: "", name: "", img: "", tooltip: "" };
@@ -2115,26 +2257,28 @@ async function destroyTorchItem(actor, torchItem) {
       return quickItem;
     });
     
-    // Update the actor's quick items to remove the reference
-    await actor.update({
+    // Prepare all updates in a single operation
+    const updateData = {
       "system.equipment.quickItems": updatedQuickItems
-    });
+    };
     
     // Also check and clear shield slot if needed
     const shieldSlot = actor.system.equipment?.slots?.shield;
     if (shieldSlot && shieldSlot.id === torchItem.id) {
-      await actor.update({
-        "system.equipment.slots.shield": { id: "", name: "", img: "", tooltip: "" }
-      });
+      updateData["system.equipment.slots.shield"] = { id: "", name: "", img: "", tooltip: "" };
     }
+    
+    // Update all equipment references first
+    await actor.update(updateData);
     
     // Now remove the item from the actor
     await torchItem.delete();
-    console.log(`Destroyed torch item "${torchItem.name}" from ${actor.name}`);
     
-    // Force update token status effects to remove weapon overlay
-    updateTokenStatusEffects(actor);
+    console.log(`Successfully destroyed torch item "${torchItem.name}" from ${actor.name}`);
+    
+    // Token status effects will be updated automatically by the item deletion hook
   } catch (error) {
     console.error("Error destroying torch item:", error);
+    console.error("Actor:", actor?.name, "Item:", torchItem?.name, "ItemID:", torchItem?.id);
   }
 }
