@@ -742,12 +742,20 @@
     
     "TooltipErrorLoadingData": "Σφάλμα φόρτωσης δεδομένων",
     "TooltipUnknownActor": "Άγνωστος",
+    "ContainerEmpty": "Άδειο",
+    "NoteName": "Όνομα σημείωσης",
+    "NoteEmpty": "Κενή σημείωση",
     
     "Settings": {
       "ShowTokenTooltips": "Πληροφορίες μάρκας",
       "ShowTokenTooltipsHint": "Εμφανίζει τα χαρακτηριστικά μάχης όταν περνάς το ποντίκι πάνω από μάρκες",
       "TorchDuration": "Διάρκεια δαυλού (λεπτά)",
-      "TorchDurationHint": "Πόσα λεπτά παιχνιδιού θα καίει ένας δαυλός πριν σβήσει και καταστραφεί"
+      "TorchDurationHint": "Πόσα λεπτά παιχνιδιού θα καίει ένας δαυλός πριν σβήσει και καταστραφεί",
+      "FrightenedStrokeShape": "Εφέ τρόμου στις μάρκες",
+      "FrightenedStrokeShapeHint": "Καθορίζει το σχήμα του κίτρινου περιγράμματος γύρω από μάρκες με φόβο",
+      "FrightenedStrokeEllipse": "Έλλειψη",
+      "FrightenedStrokeRectangle": "Ορθογώνιο", 
+      "FrightenedStrokeOff": "Χωρίς"
     }
   }
 }

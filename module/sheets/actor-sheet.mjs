@@ -35,6 +35,14 @@ export class AndragathimaActorSheet extends ActorSheet {
         height: 290
       });
     }
+    
+    // Set note window size after rendering (taller for rich text editor)
+    if (this.actor.type === 'note') {
+      this.setPosition({
+        width: 600,
+        height: 500
+      });
+    }
   }
 
   /* -------------------------------------------- */
@@ -88,6 +96,11 @@ export class AndragathimaActorSheet extends ActorSheet {
     // Prepare Container data and items.
     if (actorData.type == 'container') {
       this._prepareContainerData(context);
+    }
+
+    // Prepare Note data
+    if (actorData.type == 'note') {
+      this._prepareNoteData(context);
     }
 
     // Add roll data for TinyMCE editors.
@@ -4900,6 +4913,20 @@ export class AndragathimaActorSheet extends ActorSheet {
   _enrichMiscItem(item) {
     const enriched = item.toObject();
     return enriched;
+  }
+
+  /**
+   * Prepare Note-specific data
+   */
+  _prepareNoteData(context) {
+    // Notes are simple and don't need complex data preparation
+    // The rich text editor will handle the content editing
+    // Just ensure the notes field exists
+    if (!context.system.notes) {
+      context.system.notes = {
+        content: ""
+      };
+    }
   }
   
 }

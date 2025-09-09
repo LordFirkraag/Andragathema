@@ -415,7 +415,7 @@ ANDRAGATHIMA.statusEffects = [
     id: "wounded",
     name: "ANDRAGATHIMA.StatusWounded",
     description: "ANDRAGATHIMA.StatusWoundedDesc",
-    icon: "systems/andragathima/assets/conditions/wound.png",
+    img: "systems/andragathima/assets/conditions/wound.png",
     changes: [
       {
         key: "system.combat.meleeDefense",
@@ -453,7 +453,7 @@ ANDRAGATHIMA.statusEffects = [
     id: "wounded2",
     name: "ANDRAGATHIMA.StatusWounded",
     description: "ANDRAGATHIMA.StatusWoundedDesc",
-    icon: "systems/andragathima/assets/conditions/wound2.png",
+    img: "systems/andragathima/assets/conditions/wound2.png",
     changes: [
       {
         key: "system.combat.meleeDefense",
@@ -491,7 +491,7 @@ ANDRAGATHIMA.statusEffects = [
     id: "wounded3",
     name: "ANDRAGATHIMA.StatusWounded",
     description: "ANDRAGATHIMA.StatusWoundedDesc",
-    icon: "systems/andragathima/assets/conditions/wound3.png",
+    img: "systems/andragathima/assets/conditions/wound3.png",
     changes: [
       {
         key: "system.combat.meleeDefense",
@@ -529,7 +529,7 @@ ANDRAGATHIMA.statusEffects = [
     id: "wounded4",
     name: "ANDRAGATHIMA.StatusWounded",
     description: "ANDRAGATHIMA.StatusWoundedDesc",
-    icon: "systems/andragathima/assets/conditions/wound4.png",
+    img: "systems/andragathima/assets/conditions/wound4.png",
     changes: [
       {
         key: "system.combat.meleeDefense",
@@ -567,7 +567,7 @@ ANDRAGATHIMA.statusEffects = [
     id: "wounded5",
     name: "ANDRAGATHIMA.StatusWounded",
     description: "ANDRAGATHIMA.StatusWoundedDesc",
-    icon: "systems/andragathima/assets/conditions/wound5.png",
+    img: "systems/andragathima/assets/conditions/wound5.png",
     changes: [
       {
         key: "system.combat.meleeDefense",
@@ -606,7 +606,7 @@ ANDRAGATHIMA.statusEffects = [
     id: "stunned",
     name: "ANDRAGATHIMA.StatusStunned",
     description: "ANDRAGATHIMA.StatusStunnedDesc",
-    icon: "systems/andragathima/assets/conditions/stun.png", 
+    img: "systems/andragathima/assets/conditions/stun.png", 
     changes: [
       {
         key: "system.combat.meleeDefense",
@@ -639,7 +639,7 @@ ANDRAGATHIMA.statusEffects = [
     id: "helpless",
     name: "ANDRAGATHIMA.StatusHelpless",
     description: "ANDRAGATHIMA.StatusHelplessDesc",
-    icon: "systems/andragathima/assets/conditions/helpless.png",
+    img: "systems/andragathima/assets/conditions/helpless.png",
     changes: [
       {
         key: "system.other.ignoreMeleeCoefficient",
@@ -667,7 +667,7 @@ ANDRAGATHIMA.statusEffects = [
     id: "unconscious",
     name: "ANDRAGATHIMA.StatusUnconscious",
     description: "ANDRAGATHIMA.StatusUnconsciousDesc",
-    icon: "systems/andragathima/assets/conditions/coma.png",
+    img: "systems/andragathima/assets/conditions/coma.png",
     changes: [
       
     ]
@@ -676,21 +676,21 @@ ANDRAGATHIMA.statusEffects = [
     id: "dying",
     name: "ANDRAGATHIMA.StatusDying",
     description: "ANDRAGATHIMA.StatusDyingDesc",
-    icon: "systems/andragathima/assets/conditions/blood.png",
+    img: "systems/andragathima/assets/conditions/blood.png",
     changes: []
   },
   {
     id: "dead",
     name: "ANDRAGATHIMA.StatusDead",
     description: "ANDRAGATHIMA.StatusDeadDesc",
-    icon: "systems/andragathima/assets/conditions/death.png",
+    img: "systems/andragathima/assets/conditions/death.png",
     changes: []
   },
   {
     id: "frightened",
     name: "ANDRAGATHIMA.StatusFrightened",
     description: "ANDRAGATHIMA.StatusFrightenedDesc",
-    icon: "systems/andragathima/assets/conditions/frightened.png",
+    img: "systems/andragathima/assets/conditions/frightened.png",
     changes: [
       {
         key: "system.combat.meleeAttack.modifier",
@@ -708,21 +708,21 @@ ANDRAGATHIMA.statusEffects = [
     id: "poisoned",
     name: "ANDRAGATHIMA.StatusPoisoned",
     description: "ANDRAGATHIMA.StatusPoisonedDesc",
-    icon: "systems/andragathima/assets/conditions/poison.png",
+    img: "systems/andragathima/assets/conditions/poison.png",
     changes: []
   },
   {
     id: "charmed",
     name: "ANDRAGATHIMA.StatusCharmed",
     description: "ANDRAGATHIMA.StatusCharmedDesc",
-    icon: "systems/andragathima/assets/conditions/charm.png",
+    img: "systems/andragathima/assets/conditions/charm.png",
     changes: []
   },
   {
     id: "deafened",
     name: "ANDRAGATHIMA.StatusDeafened",
     description: "ANDRAGATHIMA.StatusDeafenedDesc",
-    icon: "systems/andragathima/assets/conditions/deaf.png",
+    img: "systems/andragathima/assets/conditions/deaf.png",
     changes: [
       {
         key: "system.other.initiative",
@@ -735,7 +735,7 @@ ANDRAGATHIMA.statusEffects = [
     id: "blinded",
     name: "ANDRAGATHIMA.StatusBlinded",
     description: "ANDRAGATHIMA.StatusBlindedDesc",
-    icon: "systems/andragathima/assets/conditions/blind.png",
+    img: "systems/andragathima/assets/conditions/blind.png",
     changes: [
       {
         key: "system.combat.meleeDefense",
@@ -783,7 +783,7 @@ ANDRAGATHIMA.statusEffects = [
     id: "trapped",
     name: "ANDRAGATHIMA.StatusTrapped",
     description: "ANDRAGATHIMA.StatusTrappedDesc",
-    icon: "systems/andragathima/assets/conditions/trap.png",
+    img: "systems/andragathima/assets/conditions/trap.png",
     changes: [
       {
         key: "system.combat.meleeAttack.modifier",
@@ -821,7 +821,7 @@ ANDRAGATHIMA.statusEffects = [
     id: "drunk",
     name: "ANDRAGATHIMA.StatusDrunk",
     description: "ANDRAGATHIMA.StatusDrunkDesc",
-    icon: "systems/andragathima/assets/conditions/intoxication.png",
+    img: "systems/andragathima/assets/conditions/intoxication.png",
     changes: [
       {
         key: "system.other.initiative",
@@ -859,7 +859,7 @@ ANDRAGATHIMA.statusEffects = [
     id: "prone",
     name: "ANDRAGATHIMA.StatusProne",
     description: "ANDRAGATHIMA.StatusProneDesc",
-    icon: "systems/andragathima/assets/conditions/prone.png",
+    img: "systems/andragathima/assets/conditions/prone.png",
     changes: [
       {
         key: "system.combat.meleeDefense",
@@ -882,7 +882,7 @@ ANDRAGATHIMA.statusEffects = [
     id: "grappled",
     name: "ANDRAGATHIMA.StatusGrappled",
     description: "ANDRAGATHIMA.StatusGrappledDesc",
-    icon: "systems/andragathima/assets/conditions/grapple.png", 
+    img: "systems/andragathima/assets/conditions/grapple.png", 
     changes: [
       {
         key: "system.other.ignoreMeleeCoefficient",
@@ -900,7 +900,7 @@ ANDRAGATHIMA.statusEffects = [
     id: "running",
     name: "ANDRAGATHIMA.StatusRunning",
     description: "ANDRAGATHIMA.StatusRunningDesc",
-    icon: "systems/andragathima/assets/conditions/run.png",
+    img: "systems/andragathima/assets/conditions/run.png",
     changes: [
       {
         key: "system.other.ignoreMeleeCoefficient",
@@ -918,7 +918,7 @@ ANDRAGATHIMA.statusEffects = [
     id: "charge",
     name: "ANDRAGATHIMA.StatusCharge",
     description: "ANDRAGATHIMA.StatusChargeDesc",
-    icon: "systems/andragathima/assets/conditions/charge.png",
+    img: "systems/andragathima/assets/conditions/charge.png",
     changes: [
       {
         key: "system.combat.meleeAttack.modifier",
@@ -941,7 +941,7 @@ ANDRAGATHIMA.statusEffects = [
     id: "totaldefense",
     name: "ANDRAGATHIMA.StatusTotalDefense",
     description: "ANDRAGATHIMA.StatusTotalDefenseDesc",
-    icon: "systems/andragathima/assets/conditions/totaldefense.png",
+    img: "systems/andragathima/assets/conditions/totaldefense.png",
     changes: []
   }
 ];

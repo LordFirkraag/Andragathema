@@ -726,10 +726,20 @@
     
     "TooltipErrorLoadingData": "Error loading data",
     "TooltipUnknownActor": "Unknown",
+    "ContainerEmpty": "Empty",
+    "NoteName": "Note Name",
+    "NoteEmpty": "Empty note",
     
     "Settings": {
       "ShowTokenTooltips": "Show Token Tooltips",
-      "ShowTokenTooltipsHint": "Shows information (name, HP, defense) when hovering over tokens"
+      "ShowTokenTooltipsHint": "Shows information (name, HP, defense) when hovering over tokens",
+      "TorchDuration": "Torch Duration (minutes)",
+      "TorchDurationHint": "How many game minutes a torch will burn before being extinguished and destroyed",
+      "FrightenedStrokeShape": "Frightened Token Effect",
+      "FrightenedStrokeShapeHint": "Determines the shape of yellow outline around tokens with frightened status",
+      "FrightenedStrokeEllipse": "Ellipse",
+      "FrightenedStrokeRectangle": "Rectangle",
+      "FrightenedStrokeOff": "Off"
     }
   }
 }

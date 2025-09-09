@@ -61,7 +61,7 @@ Hooks.once('init', async function() {
   Actors.unregisterSheet("core", ActorSheet);
   Actors.registerSheet("andragathima", AndragathimaActorSheet, { 
     makeDefault: true,
-    types: ["character", "npc", "container"],
+    types: ["character", "npc", "container", "note"],
     label: "ANDRAGATHIMA.SheetClassCharacter"
   });
   
@@ -452,6 +452,9 @@ async function updateTokenStatusEffects(actor) {
     !effect.disabled && woundStatuses.some(status => effect.statuses?.has(status))
   ).length;
   
+  // Check if actor is frightened for yellow stroke effect
+  const isFrightened = actor.effects.some(effect => !effect.disabled && effect.statuses?.has("frightened"));
+  
   // Don't show dying/wound overlays if actor is dead
   const showDyingOverlays = !isDead && (isDying || activeWounds > 0);
   
@@ -459,12 +462,97 @@ async function updateTokenStatusEffects(actor) {
   const tokens = actor.getActiveTokens();
   for (const token of tokens) {
     await updateTokenDyingEffect(token, showDyingOverlays ? isDying : false, showDyingOverlays ? activeWounds : 0);
+    await updateTokenFearEffect(token, isFrightened);
     await updateTokenCustomOverlay(token, effectsToShow);
     await updateTokenWeaponOverlay(token, itemsToShow);
     await updateTokenDeadEffect(token, isDead);
   }
   
   console.log(`Token custom overlays updated for ${actor.name} - Effects: ${effectsToShow.length}, Items: ${itemsToShow.length}`);
+}
+
+/**
+ * Apply or remove yellow stroke effect on token when frightened
+ */
+async function updateTokenFearEffect(token, isFrightened) {
+  if (!token.document || !token.mesh) return;
+  
+  // Get stroke shape setting
+  const strokeShape = game.settings.get("andragathima", "frightenedStrokeShape");
+  
+  // Remove existing fear stroke
+  const existingFearStroke = token.children.find(child => child.andragathimaFearStroke);
+  if (existingFearStroke) {
+    token.removeChild(existingFearStroke);
+  }
+  
+  // Show stroke if frightened and setting is not "off"
+  if (isFrightened && strokeShape !== "off") {
+    // Create fear stroke container
+    const fearStroke = new PIXI.Container();
+    fearStroke.andragathimaFearStroke = true;
+    
+    // Create yellow stroke graphic
+    const stroke = new PIXI.Graphics();
+    stroke.lineStyle(8, 0xFFFF00, 1.0); // 8px yellow stroke
+    
+    // Use grid size for consistent token sizing (same as other overlays)
+    const gridSize = canvas.grid.size;
+    const tokenWidth = token.document.width * gridSize;
+    const tokenHeight = token.document.height * gridSize;
+    const centerX = tokenWidth / 2;
+    const centerY = tokenHeight / 2;
+    
+    // Get stroke shape from settings
+    const strokeShape = game.settings.get("andragathima", "frightenedStrokeShape");
+    const aspectRatio = token.document.width / token.document.height;
+    const isRoughlySquare = aspectRatio > 0.8 && aspectRatio < 1.2;
+    
+    if (strokeShape === "rectangle") {
+      // Rectangle stroke - 4px outside the token edge
+      const width = tokenWidth + 8;  // 4px on each side
+      const height = tokenHeight + 8; // 4px on each side
+      stroke.drawRect(-4, -4, width, height);
+    } else if (strokeShape === "ellipse") {
+      // Ellipse stroke - draw circle or ellipse based on aspect ratio
+      if (isRoughlySquare) {
+        // Draw a circle for square tokens - 4px outside the token edge
+        const radius = Math.min(tokenWidth, tokenHeight) / 2 + 4;
+        stroke.drawCircle(centerX, centerY, radius);
+      } else {
+        // Draw an ellipse for rectangular tokens - 4px outside the token edge
+        const radiusX = tokenWidth / 2 + 4;
+        const radiusY = tokenHeight / 2 + 4;
+        stroke.drawEllipse(centerX, centerY, radiusX, radiusY);
+      }
+    }
+    
+    fearStroke.addChild(stroke);
+    
+    // Add stroke to token container at the correct z-index
+    // Position it one level above dying overlay but below effects
+    let insertIndex = token.children.length;
+    
+    for (let i = 0; i < token.children.length; i++) {
+      // Insert after mesh and dying overlay but before effects and other overlays
+      if (token.children[i] === token.mesh || 
+          token.children[i].andragathimaDyingOverlay) {
+        insertIndex = i + 1;
+        continue;
+      }
+      // Stop before effects container and other overlays (except dying overlay)
+      if (token.children[i] === token.effects ||
+          token.children[i].andragathimaCustomOverlay || 
+          token.children[i].andragathimaWeaponOverlay ||
+          token.children[i].andragathimaDeadOverlay) {
+        insertIndex = i;
+        break;
+      }
+    }
+    
+    token.addChildAt(fearStroke, insertIndex);
+    console.log(`Frightened stroke applied to token ${token.name || token.id}`);
+  }
 }
 
 /**
@@ -1316,6 +1404,17 @@ function generateTooltipContent(actor) {
   try {
     const system = actor.system;
     const flags = actor.flags.andragathima || {};
+    
+    // Special handling for container actors - show items list instead of combat stats
+    if (actor.type === 'container') {
+      return generateContainerTooltipContent(actor);
+    }
+    
+    // Special handling for note actors - show note content instead of combat stats
+    if (actor.type === 'note') {
+      return generateNoteTooltipContent(actor);
+    }
+    
     // For NPCs, check the useTargetNumbers flag; for characters, default to false
     const useTargetNumbers = flags.useTargetNumbers || false;
     
@@ -1426,6 +1525,73 @@ function generateTooltipContent(actor) {
   
   } catch (error) {
     console.warn('Error generating tooltip content for actor:', actor?.name, error);
+    return `<div class="item-name">${actor?.name || game.i18n.localize('ANDRAGATHIMA.TooltipUnknownActor')}</div><div class="item-type">${game.i18n.localize('ANDRAGATHIMA.TooltipErrorLoadingData')}</div>`;
+  }
+}
+
+/**
+ * Generate tooltip content specifically for container actors showing their items
+ */
+function generateContainerTooltipContent(actor) {
+  try {
+    let content = `<div class="item-name">${actor.name}</div>`;
+    content += `<div class="item-details">`;
+    
+    // Get all items from the container
+    const items = actor.items;
+    
+    if (items && items.size > 0) {
+      items.forEach(item => {
+        // Create item entry with quantity if applicable
+        let itemEntry = item.name;
+        if (item.system.quantity && item.system.quantity > 1) {
+          itemEntry += ` (×${item.system.quantity})`;
+        }
+        
+        content += `<div class="item-property">${itemEntry}</div>`;
+      });
+      
+    } else {
+      // Empty container
+      content += `<div class="item-property">${game.i18n.localize('ANDRAGATHIMA.ContainerEmpty') || 'Empty'}</div>`;
+    }
+    
+    content += `</div>`;
+    return content;
+    
+  } catch (error) {
+    console.warn('Error generating container tooltip content for actor:', actor?.name, error);
+    return `<div class="item-name">${actor?.name || game.i18n.localize('ANDRAGATHIMA.TooltipUnknownActor')}</div><div class="item-type">${game.i18n.localize('ANDRAGATHIMA.TooltipErrorLoadingData')}</div>`;
+  }
+}
+
+/**
+ * Generate tooltip content specifically for note actors showing their text content
+ */
+function generateNoteTooltipContent(actor) {
+  try {
+    let content = `<div class="item-name">${actor.name}</div>`;
+    content += `<div class="item-details">`;
+    
+    // Get notes content
+    const noteContent = actor.system.notes?.content || "";
+    
+    if (noteContent.trim()) {
+      // Strip HTML tags and truncate for tooltip display
+      const plainText = noteContent.replace(/<[^>]*>/g, '').trim();
+      const truncatedText = plainText.length > 200 ? plainText.substring(0, 200) + '...' : plainText;
+      
+      content += `<div class="item-property">${truncatedText}</div>`;
+    } else {
+      // Empty note
+      content += `<div class="item-property">${game.i18n.localize('ANDRAGATHIMA.NoteEmpty') || 'Empty'}</div>`;
+    }
+    
+    content += `</div>`;
+    return content;
+    
+  } catch (error) {
+    console.warn('Error generating note tooltip content for actor:', actor?.name, error);
     return `<div class="item-name">${actor?.name || game.i18n.localize('ANDRAGATHIMA.TooltipUnknownActor')}</div><div class="item-type">${game.i18n.localize('ANDRAGATHIMA.TooltipErrorLoadingData')}</div>`;
   }
 }
@@ -2131,6 +2297,21 @@ function registerSystemSettings() {
       min: 1,
       max: 480,
       step: 1
+    }
+  });
+  
+  // Frightened stroke effect setting
+  game.settings.register("andragathima", "frightenedStrokeShape", {
+    name: "ANDRAGATHIMA.Settings.FrightenedStrokeShape",
+    hint: "ANDRAGATHIMA.Settings.FrightenedStrokeShapeHint",
+    scope: "world",
+    config: true,
+    default: "ellipse",
+    type: String,
+    choices: {
+      "ellipse": "ANDRAGATHIMA.Settings.FrightenedStrokeEllipse",
+      "rectangle": "ANDRAGATHIMA.Settings.FrightenedStrokeRectangle",
+      "off": "ANDRAGATHIMA.Settings.FrightenedStrokeOff"
     }
   });
 }

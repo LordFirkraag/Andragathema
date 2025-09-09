@@ -3301,12 +3301,32 @@ body.andragathima .tooltip {
 .andragathima .save-increase.disabled-by-xp,
 .andragathima .combat-increase.disabled-by-xp,
 .andragathima .skill-increase.disabled-by-xp,
-.andragathima .magic-increase.disabled-by-xp {
+.andragathima .magic-increase.disabled-by-xp,
+.andragathima .ability-decrease.disabled-by-permissions,
+.andragathima .save-decrease.disabled-by-permissions,
+.andragathima .combat-decrease.disabled-by-permissions,
+.andragathima .skill-decrease.disabled-by-permissions,
+.andragathima .magic-decrease.disabled-by-permissions,
+.andragathima .ability-increase.disabled-by-permissions,
+.andragathima .save-increase.disabled-by-permissions,
+.andragathima .combat-increase.disabled-by-permissions,
+.andragathima .skill-increase.disabled-by-permissions,
+.andragathima .magic-increase.disabled-by-permissions {
   opacity: 0.3 !important;
   cursor: not-allowed !important;
   filter: grayscale(1) !important;
   pointer-events: none !important;
   transition: none !important; /* Prevent CSS transitions that might cause flickering */
+}
+
+/* Disabled dropdown styling for non-GM users */
+.andragathima .size-dropdown.disabled-by-permissions,
+.andragathima .element-dropdown.disabled-by-permissions,
+.andragathima .weapon-specialization-dropdown.disabled-by-permissions {
+  opacity: 0.3 !important;
+  cursor: not-allowed !important;
+  filter: grayscale(1) !important;
+  pointer-events: none !important;
 }
 
 /* GM/Assistant button overrides - consolidated */

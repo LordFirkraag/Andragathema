@@ -508,7 +508,7 @@
       <div class="race-edit-section">
         <h2>{{localize 'ANDRAGATHIMA.Size'}}</h2>
         <div class="size-dropdown-container">
-          <select name="system.details.size.value" class="size-dropdown" {{#unless isGMOrAssistant}}disabled{{/unless}}>
+          <select name="system.details.size.value" class="size-dropdown {{#unless isGMOrAssistant}}disabled-by-permissions{{/unless}}" {{#unless isGMOrAssistant}}disabled{{/unless}}>
             {{#each sizeChoices as |sizeName sizeKey|}}
             <option value="{{sizeKey}}" {{#if (or (eq ../system.details.size.value sizeKey) (and (eq sizeKey "medium") (not ../system.details.size.value)))}}selected{{/if}}>{{localize sizeName}}</option>
             {{/each}}
@@ -523,48 +523,48 @@
           <tr>
             <td>{{localize 'ANDRAGATHIMA.AbilityDyn'}} ({{localize 'ANDRAGATHIMA.AbilityDynAbbr'}}): {{#if system.abilities.dyn.totalValue}}{{system.abilities.dyn.totalValue}}{{else}}{{system.abilities.dyn.value}}{{/if}}</td>
             <td>
-              <button class="ability-decrease small-btn" data-ability="dyn" type="button" {{#unless isGMOrAssistant}}disabled{{/unless}}>−</button>
-              <button class="ability-increase small-btn" data-ability="dyn" type="button" {{#unless isGMOrAssistant}}disabled{{/unless}}>+</button>
+              <button class="ability-decrease small-btn {{#unless isGMOrAssistant}}disabled-by-permissions{{/unless}}" data-ability="dyn" type="button" {{#unless isGMOrAssistant}}disabled{{/unless}}>−</button>
+              <button class="ability-increase small-btn {{#unless isGMOrAssistant}}disabled-by-permissions{{/unless}}" data-ability="dyn" type="button" {{#unless isGMOrAssistant}}disabled{{/unless}}>+</button>
             </td>
             <td></td>
           </tr>
           <tr>
             <td>{{localize 'ANDRAGATHIMA.AbilityEpi'}} ({{localize 'ANDRAGATHIMA.AbilityEpiAbbr'}}): {{#if system.abilities.epi.totalValue}}{{system.abilities.epi.totalValue}}{{else}}{{system.abilities.epi.value}}{{/if}}</td>
             <td>
-              <button class="ability-decrease small-btn" data-ability="epi" type="button" {{#unless isGMOrAssistant}}disabled{{/unless}}>−</button>
-              <button class="ability-increase small-btn" data-ability="epi" type="button" {{#unless isGMOrAssistant}}disabled{{/unless}}>+</button>
+              <button class="ability-decrease small-btn {{#unless isGMOrAssistant}}disabled-by-permissions{{/unless}}" data-ability="epi" type="button" {{#unless isGMOrAssistant}}disabled{{/unless}}>−</button>
+              <button class="ability-increase small-btn {{#unless isGMOrAssistant}}disabled-by-permissions{{/unless}}" data-ability="epi" type="button" {{#unless isGMOrAssistant}}disabled{{/unless}}>+</button>
             </td>
             <td></td>
           </tr>
           <tr>
             <td>{{localize 'ANDRAGATHIMA.AbilityKra'}} ({{localize 'ANDRAGATHIMA.AbilityKraAbbr'}}): {{#if system.abilities.kra.totalValue}}{{system.abilities.kra.totalValue}}{{else}}{{system.abilities.kra.value}}{{/if}}</td>
             <td>
-              <button class="ability-decrease small-btn" data-ability="kra" type="button" {{#unless isGMOrAssistant}}disabled{{/unless}}>−</button>
-              <button class="ability-increase small-btn" data-ability="kra" type="button" {{#unless isGMOrAssistant}}disabled{{/unless}}>+</button>
+              <button class="ability-decrease small-btn {{#unless isGMOrAssistant}}disabled-by-permissions{{/unless}}" data-ability="kra" type="button" {{#unless isGMOrAssistant}}disabled{{/unless}}>−</button>
+              <button class="ability-increase small-btn {{#unless isGMOrAssistant}}disabled-by-permissions{{/unless}}" data-ability="kra" type="button" {{#unless isGMOrAssistant}}disabled{{/unless}}>+</button>
             </td>
             <td></td>
           </tr>
           <tr>
             <td>{{localize 'ANDRAGATHIMA.AbilityEyf'}} ({{localize 'ANDRAGATHIMA.AbilityEyfAbbr'}}): {{#if system.abilities.eyf.totalValue}}{{system.abilities.eyf.totalValue}}{{else}}{{system.abilities.eyf.value}}{{/if}}</td>
             <td>
-              <button class="ability-decrease small-btn" data-ability="eyf" type="button" {{#unless isGMOrAssistant}}disabled{{/unless}}>−</button>
-              <button class="ability-increase small-btn" data-ability="eyf" type="button" {{#unless isGMOrAssistant}}disabled{{/unless}}>+</button>
+              <button class="ability-decrease small-btn {{#unless isGMOrAssistant}}disabled-by-permissions{{/unless}}" data-ability="eyf" type="button" {{#unless isGMOrAssistant}}disabled{{/unless}}>−</button>
+              <button class="ability-increase small-btn {{#unless isGMOrAssistant}}disabled-by-permissions{{/unless}}" data-ability="eyf" type="button" {{#unless isGMOrAssistant}}disabled{{/unless}}>+</button>
             </td>
             <td></td>
           </tr>
           <tr>
             <td>{{localize 'ANDRAGATHIMA.AbilitySof'}} ({{localize 'ANDRAGATHIMA.AbilitySofAbbr'}}): {{#if system.abilities.sof.totalValue}}{{system.abilities.sof.totalValue}}{{else}}{{system.abilities.sof.value}}{{/if}}</td>
             <td>
-              <button class="ability-decrease small-btn" data-ability="sof" type="button" {{#unless isGMOrAssistant}}disabled{{/unless}}>−</button>
-              <button class="ability-increase small-btn" data-ability="sof" type="button" {{#unless isGMOrAssistant}}disabled{{/unless}}>+</button>
+              <button class="ability-decrease small-btn {{#unless isGMOrAssistant}}disabled-by-permissions{{/unless}}" data-ability="sof" type="button" {{#unless isGMOrAssistant}}disabled{{/unless}}>−</button>
+              <button class="ability-increase small-btn {{#unless isGMOrAssistant}}disabled-by-permissions{{/unless}}" data-ability="sof" type="button" {{#unless isGMOrAssistant}}disabled{{/unless}}>+</button>
             </td>
             <td></td>
           </tr>
           <tr>
             <td>{{localize 'ANDRAGATHIMA.AbilityXar'}} ({{localize 'ANDRAGATHIMA.AbilityXarAbbr'}}): {{#if system.abilities.xar.totalValue}}{{system.abilities.xar.totalValue}}{{else}}{{system.abilities.xar.value}}{{/if}}</td>
             <td>
-              <button class="ability-decrease small-btn" data-ability="xar" type="button" {{#unless isGMOrAssistant}}disabled{{/unless}}>−</button>
-              <button class="ability-increase small-btn" data-ability="xar" type="button" {{#unless isGMOrAssistant}}disabled{{/unless}}>+</button>
+              <button class="ability-decrease small-btn {{#unless isGMOrAssistant}}disabled-by-permissions{{/unless}}" data-ability="xar" type="button" {{#unless isGMOrAssistant}}disabled{{/unless}}>−</button>
+              <button class="ability-increase small-btn {{#unless isGMOrAssistant}}disabled-by-permissions{{/unless}}" data-ability="xar" type="button" {{#unless isGMOrAssistant}}disabled{{/unless}}>+</button>
             </td>
             <td></td>
           </tr>
@@ -578,24 +578,24 @@
           <tr>
             <td>{{localize 'ANDRAGATHIMA.SaveAnt'}} ({{localize 'ANDRAGATHIMA.SaveAntAbbr'}}): {{system.saves.ant.base}}</td>
             <td>
-              <button class="save-decrease small-btn" data-save="ant" type="button" {{#unless isGMOrAssistant}}disabled{{/unless}}>−</button>
-              <button class="save-increase small-btn" data-save="ant" type="button" {{#unless isGMOrAssistant}}disabled{{/unless}}>+</button>
+              <button class="save-decrease small-btn {{#unless isGMOrAssistant}}disabled-by-permissions{{/unless}}" data-save="ant" type="button" {{#unless isGMOrAssistant}}disabled{{/unless}}>−</button>
+              <button class="save-increase small-btn {{#unless isGMOrAssistant}}disabled-by-permissions{{/unless}}" data-save="ant" type="button" {{#unless isGMOrAssistant}}disabled{{/unless}}>+</button>
             </td>
             <td></td>
           </tr>
           <tr>
             <td>{{localize 'ANDRAGATHIMA.SaveMya'}} ({{localize 'ANDRAGATHIMA.SaveMyaAbbr'}}): {{system.saves.mya.base}}</td>
             <td>
-              <button class="save-decrease small-btn" data-save="mya" type="button" {{#unless isGMOrAssistant}}disabled{{/unless}}>−</button>
-              <button class="save-increase small-btn" data-save="mya" type="button" {{#unless isGMOrAssistant}}disabled{{/unless}}>+</button>
+              <button class="save-decrease small-btn {{#unless isGMOrAssistant}}disabled-by-permissions{{/unless}}" data-save="mya" type="button" {{#unless isGMOrAssistant}}disabled{{/unless}}>−</button>
+              <button class="save-increase small-btn {{#unless isGMOrAssistant}}disabled-by-permissions{{/unless}}" data-save="mya" type="button" {{#unless isGMOrAssistant}}disabled{{/unless}}>+</button>
             </td>
             <td></td>
           </tr>
           <tr>
             <td>{{localize 'ANDRAGATHIMA.SaveSom'}} ({{localize 'ANDRAGATHIMA.SaveSomAbbr'}}): {{system.saves.som.base}}</td>
             <td>
-              <button class="save-decrease small-btn" data-save="som" type="button" {{#unless isGMOrAssistant}}disabled{{/unless}}>−</button>
-              <button class="save-increase small-btn" data-save="som" type="button" {{#unless isGMOrAssistant}}disabled{{/unless}}>+</button>
+              <button class="save-decrease small-btn {{#unless isGMOrAssistant}}disabled-by-permissions{{/unless}}" data-save="som" type="button" {{#unless isGMOrAssistant}}disabled{{/unless}}>−</button>
+              <button class="save-increase small-btn {{#unless isGMOrAssistant}}disabled-by-permissions{{/unless}}" data-save="som" type="button" {{#unless isGMOrAssistant}}disabled{{/unless}}>+</button>
             </td>
             <td></td>
           </tr>
@@ -609,16 +609,16 @@
           <tr>
             <td>{{localize 'ANDRAGATHIMA.WeaponMelee'}}: {{system.combat.melee.value}}</td>
             <td>
-              <button class="combat-decrease small-btn" data-combat="melee" type="button" {{#unless isGMOrAssistant}}disabled{{/unless}}>−</button>
-              <button class="combat-increase small-btn" data-combat="melee" type="button" {{#unless isGMOrAssistant}}disabled{{/unless}}>+</button>
+              <button class="combat-decrease small-btn {{#unless isGMOrAssistant}}disabled-by-permissions{{/unless}}" data-combat="melee" type="button" {{#unless isGMOrAssistant}}disabled{{/unless}}>−</button>
+              <button class="combat-increase small-btn {{#unless isGMOrAssistant}}disabled-by-permissions{{/unless}}" data-combat="melee" type="button" {{#unless isGMOrAssistant}}disabled{{/unless}}>+</button>
             </td>
             <td></td>
           </tr>
           <tr>
             <td>{{localize 'ANDRAGATHIMA.WeaponRanged'}}: {{system.combat.ranged.value}}</td>
             <td>
-              <button class="combat-decrease small-btn" data-combat="ranged" type="button" {{#unless isGMOrAssistant}}disabled{{/unless}}>−</button>
-              <button class="combat-increase small-btn" data-combat="ranged" type="button" {{#unless isGMOrAssistant}}disabled{{/unless}}>+</button>
+              <button class="combat-decrease small-btn {{#unless isGMOrAssistant}}disabled-by-permissions{{/unless}}" data-combat="ranged" type="button" {{#unless isGMOrAssistant}}disabled{{/unless}}>−</button>
+              <button class="combat-increase small-btn {{#unless isGMOrAssistant}}disabled-by-permissions{{/unless}}" data-combat="ranged" type="button" {{#unless isGMOrAssistant}}disabled{{/unless}}>+</button>
             </td>
             <td></td>
           </tr>
@@ -632,12 +632,12 @@
           <tr>
             <td>{{localize 'ANDRAGATHIMA.MageLevel'}}: <span>{{system.magic.level.value}}</span></td>
             <td>
-              <button class="magic-decrease small-btn" data-magic="level" type="button" {{#unless isGMOrAssistant}}disabled{{/unless}}>−</button>
-              <button class="magic-increase small-btn" data-magic="level" type="button" {{#unless isGMOrAssistant}}disabled{{/unless}}>+</button>
+              <button class="magic-decrease small-btn {{#unless isGMOrAssistant}}disabled-by-permissions{{/unless}}" data-magic="level" type="button" {{#unless isGMOrAssistant}}disabled{{/unless}}>−</button>
+              <button class="magic-increase small-btn {{#unless isGMOrAssistant}}disabled-by-permissions{{/unless}}" data-magic="level" type="button" {{#unless isGMOrAssistant}}disabled{{/unless}}>+</button>
             </td>
             <td>
               {{#if (gt system.magic.level.value 0)}}
-                <select name="system.magic.element.value" class="element-dropdown" {{#unless isGMOrAssistant}}disabled{{/unless}}>
+                <select name="system.magic.element.value" class="element-dropdown {{#unless isGMOrAssistant}}disabled-by-permissions{{/unless}}" {{#unless isGMOrAssistant}}disabled{{/unless}}>
                   <option value="">{{localize 'ANDRAGATHIMA.SelectOne'}}</option>
                   <option value="air" {{#if (eq system.magic.element.value "air")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.ElementAir'}}</option>
                   <option value="earth" {{#if (eq system.magic.element.value "earth")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.ElementEarth'}}</option>
@@ -650,8 +650,8 @@
           <tr>
             <td>{{localize 'ANDRAGATHIMA.MagicDegree'}}: <span>{{system.magic.degree.value}}</span></td>
             <td>
-              <button class="magic-decrease small-btn" data-magic="degree" type="button" {{#unless isGMOrAssistant}}disabled{{/unless}}>−</button>
-              <button class="magic-increase small-btn" data-magic="degree" type="button" {{#unless isGMOrAssistant}}disabled{{/unless}}>+</button>
+              <button class="magic-decrease small-btn {{#unless isGMOrAssistant}}disabled-by-permissions{{/unless}}" data-magic="degree" type="button" {{#unless isGMOrAssistant}}disabled{{/unless}}>−</button>
+              <button class="magic-increase small-btn {{#unless isGMOrAssistant}}disabled-by-permissions{{/unless}}" data-magic="degree" type="button" {{#unless isGMOrAssistant}}disabled{{/unless}}>+</button>
             </td>
             <td></td>
           </tr>
@@ -678,13 +678,13 @@
               {{/if}}
             </td>
             <td>
-              <button class="skill-decrease small-btn" data-skill="{{key}}" type="button" {{#unless ../isGMOrAssistant}}disabled{{/unless}}>−</button>
-              <button class="skill-increase small-btn" data-skill="{{key}}" type="button" {{#unless ../isGMOrAssistant}}disabled{{/unless}}>+</button>
+              <button class="skill-decrease small-btn {{#unless ../isGMOrAssistant}}disabled-by-permissions{{/unless}}" data-skill="{{key}}" type="button" {{#unless ../isGMOrAssistant}}disabled{{/unless}}>−</button>
+              <button class="skill-increase small-btn {{#unless ../isGMOrAssistant}}disabled-by-permissions{{/unless}}" data-skill="{{key}}" type="button" {{#unless ../isGMOrAssistant}}disabled{{/unless}}>+</button>
             </td>
             <td>
               {{#if (eq key "eidikeysi_sta_opla")}}
                 {{#if skill.hasSkill}}
-                  <select name="system.skills.eidikeysi_sta_opla.category" class="weapon-specialization-dropdown" {{#unless ../../isGMOrAssistant}}disabled{{/unless}}>
+                  <select name="system.skills.eidikeysi_sta_opla.category" class="weapon-specialization-dropdown {{#unless ../../isGMOrAssistant}}disabled-by-permissions{{/unless}}" {{#unless ../../isGMOrAssistant}}disabled{{/unless}}>
                     <option value="">{{localize 'ANDRAGATHIMA.SelectOne'}}</option>
                     <option value="aspida_varia" {{#if (eq skill.category "aspida_varia")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.WeaponTypeAspida'}}</option>
                     <option value="aspida_elafria" {{#if (eq skill.category "aspida_elafria")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.WeaponTypeAspida'}}</option>
