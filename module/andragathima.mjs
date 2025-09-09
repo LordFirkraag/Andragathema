@@ -1607,6 +1607,35 @@ function processWeaponForRecord(actor, item, isShieldWeapon = false) {
     // Calculate weapon specialization bonus
     const weaponSpecializationBonus = getWeaponSpecializationBonus(actor, item.system.weaponType);
     
+    // Get weapon-specific effects (attack and damage bonuses)
+    let weaponMeleeAttackBonus = 0;
+    let weaponRangedAttackBonus = 0;
+    let weaponBaseDamageBonus = 0;
+    let weaponOtherDamageTypes = [];
+    
+    if (item.effects && item.effects.size > 0) {
+      for (let effect of item.effects) {
+        if (!effect.disabled && effect.changes) {
+          for (let change of effect.changes) {
+            if (change.key === 'system.combat.meleeAttack.value') {
+              weaponMeleeAttackBonus += Number(change.value) || 0;
+            } else if (change.key === 'system.combat.rangedAttack.value') {
+              weaponRangedAttackBonus += Number(change.value) || 0;
+            } else if (change.key === 'system.damage.base') {
+              weaponBaseDamageBonus += Number(change.value) || 0;
+            } else if (change.key && change.key.startsWith('system.damage.') && change.key !== 'system.damage.base') {
+              const damageType = change.key.replace('system.damage.', '');
+              const value = Number(change.value) || 0;
+              if (value > 0) {
+                const localizedDamageType = getLocalizedDamageType(damageType);
+                weaponOtherDamageTypes.push(`+${value} ${localizedDamageType}`);
+              }
+            }
+          }
+        }
+      }
+    }
+    
     // Calculate penalties specific to shield weapons
     let shieldSpecificPenalties = 0;
     if (isShieldWeapon) {
@@ -1630,11 +1659,11 @@ function processWeaponForRecord(actor, item, isShieldWeapon = false) {
     // Calculate final attack values
     weaponData.system.meleeAttackWithPenalty = system.combat.melee.attack + 
       proficiencyPenalty + strengthPenalty + rangedWeaponPenalty + 
-      shieldSpecificPenalties + weaponSpecializationBonus;
+      shieldSpecificPenalties + weaponSpecializationBonus + weaponMeleeAttackBonus;
       
     weaponData.system.rangedAttackWithPenalty = system.combat.ranged.attack + 
       proficiencyPenalty + strengthPenalty + 
-      shieldSpecificPenalties + weaponSpecializationBonus;
+      shieldSpecificPenalties + weaponSpecializationBonus + weaponRangedAttackBonus;
     
     // Calculate damage
     const weaponCoefficient = item.system.damage?.coefficient || 0;
@@ -1659,10 +1688,20 @@ function processWeaponForRecord(actor, item, isShieldWeapon = false) {
       twoHandedDamageBonus = shieldSlotEmpty ? 1 : 0;
     }
     
-    weaponData.system.weaponDamage = weaponCoefficient + abilityMod + twoHandedDamageBonus;
+    weaponData.system.weaponDamage = weaponCoefficient + abilityMod + twoHandedDamageBonus + weaponBaseDamageBonus;
+    
+    // Create damage display with additional damage types
+    let damageDisplay = item.system.damageTypeDisplay || '';
+    if (weaponOtherDamageTypes.length > 0) {
+      if (damageDisplay) {
+        damageDisplay += ', ' + weaponOtherDamageTypes.join(', ');
+      } else {
+        damageDisplay = weaponOtherDamageTypes.join(', ');
+      }
+    }
     
     // Set other properties
-    weaponData.system.damageTypeDisplay = item.system.damageTypeDisplay || '';
+    weaponData.system.damageTypeDisplay = damageDisplay;
     weaponData.system.range.displayText = (item.system.range?.displayText || '').replace(/μ/g, ' m');
     weaponData.system.hasRange = (item.system.range?.multiplier || 0) > 0 || (item.system.range?.fixed || 0) > 0;
     
@@ -1685,6 +1724,31 @@ function getWeaponSpecializationBonus(actor, weaponType) {
   }
   
   return (weaponType === eidikeysiOpla.category) ? 2 : 0;
+}
+
+/**
+ * Get localized damage type name
+ */
+function getLocalizedDamageType(damageType) {
+  const damageTypeMap = {
+    'diatrisi': 'ANDRAGATHIMA.DamageDiatrisi',
+    'kroysi': 'ANDRAGATHIMA.DamageKroysi', 
+    'tomi': 'ANDRAGATHIMA.DamageTomi',
+    'keravnos': 'ANDRAGATHIMA.DamageKeravnos',
+    'oxy': 'ANDRAGATHIMA.DamageOxy',
+    'fotia': 'ANDRAGATHIMA.DamageFotia',
+    'psyxos': 'ANDRAGATHIMA.DamagePsyxos',
+    'magiki': 'ANDRAGATHIMA.DamageMagiki',
+    'synthlipsi': 'ANDRAGATHIMA.DamageSynthlipsi'
+  };
+  
+  const localizationKey = damageTypeMap[damageType];
+  if (localizationKey) {
+    return game.i18n.localize(localizationKey);
+  }
+  
+  // Fallback to the original damage type if no mapping found
+  return damageType;
 }
 
 /**

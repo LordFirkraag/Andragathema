@@ -769,7 +769,7 @@
     "npc": {
       "templates": ["base", "abilities", "saves", "combat", "resistances", "magic", "details"],
       "cr": {
-        "value": 1,
+        "value": 0,
         "label": "Επίπεδο"
       },
       "skills": {

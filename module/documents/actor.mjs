@@ -233,6 +233,12 @@ export class AndragathimaActor extends Actor {
     
     // Calculate save bonuses (after encumbrance is determined)
     this._calculateSaves(systemData);
+    
+    // Calculate NPC level using the same formula as characters
+    this._calculateCharacterLevel(systemData);
+    
+    // Store calculated level in cr.value for NPC display
+    systemData.cr.value = systemData.characterLevel;
   }
 
   /**
@@ -1510,8 +1516,8 @@ export class AndragathimaActor extends Actor {
     const magicDegreeBonus = statusModifiers.other?.degree || 0;
     const magicDegree = baseMagicDegree + magicDegreeBonus;
     
-    // 4. Take the highest of the three values and round it
-    const characterLevel = Math.round(Math.max(defenseAverage, highestCombatValue, magicDegree));
+    // 4. Take the highest of the three values and round it, minimum 0
+    const characterLevel = Math.max(0, Math.round(Math.max(defenseAverage, highestCombatValue, magicDegree)));
     
     // Store the calculated level
     systemData.characterLevel = characterLevel;

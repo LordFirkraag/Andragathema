@@ -51,6 +51,9 @@ export class AndragathimaActorSheet extends ActorSheet {
     context.system = actorData.system;
     context.flags = actorData.flags;
     
+    // Add GM/Assistant check for template use
+    context.isGMOrAssistant = game.user.role >= CONST.USER_ROLES.ASSISTANT;
+    
     // Check if actor is dead for greyscale effect
     context.isDead = this.document.effects.some(effect => !effect.disabled && effect.statuses?.has("dead"));
 
@@ -379,7 +382,7 @@ export class AndragathimaActorSheet extends ActorSheet {
     
     // Ensure displayTitle is always a string, never an object
     const displayTitle = systemData.details.displayTitle;
-    context.displayTitleString = (typeof displayTitle === 'string') ? displayTitle : '';
+    context.displayTitleString = (typeof displayTitle === 'object' && displayTitle.value) ? displayTitle.value : (typeof displayTitle === 'string' ? displayTitle : '');
       
     // NPCs don't have races, so no race features
     context.raceFeatures = [];
@@ -3052,6 +3055,9 @@ export class AndragathimaActorSheet extends ActorSheet {
       case 'ammunition':
         tooltip = this._createAmmunitionTooltip(item);
         break;
+      case 'miscellaneous':
+        tooltip = this._createMiscellaneousTooltip(item);
+        break;
       case 'spell':
         tooltip = this._createSpellTooltip(item);
         break;
@@ -3449,6 +3455,23 @@ export class AndragathimaActorSheet extends ActorSheet {
     const system = ammunition.system;
     const quantity = system.quantity || 0;
     let tooltip = `<strong>${ammunition.name} (${quantity})</strong>`;
+    
+    if (system.weight && system.quantity) {
+      const totalWeight = system.weight * system.quantity;
+      const weightLabel = game.i18n.localize("ANDRAGATHIMA.TotalWeightTooltip");
+      tooltip += `\n${weightLabel}: ${this._formatNumber(totalWeight.toFixed(1))} kg`;
+    }
+    
+    return tooltip;
+  }
+
+  /**
+   * Create miscellaneous tooltip
+   */
+  _createMiscellaneousTooltip(miscellaneous) {
+    const system = miscellaneous.system;
+    const quantity = system.quantity || 0;
+    let tooltip = `<strong>${miscellaneous.name} (${quantity})</strong>`;
     
     if (system.weight && system.quantity) {
       const totalWeight = system.weight * system.quantity;
