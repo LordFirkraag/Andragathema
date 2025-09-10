@@ -943,6 +943,127 @@ ANDRAGATHIMA.statusEffects = [
     description: "ANDRAGATHIMA.StatusTotalDefenseDesc",
     img: "systems/andragathima/assets/conditions/totaldefense.png",
     changes: []
+  },
+  {
+    id: "fatigued",
+    name: "ANDRAGATHIMA.StatusFatigued",
+    description: "ANDRAGATHIMA.StatusFatiguedDesc",
+    img: "systems/andragathima/assets/conditions/fatigue1.png",
+    statuses: ["fatigued"],
+    changes: [
+      {
+        key: "system.combat.meleeAttack.modifier",
+        mode: 2, // ADD
+        value: -1
+      },
+      {
+        key: "system.combat.rangedAttack.modifier",
+        mode: 2, // ADD
+        value: -1
+      },
+      {
+        key: "system.other.weaponDamage",
+        mode: 2, // ADD
+        value: -1
+      },
+      {
+        key: "system.other.initiative",
+        mode: 2, // ADD
+        value: -1
+      }
+    ],
+    flags: {
+      "andragathima": {
+        "exhaustionLevel": 1,
+        "mutualExclusion": ["fatigued", "exhausted", "depleted"]
+      }
+    }
+  },
+  {
+    id: "exhausted",
+    name: "ANDRAGATHIMA.StatusExhausted",
+    description: "ANDRAGATHIMA.StatusExhaustedDesc",
+    img: "systems/andragathima/assets/conditions/fatigue2.png",
+    statuses: ["exhausted"],
+    changes: [
+      {
+        key: "system.combat.meleeAttack.modifier",
+        mode: 2, // ADD
+        value: -2
+      },
+      {
+        key: "system.combat.rangedAttack.modifier",
+        mode: 2, // ADD
+        value: -2
+      },
+      {
+        key: "system.other.weaponDamage",
+        mode: 2, // ADD
+        value: -2
+      },
+      {
+        key: "system.other.initiative",
+        mode: 2, // ADD
+        value: -2
+      },
+      {
+        key: "system.other.canRun",
+        mode: 5, // OVERRIDE
+        value: false
+      }
+    ],
+    flags: {
+      "andragathima": {
+        "exhaustionLevel": 2,
+        "mutualExclusion": ["fatigued", "exhausted", "depleted"],
+        "speedNote": "(Δεν μπορεί να τρέξει)"
+      }
+    }
+  },
+  {
+    id: "depleted",
+    name: "ANDRAGATHIMA.StatusDepleted",
+    description: "ANDRAGATHIMA.StatusDepletedDesc",
+    img: "systems/andragathima/assets/conditions/fatigue3.png",
+    statuses: ["depleted"],
+    changes: [
+      {
+        key: "system.combat.meleeAttack.modifier",
+        mode: 2, // ADD
+        value: -3
+      },
+      {
+        key: "system.combat.rangedAttack.modifier",
+        mode: 2, // ADD
+        value: -3
+      },
+      {
+        key: "system.other.weaponDamage",
+        mode: 2, // ADD
+        value: -3
+      },
+      {
+        key: "system.other.initiative",
+        mode: 2, // ADD
+        value: -3
+      },
+      {
+        key: "system.other.speedMultiplier",
+        mode: 5, // OVERRIDE
+        value: 0.67
+      },
+      {
+        key: "system.other.canRun",
+        mode: 5, // OVERRIDE
+        value: false
+      }
+    ],
+    flags: {
+      "andragathima": {
+        "exhaustionLevel": 3,
+        "mutualExclusion": ["fatigued", "exhausted", "depleted"]
+      }
+    }
   }
 ];
 

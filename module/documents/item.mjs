@@ -68,7 +68,11 @@ export class AndragathimaItem extends Item {
         abilityMod = Math.max(dynMod, epiMod);
       }
       
-      data.weaponDamage = weaponCoefficient + abilityMod + (data.twoHandedDamageBonus || 0);
+      // Get weapon damage modifier from status effects
+      const statusModifiers = this.actor?._getStatusModifiers() || { other: {} };
+      const weaponDamageModifier = statusModifiers.other?.weaponDamage || 0;
+      
+      data.weaponDamage = weaponCoefficient + abilityMod + (data.twoHandedDamageBonus || 0) + weaponDamageModifier;
       
       // Display damage type
       const damageTypes = {

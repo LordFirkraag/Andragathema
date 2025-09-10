@@ -330,6 +330,43 @@ async function onCreateActiveEffect(activeEffect, options, userId) {
     }, 10); // 10ms delay
   }
   
+  // Handle mutual exclusion for exhaustion conditions
+  const exhaustionStatuses = ["fatigued", "exhausted", "depleted"];
+  const currentExhaustionStatus = exhaustionStatuses.find(status => activeEffect.statuses.has(status));
+  
+  if (currentExhaustionStatus) {
+    // Find the exhaustion level of the current effect
+    const statusEffectConfig = CONFIG.statusEffects.find(s => s.id === currentExhaustionStatus);
+    const currentExhaustionLevel = statusEffectConfig?.flags?.andragathima?.exhaustionLevel || 0;
+    
+    // Remove ALL other exhaustion effects (regardless of level)
+    const effectsToRemove = [];
+    for (const effect of actor.effects) {
+      // Skip the effect we just added
+      if (effect === activeEffect) continue;
+      
+      const effectExhaustionStatus = exhaustionStatuses.find(status => effect.statuses.has(status));
+      if (effectExhaustionStatus) {
+        const effectConfig = CONFIG.statusEffects.find(s => s.id === effectExhaustionStatus);
+        const effectExhaustionLevel = effectConfig?.flags?.andragathima?.exhaustionLevel || 0;
+        
+        // If the new effect has higher or equal level, remove the existing one
+        // If the new effect has lower level, remove the new one (by canceling it later)
+        if (currentExhaustionLevel >= effectExhaustionLevel) {
+          effectsToRemove.push(effect.id);
+        } else {
+          // New effect has lower level, remove it and keep the higher level one
+          await activeEffect.delete();
+          return;
+        }
+      }
+    }
+    
+    if (effectsToRemove.length > 0) {
+      await actor.deleteEmbeddedDocuments("ActiveEffect", effectsToRemove);
+    }
+  }
+  
   updateTokenStatusEffects(actor);
 }
 
@@ -1854,7 +1891,11 @@ function processWeaponForRecord(actor, item, isShieldWeapon = false) {
       twoHandedDamageBonus = shieldSlotEmpty ? 1 : 0;
     }
     
-    weaponData.system.weaponDamage = weaponCoefficient + abilityMod + twoHandedDamageBonus + weaponBaseDamageBonus;
+    // Get weapon damage modifier from status effects
+    const statusModifiers = actor?._getStatusModifiers() || { other: {} };
+    const weaponDamageModifier = statusModifiers.other?.weaponDamage || 0;
+    
+    weaponData.system.weaponDamage = weaponCoefficient + abilityMod + twoHandedDamageBonus + weaponBaseDamageBonus + weaponDamageModifier;
     
     // Create damage display with additional damage types
     let damageDisplay = item.system.damageTypeDisplay || '';
