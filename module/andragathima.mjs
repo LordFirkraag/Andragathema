@@ -1614,11 +1614,53 @@ function generateNoteTooltipContent(actor) {
     const noteContent = actor.system.notes?.content || "";
     
     if (noteContent.trim()) {
-      // Strip HTML tags and truncate for tooltip display
-      const plainText = noteContent.replace(/<[^>]*>/g, '').trim();
-      const truncatedText = plainText.length > 200 ? plainText.substring(0, 200) + '...' : plainText;
+      let displayText = noteContent;
       
-      content += `<div class="item-property">${truncatedText}</div>`;
+      // Check if user is GM or Assistant GM
+      const isGMOrAssistant = game.user.isGM || game.user.role >= CONST.USER_ROLES.ASSISTANT;
+      
+      // Handle // comment separator
+      const commentIndex = displayText.indexOf('//');
+      if (commentIndex !== -1) {
+        if (isGMOrAssistant) {
+          // Show everything but with a visual separator
+          const publicText = displayText.substring(0, commentIndex).trim();
+          const privateText = displayText.substring(commentIndex + 2).trim();
+          
+          if (publicText && privateText) {
+            displayText = publicText + '\n─────────────\n' + privateText;
+          } else if (privateText) {
+            displayText = '─────────────\n' + privateText;
+          } else {
+            displayText = publicText;
+          }
+        } else {
+          // Hide everything after //
+          displayText = displayText.substring(0, commentIndex).trim();
+        }
+      }
+      
+      if (displayText.trim()) {
+        // Preserve line breaks by converting them to <br> tags
+        // First strip existing HTML tags for safety, then convert line breaks
+        const plainText = displayText.replace(/<[^>]*>/g, '');
+        const textWithBreaks = plainText.replace(/\n/g, '<br>');
+        
+        // Truncate if too long - allow more text for notes
+        const maxLength = 800;
+        let finalText = textWithBreaks;
+        if (plainText.length > maxLength) {
+          // Find last <br> before maxLength to avoid cutting mid-line
+          const truncatedPlain = plainText.substring(0, maxLength);
+          const truncatedWithBreaks = truncatedPlain.replace(/\n/g, '<br>');
+          finalText = truncatedWithBreaks + '...';
+        }
+        
+        content += `<div class="item-property">${finalText}</div>`;
+      } else {
+        // Empty note after processing
+        content += `<div class="item-property">${game.i18n.localize('ANDRAGATHIMA.NoteEmpty') || 'Empty'}</div>`;
+      }
     } else {
       // Empty note
       content += `<div class="item-property">${game.i18n.localize('ANDRAGATHIMA.NoteEmpty') || 'Empty'}</div>`;
