@@ -639,6 +639,10 @@
     "AvailableExperiencePoints": "Διαθέσιμοι πόντοι εμπειρίας:",
     "Unlock": "Ξεκλείδωμα",
     "Lock": "Κλείδωμα",
+    "TokenLock": "Κλείδωμα Token",
+    "TokenUnlock": "Ξεκλείδωμα Token",
+    "TokenLocked": "Το Token κλειδώθηκε",
+    "TokenUnlocked": "Το Token ξεκλειδώθηκε",
     "SelectOne": "Επίλεξε ένα...",
     "SelectOption": "Επιλέξτε...",
     

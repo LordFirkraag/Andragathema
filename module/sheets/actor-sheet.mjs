@@ -1679,7 +1679,7 @@ export class AndragathimaActorSheet extends ActorSheet {
     event.preventDefault();
     
     // Play sound effect
-    foundry.audio.AudioHelper.play({ src: "systems/andragathima/assets/GAM_10.WAV", volume: 0.8 }, false);
+    foundry.audio.AudioHelper.play({ src: "systems/andragathima/assets/sounds/GAM_10.wav", volume: 0.8 }, false);
     
     const ability = event.currentTarget.dataset.ability;
     const currentValue = this.actor.system.abilities[ability].value;
@@ -1729,7 +1729,7 @@ export class AndragathimaActorSheet extends ActorSheet {
     event.preventDefault();
     
     // Play sound effect
-    foundry.audio.AudioHelper.play({ src: "systems/andragathima/assets/GAM_10.WAV", volume: 0.8 }, false);
+    foundry.audio.AudioHelper.play({ src: "systems/andragathima/assets/sounds/GAM_10.wav", volume: 0.8 }, false);
     
     const ability = event.currentTarget.dataset.ability;
     const currentValue = this.actor.system.abilities[ability].value;
@@ -1772,7 +1772,7 @@ export class AndragathimaActorSheet extends ActorSheet {
     event.preventDefault();
     
     // Play sound effect
-    foundry.audio.AudioHelper.play({ src: "systems/andragathima/assets/GAM_10.WAV", volume: 0.8 }, false);
+    foundry.audio.AudioHelper.play({ src: "systems/andragathima/assets/sounds/GAM_10.wav", volume: 0.8 }, false);
     
     const save = event.currentTarget.dataset.save;
     const currentBase = this.actor.system.saves[save].base;
@@ -1808,7 +1808,7 @@ export class AndragathimaActorSheet extends ActorSheet {
     event.preventDefault();
     
     // Play sound effect
-    foundry.audio.AudioHelper.play({ src: "systems/andragathima/assets/GAM_10.WAV", volume: 0.8 }, false);
+    foundry.audio.AudioHelper.play({ src: "systems/andragathima/assets/sounds/GAM_10.wav", volume: 0.8 }, false);
     
     const save = event.currentTarget.dataset.save;
     const currentBase = this.actor.system.saves[save].base;
@@ -1830,7 +1830,7 @@ export class AndragathimaActorSheet extends ActorSheet {
     event.preventDefault();
     
     // Play sound effect
-    foundry.audio.AudioHelper.play({ src: "systems/andragathima/assets/GAM_10.WAV", volume: 0.8 }, false);
+    foundry.audio.AudioHelper.play({ src: "systems/andragathima/assets/sounds/GAM_10.wav", volume: 0.8 }, false);
     
     const combat = event.currentTarget.dataset.combat; // melee or ranged
     const currentValue = this.actor.system.combat[combat].value;
@@ -1866,7 +1866,7 @@ export class AndragathimaActorSheet extends ActorSheet {
     event.preventDefault();
     
     // Play sound effect
-    foundry.audio.AudioHelper.play({ src: "systems/andragathima/assets/GAM_10.WAV", volume: 0.8 }, false);
+    foundry.audio.AudioHelper.play({ src: "systems/andragathima/assets/sounds/GAM_10.wav", volume: 0.8 }, false);
     
     const combat = event.currentTarget.dataset.combat; // melee or ranged
     const currentValue = this.actor.system.combat[combat].value;
@@ -1888,7 +1888,7 @@ export class AndragathimaActorSheet extends ActorSheet {
     event.preventDefault();
     
     // Play sound effect
-    foundry.audio.AudioHelper.play({ src: "systems/andragathima/assets/GAM_10.WAV", volume: 0.8 }, false);
+    foundry.audio.AudioHelper.play({ src: "systems/andragathima/assets/sounds/GAM_10.wav", volume: 0.8 }, false);
     
     const skillKey = event.currentTarget.dataset.skill;
     const skill = this.actor.system.skills[skillKey];
@@ -1933,7 +1933,7 @@ export class AndragathimaActorSheet extends ActorSheet {
     event.preventDefault();
     
     // Play sound effect
-    foundry.audio.AudioHelper.play({ src: "systems/andragathima/assets/GAM_10.WAV", volume: 0.8 }, false);
+    foundry.audio.AudioHelper.play({ src: "systems/andragathima/assets/sounds/GAM_10.wav", volume: 0.8 }, false);
     
     const skillKey = event.currentTarget.dataset.skill;
     const skill = this.actor.system.skills[skillKey];
@@ -3530,7 +3530,7 @@ export class AndragathimaActorSheet extends ActorSheet {
     event.preventDefault();
     
     // Play sound effect
-    foundry.audio.AudioHelper.play({ src: "systems/andragathima/assets/GAM_10.WAV", volume: 0.8 }, false);
+    foundry.audio.AudioHelper.play({ src: "systems/andragathima/assets/sounds/GAM_10.wav", volume: 0.8 }, false);
     
     const magic = event.currentTarget.dataset.magic; // level or degree
     
@@ -3557,7 +3557,7 @@ export class AndragathimaActorSheet extends ActorSheet {
     event.preventDefault();
     
     // Play sound effect
-    foundry.audio.AudioHelper.play({ src: "systems/andragathima/assets/GAM_10.WAV", volume: 0.8 }, false);
+    foundry.audio.AudioHelper.play({ src: "systems/andragathima/assets/sounds/GAM_10.wav", volume: 0.8 }, false);
     
     const magic = event.currentTarget.dataset.magic; // level or degree
     
@@ -4714,7 +4714,7 @@ export class AndragathimaActorSheet extends ActorSheet {
    */
   _onTabClick(event) {
     // Play tab switch sound effect
-    foundry.audio.AudioHelper.play({ src: "systems/andragathima/assets/GAM_05.WAV", volume: 0.8 }, false);
+    foundry.audio.AudioHelper.play({ src: "systems/andragathima/assets/sounds/GAM_05.wav", volume: 0.8 }, false);
   }
 
   /**

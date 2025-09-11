@@ -88,6 +88,144 @@ Hooks.once('init', async function() {
 });
 
 /* -------------------------------------------- */
+/*  Token Context Menu Hook                     */
+/* -------------------------------------------- */
+
+/**
+ * Add token lock/unlock context menu option for GMs
+ * Try multiple hook approaches to find the correct one
+ */
+
+// Debug - enable hook debugging temporarily
+Hooks.once("ready", () => {
+  console.log("ANDRAGATHIMA: Token lock feature loaded. Try right-clicking a token to see if hooks fire.");
+});
+
+// Try different possible hooks for token context menu
+const tokenHooks = [
+  "getTokenContextOptions",
+  "getTokenHudContextOptions", 
+  "getTokenDirectoryEntryContext",
+  "getPlaceableObjectContextOptions",
+  "getTokenControlContextOptions"
+];
+
+tokenHooks.forEach(hookName => {
+  Hooks.on(hookName, (html, contextOptions, ...args) => {
+    console.log(`ANDRAGATHIMA: ${hookName} hook fired!`, {html, contextOptions, args});
+    
+    // Only show for GMs and GM assistants
+    if (!game.user.isGM && !game.user.hasRole("ASSISTANT")) return;
+    
+    // Try to get the token from different sources
+    let token = canvas.tokens.controlled[0];
+    if (!token && args[0] && args[0].document) {
+      token = args[0]; // Token might be in args
+    }
+    
+    if (!token) {
+      console.log(`ANDRAGATHIMA: No token found for ${hookName}`);
+      return;
+    }
+    
+    const isLocked = token.document.locked;
+    
+    const lockOption = {
+      name: isLocked ? "ANDRAGATHIMA.TokenUnlock" : "ANDRAGATHIMA.TokenLock", 
+      icon: isLocked ? '<i class="fas fa-unlock"></i>' : '<i class="fas fa-lock"></i>',
+      callback: async () => {
+        await token.document.update({ locked: !isLocked });
+        ui.notifications.info(
+          isLocked 
+            ? game.i18n.localize("ANDRAGATHIMA.TokenUnlocked")
+            : game.i18n.localize("ANDRAGATHIMA.TokenLocked")
+        );
+      },
+      condition: () => game.user.isGM || game.user.hasRole("ASSISTANT")
+    };
+    
+    if (Array.isArray(contextOptions)) {
+      contextOptions.push(lockOption);
+      console.log(`ANDRAGATHIMA: Added lock option via ${hookName}`);
+    }
+  });
+});
+
+// Try alternative approach: manually add to token HUD
+Hooks.on("renderTokenHUD", (hud, html, token) => {
+  // Only show for GMs and GM assistants
+  if (!game.user.isGM && !game.user.hasRole("ASSISTANT")) return;
+  
+  console.log("ANDRAGATHIMA: TokenHUD rendered, trying to add lock button", {hud, html, token});
+  
+  // Convert html to jQuery if needed
+  const $html = html instanceof jQuery ? html : $(html);
+  
+  // Get the actual token object from the HUD
+  const actualToken = hud.object;
+  const tokenDoc = actualToken.document;
+  const isLocked = tokenDoc.locked;
+  
+  console.log("ANDRAGATHIMA: Token lock status:", isLocked, "TokenDoc:", tokenDoc);
+  
+  // Add lock button to the HUD
+  const lockButton = `
+    <div class="control-icon" data-action="toggle-lock" title="${isLocked ? game.i18n.localize('ANDRAGATHIMA.TokenUnlock') : game.i18n.localize('ANDRAGATHIMA.TokenLock')}">
+      <i class="fas ${isLocked ? 'fa-lock' : 'fa-unlock'}"></i>
+    </div>
+  `;
+  
+  // Try to find the left section, if not found try other selectors
+  let leftSection = $html.find('.left');
+  if (leftSection.length === 0) {
+    leftSection = $html.find('.col.left');
+  }
+  if (leftSection.length === 0) {
+    leftSection = $html.find('.token-hud').first();
+  }
+  
+  console.log("ANDRAGATHIMA: Found left section elements:", leftSection.length);
+  
+  if (leftSection.length > 0) {
+    // Insert before the last control icon (config button) instead of appending
+    const lastIcon = leftSection.find('.control-icon').last();
+    if (lastIcon.length > 0) {
+      lastIcon.before(lockButton);
+    } else {
+      leftSection.append(lockButton);
+    }
+    console.log("ANDRAGATHIMA: Lock button added to HUD");
+    
+    // Add click handler
+    $html.find('[data-action="toggle-lock"]').click(async (event) => {
+      event.preventDefault();
+      console.log("ANDRAGATHIMA: Lock button clicked, current state:", isLocked);
+      console.log("ANDRAGATHIMA: Attempting to update token:", tokenDoc);
+      
+      try {
+        await tokenDoc.update({ locked: !isLocked });
+        ui.notifications.info(
+          isLocked 
+            ? game.i18n.localize("ANDRAGATHIMA.TokenUnlocked")
+            : game.i18n.localize("ANDRAGATHIMA.TokenLocked")
+        );
+        
+        // Re-render the HUD to update the icon
+        if (hud && hud.render) {
+          hud.render();
+        }
+      } catch (error) {
+        console.error("ANDRAGATHIMA: Error updating token lock status:", error);
+        ui.notifications.error("Failed to update token lock status");
+      }
+    });
+  } else {
+    console.warn("ANDRAGATHIMA: Could not find suitable container for lock button");
+    console.log("ANDRAGATHIMA: Available HTML structure:", $html[0]);
+  }
+});
+
+/* -------------------------------------------- */
 /*  Handlebars Helpers                          */
 /* -------------------------------------------- */
 

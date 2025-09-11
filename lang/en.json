@@ -639,6 +639,10 @@
     "AvailableExperiencePoints": "Available experience points:",
     "Unlock": "Unlock",
     "Lock": "Lock",
+    "TokenLock": "Lock Token",
+    "TokenUnlock": "Unlock Token", 
+    "TokenLocked": "Token locked",
+    "TokenUnlocked": "Token unlocked",
     "SelectOne": "Select one...",
     "SelectOption": "Select...",
     
