@@ -4295,7 +4295,7 @@ export class AndragathimaActorSheet extends ActorSheet {
     const system = this.actor.system;
     let totalExp = 0;
     
-    // Add racial experience cost
+    // Add racial experience cost (for characters)
     if (system.details.race.value) {
       const raceData = CONFIG.ANDRAGATHIMA.raceModifiers[system.details.race.value];
       if (raceData && raceData.experienceCost) {
@@ -4342,6 +4342,20 @@ export class AndragathimaActorSheet extends ActorSheet {
         const spellCount = this.actor.items.filter(item => item.type === "spell").length;
         totalExp += spellCount;
       }
+    }
+    
+    // Apply size-based point costs for NPCs (smaller sizes cost more points)
+    if (this.actor.type === 'npc') {
+      const size = system.details?.size?.value;
+      const sizeCosts = {
+        'small': 2,        // Μικρό: +2 πόντοι κόστος
+        'tiny': 4,         // Τοσοδούλικο: +4 πόντοι κόστος  
+        'lilliputian': 6,  // Λιλιπούτειο: +6 πόντοι κόστος
+        'microscopic': 8   // Μικροσκοπικό: +8 πόντοι κόστος
+      };
+      
+      const sizeCost = sizeCosts[size] || 0;
+      totalExp = totalExp + sizeCost; // Add cost for smaller sizes
     }
     
     return totalExp;
