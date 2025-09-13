@@ -90,6 +90,7 @@ export class AndragathimaActor extends Actor {
       const statusMod = statusModifiers.abilities[key] || 0;
       const overrideValue = statusModifiers.abilities[key + '_override'];
       const condOverrideValue = statusModifiers.abilities[key + '_condoverride'];
+      const invulnerableValue = statusModifiers.abilities[key + '_invulnerable'];
       
       // Store the total value for display and calculations with limits (for XP calculations)
       ability.totalValue = Math.max(6, Math.min(25, ability.value + racialMod));
@@ -98,10 +99,16 @@ export class AndragathimaActor extends Actor {
       // 1. Start with base + racial + additions
       // 2. Apply absolute override if present (mode = 5)
       // 3. Apply conditional override if present and needed (mode = 6)
-      
+      // 4. Apply invulnerable mode if present (mode = 7) - always succeeds
+
       let calculatedValue = ability.value + racialMod + statusMod; // Base + racial + additions
-      
-      if (overrideValue !== undefined) {
+
+      if (invulnerableValue !== undefined) {
+        // Invulnerable mode (*): always succeeds, represented as very high value
+        ability.displayValue = '*';
+        ability.statusMod = '*';
+        ability.isInvulnerable = true;
+      } else if (overrideValue !== undefined) {
         // Absolute override mode (=): use the override value directly, ignore additions
         ability.displayValue = overrideValue;
         ability.statusMod = overrideValue - (ability.value + racialMod); // Show the effective change
@@ -116,7 +123,11 @@ export class AndragathimaActor extends Actor {
       }
       
       // Calculate modifier from display value (includes status modifiers)
-      ability.mod = Math.floor((ability.displayValue - 10) / 2);
+      if (ability.isInvulnerable) {
+        ability.mod = '*';
+      } else {
+        ability.mod = Math.floor((ability.displayValue - 10) / 2);
+      }
     }
     
   }
@@ -177,6 +188,7 @@ export class AndragathimaActor extends Actor {
       const statusMod = statusModifiers.abilities[key] || 0;
       const overrideValue = statusModifiers.abilities[key + '_override'];
       const condOverrideValue = statusModifiers.abilities[key + '_condoverride'];
+      const invulnerableValue = statusModifiers.abilities[key + '_invulnerable'];
       
       // Store the total value for display and calculations (NPCs don't need XP limits)
       ability.totalValue = ability.value + racialMod;
@@ -185,10 +197,16 @@ export class AndragathimaActor extends Actor {
       // 1. Start with base + racial + additions
       // 2. Apply absolute override if present (mode = 5)
       // 3. Apply conditional override if present and needed (mode = 6)
-      
+      // 4. Apply invulnerable mode if present (mode = 7) - always succeeds
+
       let calculatedValue = ability.value + racialMod + statusMod; // Base + racial + additions
-      
-      if (overrideValue !== undefined) {
+
+      if (invulnerableValue !== undefined) {
+        // Invulnerable mode (*): always succeeds, represented as very high value
+        ability.displayValue = '*';
+        ability.statusMod = '*';
+        ability.isInvulnerable = true;
+      } else if (overrideValue !== undefined) {
         // Absolute override mode (=): use the override value directly, ignore additions
         ability.displayValue = overrideValue;
         ability.statusMod = overrideValue - (ability.value + racialMod); // Show the effective change
@@ -201,9 +219,13 @@ export class AndragathimaActor extends Actor {
         ability.displayValue = calculatedValue;
         ability.statusMod = statusMod; // Show additions only
       }
-      
+
       // Calculate modifier from display value (what actually gets used in calculations)
-      ability.mod = Math.floor((ability.displayValue - 10) / 2);
+      if (ability.isInvulnerable) {
+        ability.mod = '*';
+      } else {
+        ability.mod = Math.floor((ability.displayValue - 10) / 2);
+      }
     }
     
     // Calculate combat values
@@ -245,6 +267,11 @@ export class AndragathimaActor extends Actor {
    * Calculate ability modifier including racial bonuses and status modifiers
    */
   _getAbilityMod(ability) {
+    // If ability is invulnerable, return a very high modifier
+    if (ability.isInvulnerable) {
+      return 999; // Very high modifier to ensure success
+    }
+
     // Calculate modifier from the display value (base + racial + status)
     const displayValue = ability.displayValue || ability.totalValue || ability.value;
     return Math.floor((displayValue - 10) / 2);
@@ -393,15 +420,23 @@ export class AndragathimaActor extends Actor {
     combat.initiative.statusMod = initiativeStatusMod;
     
     // Apply resistances from Κράση and armor
-    const kraMod = this._getAbilityMod(abilities.kra);
+    // Handle invulnerable abilities properly for resistance calculations
+    const kraMod = abilities.kra.isInvulnerable ?
+      Math.floor(((abilities.kra.totalValue || abilities.kra.value || 10) - 10) / 2) : // Use base value for resistance calc
+      this._getAbilityMod(abilities.kra);
+
     const baseResistanceStatusMod = statusModifiers.resistances.base || 0;
     const baseResistanceOverride = statusModifiers.resistances.base_override;
     const baseResistanceCondOverride = statusModifiers.resistances.base_condoverride;
-    
+    const baseResistanceInvulnerable = statusModifiers.resistances.base_invulnerable;
+
     // Apply override logic to base resistance
     let baseResistance = kraMod + sizeMod.antochi + baseResistanceStatusMod; // Calculated value
-    
-    if (baseResistanceOverride !== undefined) {
+
+    if (baseResistanceInvulnerable !== undefined) {
+      // Invulnerable mode (*): always succeeds
+      baseResistance = '*';
+    } else if (baseResistanceOverride !== undefined) {
       // Absolute override mode (=): use the override value directly
       baseResistance = baseResistanceOverride;
     } else if (baseResistanceCondOverride !== undefined && baseResistance < baseResistanceCondOverride) {
@@ -420,11 +455,17 @@ export class AndragathimaActor extends Actor {
       const resistanceStatusMod = statusModifiers.resistances[key] || 0;
       const resistanceOverride = statusModifiers.resistances[key + '_override'];
       const resistanceCondOverride = statusModifiers.resistances[key + '_condoverride'];
-      
+      const resistanceInvulnerable = statusModifiers.resistances[key + '_invulnerable'];
+
       // Apply override logic to specialized resistance
       let specializedBonus = resistance.base + armorResistance + resistanceStatusMod;
       
-      if (resistanceOverride !== undefined) {
+      if (resistanceInvulnerable !== undefined) {
+        // Invulnerable mode (*): always succeeds
+        specializedBonus = '*';
+        resistance.statusMod = '*';
+        resistance.isInvulnerable = true;
+      } else if (resistanceOverride !== undefined) {
         // Absolute override mode (=): use the override value directly
         specializedBonus = resistanceOverride;
         resistance.statusMod = resistanceOverride - resistance.base; // Show effective change
@@ -436,13 +477,22 @@ export class AndragathimaActor extends Actor {
         resistance.statusMod = resistanceStatusMod;
       }
       
-      resistance.total = baseResistance + specializedBonus;
-      resistance.specialized = specializedBonus;
+      if (specializedBonus === '*' || baseResistance === '*') {
+        resistance.total = '*';
+        resistance.specialized = specializedBonus;
+      } else {
+        resistance.total = baseResistance + specializedBonus;
+        resistance.specialized = specializedBonus;
+      }
       
-      // Track non-zero specialized resistances for display
-      if (specializedBonus !== 0) {
+      // Track non-zero specialized resistances and invulnerable resistances for display
+      if (specializedBonus !== 0 || specializedBonus === '*') {
+        // Use localized damage type labels instead of template labels
+        const damageTypeKey = key; // e.g., 'psyxos', 'fotia', etc.
+        const localizedLabel = game.i18n.localize(CONFIG.ANDRAGATHIMA?.damageTypes?.[damageTypeKey]) || resistance.label;
+
         specializedResistances.push({
-          label: resistance.label,
+          label: localizedLabel,
           value: specializedBonus
         });
       }
@@ -668,25 +718,49 @@ export class AndragathimaActor extends Actor {
   _calculateSaves(systemData) {
     const abilities = systemData.abilities;
     const saves = systemData.saves;
-    
+
     // Get encumbrance penalties and status modifiers
     const encumbrancePenalties = this._getEncumbrancePenalties(systemData);
     const statusModifiers = this._getStatusModifiers();
-    
-    // Αντανακλαστικά (Reflexes) - based on Επιδεξιότητα + encumbrance penalty + status modifiers
-    const antStatusMod = statusModifiers.saves.ant || 0;
-    saves.ant.value = (saves.ant.base || 0) + this._getAbilityMod(abilities.epi) + encumbrancePenalties.savesPenalty + antStatusMod;
-    saves.ant.statusMod = antStatusMod;
-    
-    // Μυαλό (Mind) - based on Σοφία + status modifiers
-    const myaStatusMod = statusModifiers.saves.mya || 0;
-    saves.mya.value = (saves.mya.base || 0) + this._getAbilityMod(abilities.sof) + myaStatusMod;
-    saves.mya.statusMod = myaStatusMod;
-    
-    // Σώμα (Body) - based on Κράση + status modifiers
-    const somStatusMod = statusModifiers.saves.som || 0;
-    saves.som.value = (saves.som.base || 0) + this._getAbilityMod(abilities.kra) + somStatusMod;
-    saves.som.statusMod = somStatusMod;
+
+    // Process each save with override logic
+    const saveKeys = ['ant', 'mya', 'som'];
+    const saveAbilities = { ant: 'epi', mya: 'sof', som: 'kra' };
+
+    for (const saveKey of saveKeys) {
+      const statusMod = statusModifiers.saves[saveKey] || 0;
+      const overrideValue = statusModifiers.saves[saveKey + '_override'];
+      const condOverrideValue = statusModifiers.saves[saveKey + '_condoverride'];
+      const invulnerableValue = statusModifiers.saves[saveKey + '_invulnerable'];
+
+      // Check if the underlying ability is invulnerable
+      const linkedAbility = abilities[saveAbilities[saveKey]];
+      const isAbilityInvulnerable = linkedAbility?.isInvulnerable;
+
+      // Calculate base value
+      const abilityMod = this._getAbilityMod(abilities[saveAbilities[saveKey]]);
+      const encumbrancePenalty = (saveKey === 'ant') ? encumbrancePenalties.savesPenalty : 0;
+      let calculatedValue = (saves[saveKey].base || 0) + abilityMod + encumbrancePenalty + statusMod;
+
+      if (invulnerableValue !== undefined || isAbilityInvulnerable) {
+        // Invulnerable mode (*): always succeeds (either save is invulnerable or linked ability is)
+        saves[saveKey].value = '*';
+        saves[saveKey].statusMod = '*';
+        saves[saveKey].isInvulnerable = true;
+      } else if (overrideValue !== undefined) {
+        // Absolute override mode (=): use the override value directly
+        saves[saveKey].value = overrideValue;
+        saves[saveKey].statusMod = overrideValue - ((saves[saveKey].base || 0) + abilityMod + encumbrancePenalty);
+      } else if (condOverrideValue !== undefined && calculatedValue < condOverrideValue) {
+        // Conditional override mode (>=): use override only if it's higher than calculated
+        saves[saveKey].value = condOverrideValue;
+        saves[saveKey].statusMod = condOverrideValue - ((saves[saveKey].base || 0) + abilityMod + encumbrancePenalty);
+      } else {
+        // Normal mode: use calculated value
+        saves[saveKey].value = calculatedValue;
+        saves[saveKey].statusMod = statusMod;
+      }
+    }
   }
 
   /**
@@ -1084,6 +1158,8 @@ export class AndragathimaActor extends Actor {
           modifiers.abilities[abilityKey + '_override'] = value;
         } else if (mode === 6) { // Conditional override mode (>=)
           modifiers.abilities[abilityKey + '_condoverride'] = value;
+        } else if (mode === 7) { // Invulnerable mode (*)
+          modifiers.abilities[abilityKey + '_invulnerable'] = value;
         }
       } else if (key.startsWith('system.saves.')) {
         const saveKey = key.split('.')[2]; // e.g., 'ant' from 'system.saves.ant.base'
@@ -1093,6 +1169,8 @@ export class AndragathimaActor extends Actor {
           modifiers.saves[saveKey + '_override'] = value;
         } else if (mode === 6) { // Conditional override mode (>=)
           modifiers.saves[saveKey + '_condoverride'] = value;
+        } else if (mode === 7) { // Invulnerable mode (*)
+          modifiers.saves[saveKey + '_invulnerable'] = value;
         }
       } else if (key.startsWith('system.combat.')) {
         const combatKey = key.split('.')[2]; // e.g., 'meleeDefense' from 'system.combat.meleeDefense'
@@ -1102,6 +1180,8 @@ export class AndragathimaActor extends Actor {
           modifiers.combat[combatKey + '_override'] = value;
         } else if (mode === 6) { // Conditional override mode (>=)
           modifiers.combat[combatKey + '_condoverride'] = value;
+        } else if (mode === 7) { // Invulnerable mode (*)
+          modifiers.combat[combatKey + '_invulnerable'] = value;
         }
       } else if (key.startsWith('system.resistances.')) {
         const resistanceKey = key.split('.')[2]; // e.g., 'base' from 'system.resistances.base'
@@ -1111,6 +1191,8 @@ export class AndragathimaActor extends Actor {
           modifiers.resistances[resistanceKey + '_override'] = value;
         } else if (mode === 6) { // Conditional override mode (>=)
           modifiers.resistances[resistanceKey + '_condoverride'] = value;
+        } else if (mode === 7) { // Invulnerable mode (*)
+          modifiers.resistances[resistanceKey + '_invulnerable'] = value;
         }
       } else if (key.startsWith('system.magic.')) {
         const magicKey = key.split('.')[2]; // e.g., 'level' from 'system.magic.level.value'
@@ -1120,6 +1202,8 @@ export class AndragathimaActor extends Actor {
           modifiers.other[magicKey + '_override'] = value;
         } else if (mode === 6) { // Conditional override mode (>=)
           modifiers.other[magicKey + '_condoverride'] = value;
+        } else if (mode === 7) { // Invulnerable mode (*)
+          modifiers.other[magicKey + '_invulnerable'] = value;
         }
       } else if (key.startsWith('system.other.')) {
         const otherKey = key.split('.')[2]; // e.g., 'pali' from 'system.other.pali.value'
@@ -1133,6 +1217,8 @@ export class AndragathimaActor extends Actor {
           modifiers.other[otherKey + '_override'] = value;
         } else if (mode === 6) { // Conditional override mode (>=)
           modifiers.other[otherKey + '_condoverride'] = value;
+        } else if (mode === 7) { // Invulnerable mode (*)
+          modifiers.other[otherKey + '_invulnerable'] = value;
         }
       }
     }
@@ -1306,6 +1392,8 @@ export class AndragathimaActor extends Actor {
           modifiers.abilities[abilityKey + '_override'] = value;
         } else if (mode === 6) { // Conditional override mode (>=)
           modifiers.abilities[abilityKey + '_condoverride'] = value;
+        } else if (mode === 7) { // Invulnerable mode (*)
+          modifiers.abilities[abilityKey + '_invulnerable'] = value;
         }
       } else if (key.startsWith('system.saves.')) {
         const saveKey = key.split('.')[2];
@@ -1315,6 +1403,8 @@ export class AndragathimaActor extends Actor {
           modifiers.saves[saveKey + '_override'] = value;
         } else if (mode === 6) { // Conditional override mode (>=)
           modifiers.saves[saveKey + '_condoverride'] = value;
+        } else if (mode === 7) { // Invulnerable mode (*)
+          modifiers.saves[saveKey + '_invulnerable'] = value;
         }
       } else if (key.startsWith('system.combat.') && !isAttackEffect) {
         const combatKey = key.split('.')[2];
@@ -1324,6 +1414,8 @@ export class AndragathimaActor extends Actor {
           modifiers.combat[combatKey + '_override'] = value;
         } else if (mode === 6) { // Conditional override mode (>=)
           modifiers.combat[combatKey + '_condoverride'] = value;
+        } else if (mode === 7) { // Invulnerable mode (*)
+          modifiers.combat[combatKey + '_invulnerable'] = value;
         }
       } else if (key.startsWith('system.resistances.')) {
         const resistanceKey = key.split('.')[2];
@@ -1333,6 +1425,8 @@ export class AndragathimaActor extends Actor {
           modifiers.resistances[resistanceKey + '_override'] = value;
         } else if (mode === 6) { // Conditional override mode (>=)
           modifiers.resistances[resistanceKey + '_condoverride'] = value;
+        } else if (mode === 7) { // Invulnerable mode (*)
+          modifiers.resistances[resistanceKey + '_invulnerable'] = value;
         }
       } else if (key.startsWith('system.magic.')) {
         const magicKey = key.split('.')[2];
@@ -1342,6 +1436,8 @@ export class AndragathimaActor extends Actor {
           modifiers.other[magicKey + '_override'] = value;
         } else if (mode === 6) { // Conditional override mode (>=)
           modifiers.other[magicKey + '_condoverride'] = value;
+        } else if (mode === 7) { // Invulnerable mode (*)
+          modifiers.other[magicKey + '_invulnerable'] = value;
         }
       } else if (key.startsWith('system.other.')) {
         const otherKey = key.split('.')[2];
@@ -1351,6 +1447,8 @@ export class AndragathimaActor extends Actor {
           modifiers.other[otherKey + '_override'] = value;
         } else if (mode === 6) { // Conditional override mode (>=)
           modifiers.other[otherKey + '_condoverride'] = value;
+        } else if (mode === 7) { // Invulnerable mode (*)
+          modifiers.other[otherKey + '_invulnerable'] = value;
         }
       }
     }
@@ -1420,11 +1518,37 @@ export class AndragathimaActor extends Actor {
 
     const saveLabels = {
       "ant": game.i18n.localize('ANDRAGATHIMA.SaveAntGenitive'),
-      "mya": game.i18n.localize('ANDRAGATHIMA.SaveMyaGenitive'), 
+      "mya": game.i18n.localize('ANDRAGATHIMA.SaveMyaGenitive'),
       "som": game.i18n.localize('ANDRAGATHIMA.SaveSomGenitive')
     };
-    
+
     const label = `${game.i18n.localize('ANDRAGATHIMA.AvoidanceRoll')} ${saveLabels[saveId]}`;
+
+    // Check if the save is invulnerable (always succeeds)
+    if (save.isInvulnerable) {
+      const messageContent = `
+        <div class="andragathima-roll">
+          <div class="dice-result">
+            <div class="dice-formula">
+              <span class="invulnerable-result">*</span>
+            </div>
+            <div class="dice-tooltip">
+              <div class="dice-total">${game.i18n.localize('ANDRAGATHIMA.AlwaysSucceeds')}</div>
+            </div>
+          </div>
+        </div>`;
+
+      await ChatMessage.create({
+        user: game.user.id,
+        speaker: ChatMessage.getSpeaker({actor: this}),
+        content: messageContent,
+        flavor: label,
+        type: CONST.CHAT_MESSAGE_TYPES.ROLL
+      });
+
+      return { result: "success", invulnerable: true };
+    }
+
     const modifier = save.value;
 
     return await AndragathimaRoll.basicRoll({
@@ -1494,7 +1618,9 @@ export class AndragathimaActor extends Actor {
    */
   _calculateCharacterLevel(systemData) {
     // 1. Calculate defense + resistance average
-    const defenseAverage = (systemData.combat.melee.defense + systemData.baseResistance) / 2;
+    // Handle invulnerable base resistance (*) by using a high numeric value (30) for calculation
+    const baseResistanceValue = systemData.baseResistance === '*' ? 30 : (parseFloat(systemData.baseResistance) || 0);
+    const defenseAverage = (systemData.combat.melee.defense + baseResistanceValue) / 2;
     
     // 2. Calculate highest attack + damage from quick items
     let highestCombatValue = 0;

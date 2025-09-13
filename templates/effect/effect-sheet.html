@@ -76,6 +76,7 @@
               <option value="2" {{#if (eq change.mode 2)}}selected{{/if}}>+</option>
               <option value="5" {{#if (eq change.mode 5)}}selected{{/if}}>=</option>
               <option value="6" {{#if (eq change.mode 6)}}selected{{/if}}>>=</option>
+              <option value="7" {{#if (eq change.mode 7)}}selected{{/if}}>*</option>
             </select>
             
             <input type="text" name="changes.{{index}}.value" value="{{change.value}}" placeholder="{{localize 'ANDRAGATHIMA.EffectSheetCoefficient'}}" class="effect-value"/>

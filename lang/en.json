@@ -406,6 +406,7 @@
     "ResistanceDiatrisi": "Piercing",
     "ResistanceKroysi": "Bludgeoning",
     "ResistanceTomi": "Slashing",
+    "ResistancePsyxos": "Cold",
     "ArmorPenalty": "Penalty",
     
     "WeaponTypeAspida": "Shields",
@@ -664,6 +665,7 @@
     "RunningImpossible": " (running impossible)",
     
     "Test": "Test",
+    "AlwaysSucceeds": "Always Succeeds",
     "AvoidanceRoll": "Avoidance Roll",
     "RangedAttack": "Ranged Attack",
     "MeleeAttack": "Melee Attack",

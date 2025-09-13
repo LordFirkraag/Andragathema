@@ -173,7 +173,7 @@ export class AndragathimaActorSheet extends ActorSheet {
           if (change.key && change.value) {
             // Convert system paths to readable labels
             const label = this._getEffectChangeLabel(change.key);
-            const modeSymbol = change.mode === 2 ? "+" : (change.mode === 5 ? "=" : (change.mode === 6 ? ">=" : "×"));
+            const modeSymbol = change.mode === 2 ? "+" : (change.mode === 5 ? "=" : (change.mode === 6 ? ">=" : (change.mode === 7 ? "*" : "×")));
             tooltip += `<br>${label} ${modeSymbol}${change.value}`;
           }
         }
@@ -227,15 +227,15 @@ export class AndragathimaActorSheet extends ActorSheet {
       'system.combat.rangedDefense.ignoreShieldCoefficient': 'Αγνόηση συντελεστή ασπίδας (άμυνα εξ αποστάσεως)',
       'system.combat.initiative.value': 'Πρωτοβουλία',
       'system.other.initiative': 'Πρωτοβουλία (τροποποιητής)',
-      'system.resistances.base': 'Αντοχή',
-      'system.resistances.diatrisi': 'Αντοχή διάτρησης',
-      'system.resistances.kroysi': 'Αντοχή κρούσης',
-      'system.resistances.tomi': 'Αντοχή τομής',
-      'system.resistances.keravnos': 'Αντοχή κεραυνού',
-      'system.resistances.oxy': 'Αντοχή οξέος',
-      'system.resistances.fotia': 'Αντοχή φωτιάς',
-      'system.resistances.psyxos': 'Αντοχή ψύχους',
-      'system.resistances.magiki': 'Αντοχή μαγικής ενέργειας',
+      'system.resistances.base': game.i18n.localize('ANDRAGATHIMA.Resistance'),
+      'system.resistances.diatrisi': `${game.i18n.localize('ANDRAGATHIMA.Resistance')} ${game.i18n.localize('ANDRAGATHIMA.ResistanceDiatrisi').toLowerCase()}`,
+      'system.resistances.kroysi': `${game.i18n.localize('ANDRAGATHIMA.Resistance')} ${game.i18n.localize('ANDRAGATHIMA.ResistanceKroysi').toLowerCase()}`,
+      'system.resistances.tomi': `${game.i18n.localize('ANDRAGATHIMA.Resistance')} ${game.i18n.localize('ANDRAGATHIMA.ResistanceTomi').toLowerCase()}`,
+      'system.resistances.keravnos': `${game.i18n.localize('ANDRAGATHIMA.Resistance')} ${game.i18n.localize('ANDRAGATHIMA.DamageKeravnos').toLowerCase()}`,
+      'system.resistances.oxy': `${game.i18n.localize('ANDRAGATHIMA.Resistance')} ${game.i18n.localize('ANDRAGATHIMA.DamageOxy').toLowerCase()}`,
+      'system.resistances.fotia': `${game.i18n.localize('ANDRAGATHIMA.Resistance')} ${game.i18n.localize('ANDRAGATHIMA.DamageFotia').toLowerCase()}`,
+      'system.resistances.psyxos': `${game.i18n.localize('ANDRAGATHIMA.Resistance')} ${game.i18n.localize('ANDRAGATHIMA.DamagePsyxos').toLowerCase()}`,
+      'system.resistances.magiki': `${game.i18n.localize('ANDRAGATHIMA.Resistance')} ${game.i18n.localize('ANDRAGATHIMA.DamageMagiki').toLowerCase()}`,
       'system.other.pali.value': 'Πάλη',
       'system.other.eystatheia.value': 'Ευστάθεια',
       'system.other.speed.value': 'Ταχύτητα',
@@ -1239,10 +1239,46 @@ export class AndragathimaActorSheet extends ActorSheet {
   async _rollResistance(dataset) {
     if (dataset.resistanceType === 'specialized') {
       // For specialized resistance, add base resistance
-      const baseResistance = this.actor.system.baseResistance || 0;
-      const specializedValue = parseInt(dataset.resistanceValue) || 0;
-      const totalModifier = baseResistance + specializedValue;
-      
+      const baseResistance = this.actor.system.baseResistance;
+      const specializedValue = dataset.resistanceValue;
+
+      // Check if either base or specialized is invulnerable
+      if (baseResistance === '*' || specializedValue === '*') {
+        // Convert to genitive case for proper Greek grammar
+        let resistanceLabel = dataset.resistanceLabel;
+        if (resistanceLabel.includes('Διάτρηση')) resistanceLabel = resistanceLabel.replace('Διάτρηση', 'Διάτρησης');
+        if (resistanceLabel.includes('Τομή')) resistanceLabel = resistanceLabel.replace('Τομή', 'Τομής');
+        if (resistanceLabel.includes('Κρούση')) resistanceLabel = resistanceLabel.replace('Κρούση', 'Κρούσης');
+        if (resistanceLabel.includes('Φωτιά')) resistanceLabel = resistanceLabel.replace('Φωτιά', 'Φωτιάς');
+        if (resistanceLabel.includes('Κρύο')) resistanceLabel = resistanceLabel.replace('Κρύο', 'Κρύου');
+        if (resistanceLabel.includes('Ηλεκτρισμός')) resistanceLabel = resistanceLabel.replace('Ηλεκτρισμός', 'Ηλεκτρισμού');
+        if (resistanceLabel.includes('Οξύ')) resistanceLabel = resistanceLabel.replace('Οξύ', 'Οξέος');
+
+        const messageContent = `
+          <div class="andragathima-roll">
+            <div class="dice-result">
+              <div class="dice-formula">
+                <span class="invulnerable-result">*</span>
+              </div>
+              <div class="dice-tooltip">
+                <div class="dice-total">${game.i18n.localize('ANDRAGATHIMA.AlwaysSucceeds')}</div>
+              </div>
+            </div>
+          </div>`;
+
+        await ChatMessage.create({
+          user: game.user.id,
+          speaker: ChatMessage.getSpeaker({actor: this.actor}),
+          content: messageContent,
+          flavor: `${game.i18n.localize('ANDRAGATHIMA.ResistanceRoll')} ${resistanceLabel}`,
+          type: CONST.CHAT_MESSAGE_TYPES.ROLL
+        });
+
+        return { result: "success", invulnerable: true };
+      }
+
+      const totalModifier = (parseInt(baseResistance) || 0) + (parseInt(specializedValue) || 0);
+
       // Convert to genitive case for proper Greek grammar
       let resistanceLabel = dataset.resistanceLabel;
       if (resistanceLabel.includes('Διάτρηση')) resistanceLabel = resistanceLabel.replace('Διάτρηση', 'Διάτρησης');
@@ -1252,7 +1288,7 @@ export class AndragathimaActorSheet extends ActorSheet {
       if (resistanceLabel.includes('Κρύο')) resistanceLabel = resistanceLabel.replace('Κρύο', 'Κρύου');
       if (resistanceLabel.includes('Ηλεκτρισμός')) resistanceLabel = resistanceLabel.replace('Ηλεκτρισμός', 'Ηλεκτρισμού');
       if (resistanceLabel.includes('Οξύ')) resistanceLabel = resistanceLabel.replace('Οξύ', 'Οξέος');
-      
+
       return await AndragathimaRoll.basicRoll({
         label: `${game.i18n.localize('ANDRAGATHIMA.ResistanceRoll')} ${resistanceLabel}`,
         modifier: totalModifier,
@@ -1260,11 +1296,37 @@ export class AndragathimaActorSheet extends ActorSheet {
         actor: this.actor
       });
     } else {
-      // Base resistance - target numbers toggle only affects display
-      const modifier = this.actor.system.baseResistance || 0;
+      // Base resistance
+      const modifier = this.actor.system.baseResistance;
+
+      // Check if base resistance is invulnerable
+      if (modifier === '*') {
+        const messageContent = `
+          <div class="andragathima-roll">
+            <div class="dice-result">
+              <div class="dice-formula">
+                <span class="invulnerable-result">*</span>
+              </div>
+              <div class="dice-tooltip">
+                <div class="dice-total">${game.i18n.localize('ANDRAGATHIMA.AlwaysSucceeds')}</div>
+              </div>
+            </div>
+          </div>`;
+
+        await ChatMessage.create({
+          user: game.user.id,
+          speaker: ChatMessage.getSpeaker({actor: this.actor}),
+          content: messageContent,
+          flavor: game.i18n.localize('ANDRAGATHIMA.ResistanceRoll'),
+          type: CONST.CHAT_MESSAGE_TYPES.ROLL
+        });
+
+        return { result: "success", invulnerable: true };
+      }
+
       return await AndragathimaRoll.basicRoll({
         label: game.i18n.localize('ANDRAGATHIMA.ResistanceRoll'),
-        modifier: modifier,
+        modifier: parseInt(modifier) || 0,
         targetNumber: 11,
         actor: this.actor
       });

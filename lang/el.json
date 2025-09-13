@@ -404,8 +404,9 @@
     "EquipmentProperties": "Ιδιότητες εξοπλισμού",
     "ArmorProperties": "Ιδιότητες θωράκισης",
     "ResistanceDiatrisi": "Διάτρηση",
-    "ResistanceKroysi": "Κρούση", 
+    "ResistanceKroysi": "Κρούση",
     "ResistanceTomi": "Τομή",
+    "ResistancePsyxos": "Ψύχος",
     "ArmorPenalty": "Ποινή",
     
     "WeaponTypeAspida": "Ασπίδες",
@@ -664,6 +665,7 @@
     "RunningImpossible": " (τρέξιμο αδύνατο)",
     
     "Test": "Δοκιμασία",
+    "AlwaysSucceeds": "Πετυχαίνει πάντα",
     "AvoidanceRoll": "Ζαριά αποφυγής",
     "RangedAttack": "Επίθεση μακρόθεν",
     "MeleeAttack": "Επίθεση σώμα με σώμα",

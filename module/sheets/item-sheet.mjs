@@ -495,7 +495,7 @@ export class AndragathimaItemSheet extends ItemSheet {
           if (change.key && change.value) {
             // Convert system paths to readable labels
             const label = this._getEffectChangeLabel(change.key);
-            const modeSymbol = change.mode === 2 ? "+" : (change.mode === 5 ? "=" : (change.mode === 6 ? ">=" : "×"));
+            const modeSymbol = change.mode === 2 ? "+" : (change.mode === 5 ? "=" : (change.mode === 6 ? ">=" : (change.mode === 7 ? "*" : "×")));
             tooltip += `<br>${label} ${modeSymbol}${change.value}`;
           }
         }
@@ -527,15 +527,15 @@ export class AndragathimaItemSheet extends ItemSheet {
       'system.combat.meleeDefense.value': 'Άμυνα σώμα με σώμα',
       'system.combat.rangedDefense.value': 'Άμυνα μακρόθεν',
       'system.combat.initiative.value': 'Πρωτοβουλία',
-      'system.resistances.base': 'Αντοχή',
-      'system.resistances.diatrisi': 'Αντοχή διάτρησης',
-      'system.resistances.kroysi': 'Αντοχή κρούσης',
-      'system.resistances.tomi': 'Αντοχή τομής',
-      'system.resistances.keravnos': 'Αντοχή κεραυνού',
-      'system.resistances.oxy': 'Αντοχή οξέος',
-      'system.resistances.fotia': 'Αντοχή φωτιάς',
-      'system.resistances.psyxos': 'Αντοχή ψύχους',
-      'system.resistances.magiki': 'Αντοχή μαγικής',
+      'system.resistances.base': game.i18n.localize('ANDRAGATHIMA.Resistance'),
+      'system.resistances.diatrisi': `${game.i18n.localize('ANDRAGATHIMA.Resistance')} ${game.i18n.localize('ANDRAGATHIMA.ResistanceDiatrisi').toLowerCase()}`,
+      'system.resistances.kroysi': `${game.i18n.localize('ANDRAGATHIMA.Resistance')} ${game.i18n.localize('ANDRAGATHIMA.ResistanceKroysi').toLowerCase()}`,
+      'system.resistances.tomi': `${game.i18n.localize('ANDRAGATHIMA.Resistance')} ${game.i18n.localize('ANDRAGATHIMA.ResistanceTomi').toLowerCase()}`,
+      'system.resistances.keravnos': `${game.i18n.localize('ANDRAGATHIMA.Resistance')} ${game.i18n.localize('ANDRAGATHIMA.DamageKeravnos').toLowerCase()}`,
+      'system.resistances.oxy': `${game.i18n.localize('ANDRAGATHIMA.Resistance')} ${game.i18n.localize('ANDRAGATHIMA.DamageOxy').toLowerCase()}`,
+      'system.resistances.fotia': `${game.i18n.localize('ANDRAGATHIMA.Resistance')} ${game.i18n.localize('ANDRAGATHIMA.DamageFotia').toLowerCase()}`,
+      'system.resistances.psyxos': `${game.i18n.localize('ANDRAGATHIMA.Resistance')} ${game.i18n.localize('ANDRAGATHIMA.DamagePsyxos').toLowerCase()}`,
+      'system.resistances.magiki': `${game.i18n.localize('ANDRAGATHIMA.Resistance')} ${game.i18n.localize('ANDRAGATHIMA.DamageMagiki').toLowerCase()}`,
       'system.damage.base': 'Βασική ζημιά',
       'system.damage.diatrisi': 'Ζημιά διάτρησης',
       'system.damage.kroysi': 'Ζημιά κρούσης',

@@ -250,16 +250,22 @@ Handlebars.registerHelper('formatBonus', function(value) {
 
 Handlebars.registerHelper('formatNumber', function(value, options) {
   if (value === null || value === undefined) return '';
+
+  // Handle invulnerable (*) values
+  if (value === '*') {
+    return '*';
+  }
+
   let formatted = value.toString();
-  
+
   // Add sign if requested and number is positive or zero
   if (options?.hash?.sign && parseFloat(value) >= 0) {
     formatted = '+' + formatted;
   }
-  
+
   // Replace minus sign
   formatted = formatted.replace(/^-/, '−');
-  
+
   return formatted;
 });
 
@@ -296,8 +302,14 @@ Handlebars.registerHelper('includes', function(array, value) {
 
 Handlebars.registerHelper('formatStatNumber', function(value, actorFlags, options) {
   const useTargetNumbers = actorFlags?.andragathima?.useTargetNumbers ?? false; // Default false
+
+  // Handle invulnerable (*) values
+  if (value === '*') {
+    return '*';
+  }
+
   const numValue = parseInt(value) || 0;
-  
+
   if (useTargetNumbers) {
     // Target number = coefficient + 11, with "+" suffix
     const targetNumber = numValue + 11;

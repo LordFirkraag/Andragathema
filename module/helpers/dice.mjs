@@ -276,18 +276,12 @@ export class AndragathimaRoll {
   static async rollAbilityCheck(actor, ability, options = {}) {
     const actorData = actor.system;
     const abilityData = actorData.abilities[ability];
-    
+
     if (!abilityData) {
       ui.notifications.error(`Invalid ability: ${ability}`);
       return null;
     }
-    
-    // Use total value (including racial modifiers) as the raw ability score
-    const abilityScore = abilityData.totalValue || abilityData.value;
-    
-    // Formula: d20 + Ability (raw ability score)
-    const modifier = abilityScore + (options.bonus || 0);
-    
+
     const abilityLabels = {
       "dyn": game.i18n.localize('ANDRAGATHIMA.AbilityDynGenitive'),
       "epi": game.i18n.localize('ANDRAGATHIMA.AbilityEpiGenitive'),
@@ -296,7 +290,38 @@ export class AndragathimaRoll {
       "sof": game.i18n.localize('ANDRAGATHIMA.AbilitySofGenitive'),
       "xar": game.i18n.localize('ANDRAGATHIMA.AbilityXarGenitive')
     };
-    
+
+    // Check if the ability is invulnerable (always succeeds)
+    if (abilityData.isInvulnerable) {
+      const messageContent = `
+        <div class="andragathima-roll">
+          <div class="dice-result">
+            <div class="dice-formula">
+              <span class="invulnerable-result">*</span>
+            </div>
+            <div class="dice-tooltip">
+              <div class="dice-total">${game.i18n.localize('ANDRAGATHIMA.AlwaysSucceeds')}</div>
+            </div>
+          </div>
+        </div>`;
+
+      await ChatMessage.create({
+        user: game.user.id,
+        speaker: ChatMessage.getSpeaker({actor}),
+        content: messageContent,
+        flavor: `${game.i18n.localize('ANDRAGATHIMA.Test')} ${abilityLabels[ability]}`,
+        type: CONST.CHAT_MESSAGE_TYPES.ROLL
+      });
+
+      return { result: "success", invulnerable: true };
+    }
+
+    // Use total value (including racial modifiers) as the raw ability score
+    const abilityScore = abilityData.totalValue || abilityData.value;
+
+    // Formula: d20 + Ability (raw ability score)
+    const modifier = abilityScore + (options.bonus || 0);
+
     return this.basicRoll({
       label: `${game.i18n.localize('ANDRAGATHIMA.Test')} ${abilityLabels[ability]}`,
       modifier,
