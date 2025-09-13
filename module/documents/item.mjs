@@ -236,7 +236,7 @@ export class AndragathimaItem extends Item {
     
     // Special skill requirements
     if (weaponType === 'grothies') {
-      const hasPotheAoplos = actorData.skills.potheAoplos?.hasSkill;
+      const hasPotheAoplos = actorData.skills.pote_aoplos?.hasSkill;
       return hasPotheAoplos ? 0 : -2;
     }
     
