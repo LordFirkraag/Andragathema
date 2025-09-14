@@ -57,6 +57,11 @@ Hooks.once('init', async function() {
   // if the active effect transfer property is true.
   CONFIG.ActiveEffect.legacyTransferral = false;
 
+  // Set default token movement speed based on ΑΝΔΡΑΓΑΘΗΜΑ system
+  // Default actor speed 9 μέτρα/3δευτ = 3 grid spaces/δευτ, minimum 0.5 grid spaces/δευτ
+  if (!CONFIG.Token.movement) CONFIG.Token.movement = {};
+  CONFIG.Token.movement.defaultSpeed = 3;
+
   // Register sheet application classes
   Actors.unregisterSheet("core", ActorSheet);
   Actors.registerSheet("andragathima", AndragathimaActorSheet, { 
@@ -395,6 +400,75 @@ Hooks.once("ready", async function() {
       createTooltipElement();
     }
   });
+
+  // Store pending individual movements
+  let pendingIndividualMoves = new Map();
+  let isProcessingGroupMove = false;
+
+  // Intercept group movements and convert to individual movements
+  Hooks.on("preUpdateToken", (tokenDoc, change, options) => {
+    if ((change.x !== undefined || change.y !== undefined) && tokenDoc.actor) {
+      const actor = tokenDoc.actor;
+      const actorSpeed = actor?.system?.combat?.speed?.value;
+      const actorSpeedValue = actorSpeed !== undefined ? actorSpeed : 9;
+      const movementSpeed = Math.max(0.5, actorSpeedValue / 3);
+
+      // Check if this is part of a group move by seeing if multiple tokens are being updated
+      if (!isProcessingGroupMove && canvas.tokens.controlled.length > 1) {
+        // This is a group move - store for individual processing
+        pendingIndividualMoves.set(tokenDoc.id, {
+          tokenDoc,
+          change,
+          options,
+          movementSpeed,
+          actorName: actor.name
+        });
+
+        // Cancel this update - we'll handle it individually
+        if (pendingIndividualMoves.size === canvas.tokens.controlled.length) {
+          // All tokens are queued, process them individually
+          setTimeout(() => {
+            isProcessingGroupMove = true;
+
+            for (const [tokenId, moveData] of pendingIndividualMoves) {
+              const { tokenDoc, change, movementSpeed, actorName } = moveData;
+
+              // Perform individual movement with custom speed
+              tokenDoc.update(change, {
+                animate: true,
+                animation: {
+                  movementSpeed: movementSpeed
+                }
+              });
+
+              // Debug: ui.notifications.info(`${actorName}: ${movementSpeed} grid/sec (individual move)`, {console: false});
+            }
+
+            // Clear pending moves
+            pendingIndividualMoves.clear();
+
+            setTimeout(() => {
+              isProcessingGroupMove = false;
+            }, 100);
+          }, 50);
+        }
+
+        // Cancel the original group update
+        return false;
+      } else if (!isProcessingGroupMove) {
+        // Single token move - apply speed normally
+        if (options.animate !== false) {
+          options.animate = true;
+          if (!options.animation) {
+            options.animation = {};
+          }
+          options.animation.movementSpeed = movementSpeed;
+        }
+
+        // Debug: ui.notifications.info(`${actor.name}: ${movementSpeed} grid/sec (single move)`, {console: false});
+      }
+    }
+  });
 });
 
 /* -------------------------------------------- */
@@ -655,7 +729,7 @@ async function updateTokenStatusEffects(actor) {
     await updateTokenDeadEffect(token, isDead);
   }
   
-  console.log(`Token custom overlays updated for ${actor.name} - Effects: ${effectsToShow.length}, Items: ${itemsToShow.length}`);
+  // Debug: console.log(`Token custom overlays updated for ${actor.name} - Effects: ${effectsToShow.length}, Items: ${itemsToShow.length}`);
 }
 
 /**
@@ -834,7 +908,7 @@ async function updateTokenDyingEffect(token, isDying, activeWounds = 0) {
       overlay.mask = overlayMask;
     }
     
-    console.log(`Creating ${coverageDescription} overlay with mask`, `Size: ${tokenWidth}x${overlayHeight}, Wounds: ${activeWounds}, Dying: ${isDying}`);
+    // Debug: console.log(`Creating ${coverageDescription} overlay with mask`, `Size: ${tokenWidth}x${overlayHeight}, Wounds: ${activeWounds}, Dying: ${isDying}`);
     
     dyingOverlay.addChild(overlay);
     
@@ -1517,7 +1591,7 @@ function setupTokenTooltipEvents(token) {
  * Show tooltip for a token
  */
 function showTokenTooltip(token, event) {
-  console.log("showTokenTooltip called for:", token.actor?.name);
+  // Debug: console.log("showTokenTooltip called for:", token.actor?.name);
   
   // Check if tooltips are enabled in settings
   if (!game.settings.get("andragathima", "showTokenTooltips")) {
@@ -1553,7 +1627,7 @@ function showTokenTooltip(token, event) {
     return;
   }
 
-  console.log("Setting tooltip content and showing");
+  // Debug: console.log("Setting tooltip content and showing");
   tokenTooltip.innerHTML = tooltipContent;
   tokenTooltip.style.display = 'block';
   updateTooltipPosition(event);
@@ -2362,7 +2436,7 @@ function getBestQuickWeapon(actor, useTargetNumbers) {
  * Handle canvas pointer over events
  */
 function handleTokenHover(event) {
-  console.log("Canvas pointer over event:", event);
+  // Debug: console.log("Canvas pointer over event:", event);
   
   // Find if we're hovering over a token
   const point = event.data.global;
