@@ -2,12 +2,12 @@
   "id": "andragathima",
   "title": "ANDRAGATHEMA",
   "description": "Greek Fantasy RPG System for FoundryVTT",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "manifest": "https://github.com/LordFirkraag/andragathema/releases/latest/download/system.json",
-  "download": "https://github.com/LordFirkraag/Andragathema/archive/refs/tags/1.0.4.zip",
+  "download": "https://github.com/LordFirkraag/Andragathema/archive/refs/tags/1.0.5.zip",
   "url": "https://andragathema.blogspot.com/",
   "compatibility": {
-    "minimum": "12",
+    "minimum": "13",
     "verified": "13"
   },
   "authors": [{
