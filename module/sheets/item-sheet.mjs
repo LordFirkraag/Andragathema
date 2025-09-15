@@ -1,8 +1,8 @@
 /**
  * Extend the basic ItemSheet for ΑΝΔΡΑΓΑΘΗΜΑ
- * @extends {ItemSheet}
+ * @extends {foundry.applications.sheets.ItemSheet}
  */
-export class AndragathimaItemSheet extends ItemSheet {
+export class AndragathimaItemSheet extends foundry.applications.sheets.ItemSheet {
 
   /** @override */
   static get defaultOptions() {

@@ -2,9 +2,9 @@ import { AndragathimaRoll } from "../helpers/dice.mjs";
 
 /**
  * Extend the basic ActorSheet for ΑΝΔΡΑΓΑΘΗΜΑ
- * @extends {ActorSheet}
+ * @extends {foundry.applications.sheets.ActorSheet}
  */
-export class AndragathimaActorSheet extends ActorSheet {
+export class AndragathimaActorSheet extends foundry.applications.sheets.ActorSheet {
 
 
   /** @override */

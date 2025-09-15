@@ -63,26 +63,26 @@ Hooks.once('init', async function() {
   CONFIG.Token.movement.defaultSpeed = 3;
 
   // Register sheet application classes
-  Actors.unregisterSheet("core", ActorSheet);
-  Actors.registerSheet("andragathima", AndragathimaActorSheet, { 
+  foundry.documents.collections.Actors.unregisterSheet("core", foundry.applications.sheets.ActorSheet);
+  foundry.documents.collections.Actors.registerSheet("andragathima", AndragathimaActorSheet, {
     makeDefault: true,
     types: ["character", "npc", "container", "note"],
     label: "ANDRAGATHIMA.SheetClassCharacter"
   });
-  
-  Items.unregisterSheet("core", ItemSheet);
-  Items.registerSheet("andragathima", AndragathimaItemSheet, { 
+
+  foundry.documents.collections.Items.unregisterSheet("core", foundry.applications.sheets.ItemSheet);
+  foundry.documents.collections.Items.registerSheet("andragathima", AndragathimaItemSheet, {
     makeDefault: true,
     types: ["weapon", "armor", "equipment", "ammunition", "miscellaneous", "skill", "spell"],
     label: "ANDRAGATHIMA.SheetClassItem"
   });
-  
+
   // Register Active Effect sheet using multiple methods to ensure it works
   CONFIG.ActiveEffect.sheetClass = AndragathimaActiveEffectSheet;
-  
+
   // Also register via DocumentSheetConfig as fallback
-  DocumentSheetConfig.unregisterSheet(ActiveEffect, "core", ActiveEffectConfig);
-  DocumentSheetConfig.registerSheet(ActiveEffect, "andragathima", AndragathimaActiveEffectSheet, {
+  foundry.applications.apps.DocumentSheetConfig.unregisterSheet(foundry.documents.ActiveEffect, "core", foundry.applications.sheets.ActiveEffectConfig);
+  foundry.applications.apps.DocumentSheetConfig.registerSheet(foundry.documents.ActiveEffect, "andragathima", AndragathimaActiveEffectSheet, {
     makeDefault: true,
     label: "ANDRAGATHIMA.SheetClassActiveEffect"
   });
@@ -384,7 +384,7 @@ Hooks.once("ready", async function() {
   
   // More comprehensive approach - listen for any app close
   Hooks.on("closeApplication", (app) => {
-    if (app instanceof ActorSheet) {
+    if (app instanceof foundry.applications.sheets.ActorSheet) {
       console.log("ActorSheet application closed, ensuring tooltips work");
       setTimeout(() => {
         if (!tokenTooltip || !document.body.contains(tokenTooltip)) {
@@ -677,7 +677,7 @@ async function updateTokenStatusEffects(actor) {
     if (!effect.disabled && effect.flags?.andragathima?.showOnToken) {
       effectsToShow.push({
         name: effect.name,
-        icon: effect.icon,
+        icon: effect.img,
         id: effect.id
       });
     }
@@ -690,7 +690,7 @@ async function updateTokenStatusEffects(actor) {
         if (!effect.disabled && effect.flags?.andragathima?.showOnToken) {
           effectsToShow.push({
             name: effect.name,
-            icon: effect.icon,
+            icon: effect.img,
             id: effect.id
           });
         }
@@ -1012,7 +1012,7 @@ async function updateTokenCustomOverlay(token, effectsToShow) {
     const row = i % 5; // Row 0 is bottom, row 4 is top
     
     // Create effect icon sprite
-    const iconTexture = await loadTexture(effect.icon);
+    const iconTexture = await loadTexture(effect.img);
     if (iconTexture) {
       const sprite = new PIXI.Sprite(iconTexture);
       
@@ -2548,7 +2548,7 @@ function onTokenHover(token, hovered) {
 /* -------------------------------------------- */
 
 async function preloadHandlebarsTemplates() {
-  return loadTemplates([
+  return foundry.applications.handlebars.loadTemplates([
     // Actor sheets
     "systems/andragathima/templates/actor/character-sheet.html",
     "systems/andragathima/templates/actor/npc-sheet.html",
