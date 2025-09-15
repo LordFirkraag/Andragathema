@@ -2074,7 +2074,8 @@ function calculateQuickWeaponsData(actor) {
 /**
  * Process a single weapon for the record (same logic as _prepareQuickWeapons)
  */
-function processWeaponForRecord(actor, item, isShieldWeapon = false) {
+// Make this function globally available for level calculation
+window.processWeaponForRecord = function processWeaponForRecord(actor, item, isShieldWeapon = false) {
   try {
     const weaponData = foundry.utils.duplicate(item);
     const system = actor.system;

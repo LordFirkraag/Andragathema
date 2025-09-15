@@ -1622,17 +1622,28 @@ export class AndragathimaActor extends Actor {
     const baseResistanceValue = systemData.baseResistance === '*' ? 30 : (parseFloat(systemData.baseResistance) || 0);
     const defenseAverage = (systemData.combat.melee.defense + baseResistanceValue) / 2;
     
-    // 2. Calculate highest attack + damage from quick items
+    // 2. Calculate highest attack + damage from quick items only
     let highestCombatValue = 0;
-    
-    // Check items in quick slots for weapons
-    const items = this.items || [];
-    for (const item of items) {
-      if (item.type === 'weapon' && item.system.isQuickItem) {
-        const attack = item.system.attack || 0;
-        const damage = item.system.damage || 0;
-        const combatValue = (attack + damage) / 2;
-        highestCombatValue = Math.max(highestCombatValue, combatValue);
+
+    // Check quick slots for weapons - use same logic as Record tab
+    for (let i = 0; i < 8; i++) {
+      const quickItem = systemData.equipment?.quickItems?.[i];
+      if (quickItem?.id) {
+        const item = this.items.get(quickItem.id);
+        if (item && item.type === 'weapon') {
+          // Use processWeaponForRecord to get the same calculated values as Record tab
+          const weaponData = window.processWeaponForRecord ? window.processWeaponForRecord(this, item, false) : null;
+          if (weaponData) {
+            const meleeAttack = weaponData.system.meleeAttackWithPenalty || 0;
+            const rangedAttack = weaponData.system.rangedAttackWithPenalty || 0;
+            const weaponDamage = weaponData.system.weaponDamage || 0;
+
+            // Use highest attack value (melee or ranged)
+            const highestAttack = Math.max(meleeAttack, rangedAttack);
+            const combatValue = (highestAttack + weaponDamage) / 2;
+            highestCombatValue = Math.max(highestCombatValue, combatValue);
+          }
+        }
       }
     }
     
@@ -1642,7 +1653,7 @@ export class AndragathimaActor extends Actor {
     const magicDegreeBonus = statusModifiers.other?.degree || 0;
     const magicDegree = baseMagicDegree + magicDegreeBonus;
     
-    // 4. Take the highest of the three values and round it, minimum 0
+    // 4. Take the highest of the three values, round it, minimum 0
     const characterLevel = Math.max(0, Math.round(Math.max(defenseAverage, highestCombatValue, magicDegree)));
     
     // Store the calculated level
