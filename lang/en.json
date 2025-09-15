@@ -752,6 +752,8 @@
       "ShowTokenTooltipsHint": "Shows information (name, HP, defense) when hovering over tokens",
       "TorchDuration": "Torch Duration (minutes)",
       "TorchDurationHint": "How many game minutes a torch will burn before being extinguished and destroyed",
+      "TorchColor": "Torch Color",
+      "TorchColorHint": "The color of light emitted by torches",
       "FrightenedStrokeShape": "Frightened Token Effect",
       "FrightenedStrokeShapeHint": "Determines the shape of yellow outline around tokens with frightened status",
       "FrightenedStrokeEllipse": "Ellipse",

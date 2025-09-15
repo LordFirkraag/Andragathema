@@ -1207,10 +1207,11 @@ async function updateTokenTorchLighting(token, hasTorchVisible) {
   
   if (hasTorchVisible) {
     // Torch lighting settings as specified
+    const torchColor = game.settings.get("andragathima", "torchColor");
     const torchConfig = {
       bright: 10,           // 10m bright light radius
-      dim: 20,             // 20m dim light radius  
-      color: "#ff8400",    // Light color
+      dim: 20,             // 20m dim light radius
+      color: torchColor,   // Light color
       alpha: 0.5,          // Color intensity
       animation: {
         type: "flame",     // Flame animation (torch effect)
@@ -2623,7 +2624,17 @@ function registerSystemSettings() {
       step: 1
     }
   });
-  
+
+  // Torch color setting
+  game.settings.register("andragathima", "torchColor", {
+    name: "ANDRAGATHIMA.Settings.TorchColor",
+    hint: "ANDRAGATHIMA.Settings.TorchColorHint",
+    scope: "world",
+    config: true,
+    default: "#ff8400",
+    type: String
+  });
+
   // Frightened stroke effect setting
   game.settings.register("andragathima", "frightenedStrokeShape", {
     name: "ANDRAGATHIMA.Settings.FrightenedStrokeShape",
