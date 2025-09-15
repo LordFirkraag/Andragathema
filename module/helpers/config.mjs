@@ -53,6 +53,7 @@ ANDRAGATHIMA.damageTypes = {
   "diatrisi_kroysi": "ANDRAGATHIMA.DamageDiatrisiKroysi",
   "diatrisi_tomi": "ANDRAGATHIMA.DamageDiatrisiTomi",
   "kroysi_tomi": "ANDRAGATHIMA.DamageKroysiTomi",
+  "diatrisi_kroysi_tomi": "ANDRAGATHIMA.DamageDiatrisiKroysiTomi",
   "keravnos": "ANDRAGATHIMA.DamageKeravnos",
   "oxy": "ANDRAGATHIMA.DamageOxy",
   "fotia": "ANDRAGATHIMA.DamageFotia",

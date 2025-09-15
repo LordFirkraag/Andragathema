@@ -77,11 +77,12 @@ export class AndragathimaItem extends Item {
       // Display damage type
       const damageTypes = {
         'diatrisi': game.i18n.localize('ANDRAGATHIMA.DamageDiatrisi'),
-        'kroysi': game.i18n.localize('ANDRAGATHIMA.DamageKroysi'), 
+        'kroysi': game.i18n.localize('ANDRAGATHIMA.DamageKroysi'),
         'tomi': game.i18n.localize('ANDRAGATHIMA.DamageTomi'),
         'diatrisi_kroysi': game.i18n.localize('ANDRAGATHIMA.DamageDiatrisiKroysi'),
         'diatrisi_tomi': game.i18n.localize('ANDRAGATHIMA.DamageDiatrisiTomi'),
-        'kroysi_tomi': game.i18n.localize('ANDRAGATHIMA.DamageKroysiTomi')
+        'kroysi_tomi': game.i18n.localize('ANDRAGATHIMA.DamageKroysiTomi'),
+        'diatrisi_kroysi_tomi': game.i18n.localize('ANDRAGATHIMA.DamageDiatrisiKroysiTomi')
       };
       data.damageTypeDisplay = damageTypes[data.damageType] || data.damageType || '';
       

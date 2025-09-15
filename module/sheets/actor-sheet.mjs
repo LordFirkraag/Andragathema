@@ -2,9 +2,9 @@ import { AndragathimaRoll } from "../helpers/dice.mjs";
 
 /**
  * Extend the basic ActorSheet for ΑΝΔΡΑΓΑΘΗΜΑ
- * @extends {foundry.applications.sheets.ActorSheet}
+ * @extends {ActorSheet}
  */
-export class AndragathimaActorSheet extends foundry.applications.sheets.ActorSheet {
+export class AndragathimaActorSheet extends ActorSheet {
 
 
   /** @override */
@@ -748,8 +748,12 @@ export class AndragathimaActorSheet extends foundry.applications.sheets.ActorShe
   _getLocalizedDamageType(damageType) {
     const damageTypeMap = {
       'diatrisi': 'ANDRAGATHIMA.DamageDiatrisi',
-      'kroysi': 'ANDRAGATHIMA.DamageKroysi', 
+      'kroysi': 'ANDRAGATHIMA.DamageKroysi',
       'tomi': 'ANDRAGATHIMA.DamageTomi',
+      'diatrisi_kroysi': 'ANDRAGATHIMA.DamageDiatrisiKroysi',
+      'diatrisi_tomi': 'ANDRAGATHIMA.DamageDiatrisiTomi',
+      'kroysi_tomi': 'ANDRAGATHIMA.DamageKroysiTomi',
+      'diatrisi_kroysi_tomi': 'ANDRAGATHIMA.DamageDiatrisiKroysiTomi',
       'keravnos': 'ANDRAGATHIMA.DamageKeravnos',
       'oxy': 'ANDRAGATHIMA.DamageOxy',
       'fotia': 'ANDRAGATHIMA.DamageFotia',

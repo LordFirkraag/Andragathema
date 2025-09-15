@@ -62,16 +62,21 @@ Hooks.once('init', async function() {
   if (!CONFIG.Token.movement) CONFIG.Token.movement = {};
   CONFIG.Token.movement.defaultSpeed = 3;
 
-  // Register sheet application classes
-  foundry.documents.collections.Actors.unregisterSheet("core", foundry.applications.sheets.ActorSheet);
-  foundry.documents.collections.Actors.registerSheet("andragathima", AndragathimaActorSheet, {
+  // Register sheet application classes with backward/forward compatibility
+  const ActorSheetClass = globalThis.ActorSheet || foundry?.applications?.sheets?.ActorSheetV1 || foundry?.appv1?.sheets?.ActorSheet;
+  const ItemSheetClass = globalThis.ItemSheet || foundry?.applications?.sheets?.ItemSheetV1 || foundry?.appv1?.sheets?.ItemSheet;
+  const ActorsCollection = globalThis.Actors || foundry?.documents?.collections?.Actors;
+  const ItemsCollection = globalThis.Items || foundry?.documents?.collections?.Items;
+
+  ActorsCollection.unregisterSheet("core", ActorSheetClass);
+  ActorsCollection.registerSheet("andragathima", AndragathimaActorSheet, {
     makeDefault: true,
     types: ["character", "npc", "container", "note"],
     label: "ANDRAGATHIMA.SheetClassCharacter"
   });
 
-  foundry.documents.collections.Items.unregisterSheet("core", foundry.applications.sheets.ItemSheet);
-  foundry.documents.collections.Items.registerSheet("andragathima", AndragathimaItemSheet, {
+  ItemsCollection.unregisterSheet("core", ItemSheetClass);
+  ItemsCollection.registerSheet("andragathima", AndragathimaItemSheet, {
     makeDefault: true,
     types: ["weapon", "armor", "equipment", "ammunition", "miscellaneous", "skill", "spell"],
     label: "ANDRAGATHIMA.SheetClassItem"
@@ -80,12 +85,18 @@ Hooks.once('init', async function() {
   // Register Active Effect sheet using multiple methods to ensure it works
   CONFIG.ActiveEffect.sheetClass = AndragathimaActiveEffectSheet;
 
-  // Also register via DocumentSheetConfig as fallback
-  foundry.applications.apps.DocumentSheetConfig.unregisterSheet(foundry.documents.ActiveEffect, "core", foundry.applications.sheets.ActiveEffectConfig);
-  foundry.applications.apps.DocumentSheetConfig.registerSheet(foundry.documents.ActiveEffect, "andragathima", AndragathimaActiveEffectSheet, {
-    makeDefault: true,
-    label: "ANDRAGATHIMA.SheetClassActiveEffect"
-  });
+  // Also register via DocumentSheetConfig as fallback with compatibility
+  const DocumentSheetConfigClass = globalThis.DocumentSheetConfig || foundry?.applications?.apps?.DocumentSheetConfig;
+  const ActiveEffectClass = globalThis.ActiveEffect || foundry?.documents?.ActiveEffect;
+  const ActiveEffectConfigClass = globalThis.ActiveEffectConfig || foundry?.applications?.sheets?.ActiveEffectConfig;
+
+  if (DocumentSheetConfigClass && ActiveEffectClass && ActiveEffectConfigClass) {
+    DocumentSheetConfigClass.unregisterSheet(ActiveEffectClass, "core", ActiveEffectConfigClass);
+    DocumentSheetConfigClass.registerSheet(ActiveEffectClass, "andragathima", AndragathimaActiveEffectSheet, {
+      makeDefault: true,
+      label: "ANDRAGATHIMA.SheetClassActiveEffect"
+    });
+  }
 
 
   // Preload Handlebars templates.
@@ -384,7 +395,7 @@ Hooks.once("ready", async function() {
   
   // More comprehensive approach - listen for any app close
   Hooks.on("closeApplication", (app) => {
-    if (app instanceof foundry.applications.sheets.ActorSheet) {
+    if (app instanceof (globalThis.ActorSheet || foundry?.appv1?.sheets?.ActorSheet || Object)) {
       console.log("ActorSheet application closed, ensuring tooltips work");
       setTimeout(() => {
         if (!tokenTooltip || !document.body.contains(tokenTooltip)) {
@@ -2205,8 +2216,12 @@ function getWeaponSpecializationBonus(actor, weaponType) {
 function getLocalizedDamageType(damageType) {
   const damageTypeMap = {
     'diatrisi': 'ANDRAGATHIMA.DamageDiatrisi',
-    'kroysi': 'ANDRAGATHIMA.DamageKroysi', 
+    'kroysi': 'ANDRAGATHIMA.DamageKroysi',
     'tomi': 'ANDRAGATHIMA.DamageTomi',
+    'diatrisi_kroysi': 'ANDRAGATHIMA.DamageDiatrisiKroysi',
+    'diatrisi_tomi': 'ANDRAGATHIMA.DamageDiatrisiTomi',
+    'kroysi_tomi': 'ANDRAGATHIMA.DamageKroysiTomi',
+    'diatrisi_kroysi_tomi': 'ANDRAGATHIMA.DamageDiatrisiKroysiTomi',
     'keravnos': 'ANDRAGATHIMA.DamageKeravnos',
     'oxy': 'ANDRAGATHIMA.DamageOxy',
     'fotia': 'ANDRAGATHIMA.DamageFotia',
@@ -2548,7 +2563,8 @@ function onTokenHover(token, hovered) {
 /* -------------------------------------------- */
 
 async function preloadHandlebarsTemplates() {
-  return foundry.applications.handlebars.loadTemplates([
+  const loadTemplatesFunc = globalThis.loadTemplates || foundry?.applications?.handlebars?.loadTemplates;
+  return loadTemplatesFunc([
     // Actor sheets
     "systems/andragathima/templates/actor/character-sheet.html",
     "systems/andragathima/templates/actor/npc-sheet.html",

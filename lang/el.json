@@ -35,7 +35,8 @@
     "DamageSynthlipsi": "Σύνθλιψη",
     "DamageDiatrisiKroysi": "Διάτρηση/Κρούση",
     "DamageDiatrisiTomi": "Διάτρηση/Τομή",
-    "DamageKroysiTomi": "Κρούση/Κρούση",
+    "DamageKroysiTomi": "Κρούση/Τομή",
+    "DamageDiatrisiKroysiTomi": "Διάτρηση/Κρούση/Τομή",
     
     "RaceAnthropos": "Άνθρωπος",
     "RaceNanos": "Νάνος",
@@ -692,6 +693,7 @@
     "DamageTypeDiatrisiKroysi": "Διάτρηση/Κρούση",
     "DamageTypeDiatrisiTomi": "Διάτρηση/Τομή",
     "DamageTypeKroysiTomi": "Κρούση/Τομή",
+    "DamageTypeDiatrisiKroysiTomi": "Διάτρηση/Κρούση/Τομή",
     
     "CriticalHitResult": "Καίριο Πλήγμα!",
     "CriticalFailureResult": "Κρίσιμη Αποτυχία!",

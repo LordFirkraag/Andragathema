@@ -34,8 +34,9 @@
     "DamageMagiki": "Magical Energy",
     "DamageSynthlipsi": "Crushing",
     "DamageDiatrisiKroysi": "Piercing/Bludgeoning",
-    "DamageDiatrisiTomi": "Piercing/Slashing", 
+    "DamageDiatrisiTomi": "Piercing/Slashing",
     "DamageKroysiTomi": "Bludgeoning/Slashing",
+    "DamageDiatrisiKroysiTomi": "Piercing/Bludgeoning/Slashing",
     
     "RaceAnthropos": "Human",
     "RaceNanos": "Dwarf",
@@ -676,6 +677,7 @@
     "DamageTypeDiatrisiKroysi": "Piercing/Bludgeoning",
     "DamageTypeDiatrisiTomi": "Piercing/Slashing",
     "DamageTypeKroysiTomi": "Bludgeoning/Slashing",
+    "DamageTypeDiatrisiKroysiTomi": "Piercing/Bludgeoning/Slashing",
     
     "CriticalHitResult": "Critical Hit!",
     "CriticalFailureResult": "Critical Failure!",
