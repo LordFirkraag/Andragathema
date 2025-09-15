@@ -688,7 +688,7 @@ async function updateTokenStatusEffects(actor) {
     if (!effect.disabled && effect.flags?.andragathima?.showOnToken) {
       effectsToShow.push({
         name: effect.name,
-        icon: effect.img,
+        icon: effect.icon,
         id: effect.id
       });
     }
@@ -701,7 +701,7 @@ async function updateTokenStatusEffects(actor) {
         if (!effect.disabled && effect.flags?.andragathima?.showOnToken) {
           effectsToShow.push({
             name: effect.name,
-            icon: effect.img,
+            icon: effect.icon,
             id: effect.id
           });
         }
@@ -1023,7 +1023,8 @@ async function updateTokenCustomOverlay(token, effectsToShow) {
     const row = i % 5; // Row 0 is bottom, row 4 is top
     
     // Create effect icon sprite
-    const iconTexture = await loadTexture(effect.img);
+    if (!effect.icon) continue; // Skip effects without image
+    const iconTexture = await loadTexture(effect.icon);
     if (iconTexture) {
       const sprite = new PIXI.Sprite(iconTexture);
       
