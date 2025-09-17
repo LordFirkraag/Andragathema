@@ -420,9 +420,16 @@ Hooks.once("ready", async function() {
   Hooks.on("preUpdateToken", (tokenDoc, change, options) => {
     if ((change.x !== undefined || change.y !== undefined) && tokenDoc.actor) {
       const actor = tokenDoc.actor;
-      const actorSpeed = actor?.system?.combat?.speed?.value;
-      const actorSpeedValue = actorSpeed !== undefined ? actorSpeed : 9;
-      const movementSpeed = Math.max(0.5, actorSpeedValue / 3);
+
+      // For note and container actors, always use minimum speed
+      let movementSpeed;
+      if (actor.type === 'note' || actor.type === 'container') {
+        movementSpeed = 0.5;
+      } else {
+        const actorSpeed = actor?.system?.combat?.speed?.value;
+        const actorSpeedValue = actorSpeed !== undefined ? actorSpeed : 9;
+        movementSpeed = Math.max(0.5, actorSpeedValue / 3);
+      }
 
       // Check if this is part of a group move by seeing if multiple tokens are being updated
       if (!isProcessingGroupMove && canvas.tokens.controlled.length > 1) {
