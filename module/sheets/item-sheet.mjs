@@ -108,8 +108,9 @@ export class AndragathimaItemSheet extends ItemSheet {
           context.system.rangeDisplay = this._calculateSpellRangeDisplay(itemData);
         }
         
-        // Calculate area display for burst2 and burst5
-        if (itemData.area?.type === 'burst2' || itemData.area?.type === 'burst5') {
+        // Calculate area display for burst and cone types
+        if (itemData.area?.type === 'burst1' || itemData.area?.type === 'burst2' || itemData.area?.type === 'burst5' || itemData.area?.type === 'burst10' ||
+            itemData.area?.type === 'cone1' || itemData.area?.type === 'cone2' || itemData.area?.type === 'cone5' || itemData.area?.type === 'cone10') {
           context.system.areaDisplay = this._calculateSpellAreaDisplay(itemData);
         }
         
@@ -233,11 +234,22 @@ export class AndragathimaItemSheet extends ItemSheet {
   }
 
   /**
-   * Calculate spell area display for burst2 and burst5 spells
+   * Calculate spell area display for burst and cone spells
    */
   _calculateSpellAreaDisplay(spellData) {
     const effectiveDegree = this._calculateSpellDegree(spellData);
-    const multiplier = spellData.area.type === 'burst2' ? 2 : 5;
+    let multiplier;
+    switch (spellData.area.type) {
+      case 'burst1':
+      case 'cone1': multiplier = 1; break;
+      case 'burst2':
+      case 'cone2': multiplier = 2; break;
+      case 'burst5':
+      case 'cone5': multiplier = 5; break;
+      case 'burst10':
+      case 'cone10': multiplier = 10; break;
+      default: multiplier = 1;
+    }
     
     if (effectiveDegree === 0) {
       return `${this._formatNumber(multiplier)} m/βαθμό`;

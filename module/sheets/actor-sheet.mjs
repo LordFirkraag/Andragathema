@@ -3438,14 +3438,29 @@ export class AndragathimaActorSheet extends ActorSheet {
         case 'burst':
           areaText = game.i18n.localize('ANDRAGATHIMA.SpellAreaBurst');
           break;
+        case 'burst1':
+          areaText = this._calculateSpellAreaDisplayForTooltip(spell, 1, 'burst');
+          break;
         case 'burst2':
-          areaText = this._calculateSpellAreaDisplayForTooltip(spell, 2);
+          areaText = this._calculateSpellAreaDisplayForTooltip(spell, 2, 'burst');
           break;
         case 'burst5':
-          areaText = this._calculateSpellAreaDisplayForTooltip(spell, 5);
+          areaText = this._calculateSpellAreaDisplayForTooltip(spell, 5, 'burst');
           break;
-        case 'cone':
-          areaText = game.i18n.localize('ANDRAGATHIMA.SpellAreaCone');
+        case 'burst10':
+          areaText = this._calculateSpellAreaDisplayForTooltip(spell, 10, 'burst');
+          break;
+        case 'cone1':
+          areaText = this._calculateSpellAreaDisplayForTooltip(spell, 1, 'cone');
+          break;
+        case 'cone2':
+          areaText = this._calculateSpellAreaDisplayForTooltip(spell, 2, 'cone');
+          break;
+        case 'cone5':
+          areaText = this._calculateSpellAreaDisplayForTooltip(spell, 5, 'cone');
+          break;
+        case 'cone10':
+          areaText = this._calculateSpellAreaDisplayForTooltip(spell, 10, 'cone');
           break;
         case 'custom':
           areaText = system.area.custom || game.i18n.localize('ANDRAGATHIMA.SpellAreaCustom');
@@ -4157,15 +4172,18 @@ export class AndragathimaActorSheet extends ActorSheet {
   /**
    * Calculate spell area display for tooltip (similar to range calculation)
    */
-  _calculateSpellAreaDisplayForTooltip(spell, multiplier) {
+  _calculateSpellAreaDisplayForTooltip(spell, multiplier, areaType = 'burst') {
     const effectiveDegree = this._calculateSpellDegreeForTooltip(spell);
-    
+
+    const labelKey = areaType === 'cone' ? 'ANDRAGATHIMA.SpellAreaCone' : 'ANDRAGATHIMA.SpellAreaBurst';
+    const areaLabel = game.i18n.localize(labelKey);
+
     if (effectiveDegree === 0) {
-      return `${game.i18n.localize('ANDRAGATHIMA.SpellAreaBurst')} ${this._formatNumber(multiplier)} m/βαθμό`;
+      return `${areaLabel} ${this._formatNumber(multiplier)} m/βαθμό`;
     }
-    
+
     const area = multiplier * effectiveDegree;
-    return `${game.i18n.localize('ANDRAGATHIMA.SpellAreaBurst')} ${this._formatNumber(area)} m`;
+    return `${areaLabel} ${this._formatNumber(area)} m`;
   }
 
   /**

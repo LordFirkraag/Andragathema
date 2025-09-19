@@ -104,16 +104,21 @@
                   <option value="none" {{#if (eq system.area.type "none")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.SpellAreaNone'}}</option>
                   <option value="radius" {{#if (eq system.area.type "radius")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.SpellAreaRadius'}}</option>
                   <option value="burst" {{#if (eq system.area.type "burst")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.SpellAreaBurst'}}</option>
+                  <option value="burst1" {{#if (eq system.area.type "burst1")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.SpellAreaBurst1'}}</option>
                   <option value="burst2" {{#if (eq system.area.type "burst2")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.SpellAreaBurst2'}}</option>
                   <option value="burst5" {{#if (eq system.area.type "burst5")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.SpellAreaBurst5'}}</option>
-                  <option value="cone" {{#if (eq system.area.type "cone")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.SpellAreaCone'}}</option>
+                  <option value="burst10" {{#if (eq system.area.type "burst10")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.SpellAreaBurst10'}}</option>
+                  <option value="cone1" {{#if (eq system.area.type "cone1")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.SpellAreaCone1'}}</option>
+                  <option value="cone2" {{#if (eq system.area.type "cone2")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.SpellAreaCone2'}}</option>
+                  <option value="cone5" {{#if (eq system.area.type "cone5")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.SpellAreaCone5'}}</option>
+                  <option value="cone10" {{#if (eq system.area.type "cone10")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.SpellAreaCone10'}}</option>
                   <option value="custom" {{#if (eq system.area.type "custom")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.SpellAreaCustom'}}</option>
                 </select>
               </td>
               <td>
                 {{#if (eq system.area.type "custom")}}
                 <input type="text" name="system.area.custom" value="{{system.area.custom}}" style="width: 100px;" placeholder="{{localize 'ANDRAGATHIMA.PlaceholderCustomArea'}}"/>
-                {{else if (or (eq system.area.type "burst2") (eq system.area.type "burst5"))}}
+                {{else if (or (eq system.area.type "burst1") (eq system.area.type "burst2") (eq system.area.type "burst5") (eq system.area.type "burst10") (eq system.area.type "cone1") (eq system.area.type "cone2") (eq system.area.type "cone5") (eq system.area.type "cone10"))}}
                 <span class="calculated-area">{{system.areaDisplay}}</span>
                 {{/if}}
               </td>
