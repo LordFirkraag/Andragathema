@@ -2,7 +2,7 @@
 
   {{!-- Sheet Header --}}
   <header class="sheet-header">
-    <img class="profile-img {{#if isDead}}dead-character{{/if}}" src="{{actor.prototypeToken.texture.src}}" data-edit="prototypeToken.texture.src" title="{{actor.name}}" height="100" width="100"/>
+    <img class="profile-img {{#if isDead}}dead-character{{/if}}" src="{{headerTokenImage}}" {{#if hasActiveTokens}}data-edit-token="placed"{{else}}data-edit="prototypeToken.texture.src"{{/if}} title="{{actor.name}}" height="100" width="100"/>
     <div class="header-fields">
       <h1 class="charname">
         <input name="name" type="text" value="{{actor.name}}" placeholder="{{localize 'ANDRAGATHIMA.CharacterName'}}"/>

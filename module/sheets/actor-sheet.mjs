@@ -65,6 +65,12 @@ export class AndragathimaActorSheet extends ActorSheet {
     // Check if actor is dead for greyscale effect
     context.isDead = this.document.effects.some(effect => !effect.disabled && effect.statuses?.has("dead"));
 
+    // Determine header token image: use actual token if placed, otherwise prototype token
+    context.headerTokenImage = this._getHeaderTokenImage();
+
+    // Check if actor has active tokens for conditional editing behavior
+    context.hasActiveTokens = this.actor.getActiveTokens().length > 0;
+
     // Prepare character data and items.
     if (actorData.type == 'character') {
       this._applyStatusModifiersToMagic(context);
@@ -1105,6 +1111,9 @@ export class AndragathimaActorSheet extends ActorSheet {
 
     // Character art click for changing image
     html.find('.character-art').click(this._onCharacterArtClick.bind(this));
+
+    // Header image click for changing token image (placed tokens)
+    html.find('.profile-img[data-edit-token="placed"]').click(this._onHeaderTokenClick.bind(this));
 
     // Magic tab disabled click handler
     html.find('.tab.magic.magic-disabled').click(this._onMagicDisabledClick.bind(this));
@@ -2921,17 +2930,22 @@ export class AndragathimaActorSheet extends ActorSheet {
     } else {
       // Get all items that are not equipped in specific equipment slots
       unequippedItems = Array.from(this.actor.items).filter(item => {
+        // Exclude spells from misc slots
+        if (item.type === "spell") {
+          return false;
+        }
+
         // Check if item is in equipment slots
         const equipmentSlots = this.actor.system.equipment?.slots || {};
         const quickItems = this.actor.system.equipment?.quickItems || [];
-        
+
         // Check if item is in equipment slots
         for (let slotData of Object.values(equipmentSlots)) {
           if (slotData.id && slotData.id === item.id) {
             return false; // Item is equipped in an equipment slot
           }
         }
-        
+
         // Check if item is in quick items
         for (let quickItem of quickItems) {
           if (quickItem.id && quickItem.id === item.id) {
@@ -5034,5 +5048,67 @@ export class AndragathimaActorSheet extends ActorSheet {
       };
     }
   }
-  
+
+  /**
+   * Get the appropriate image for the header: actual token if placed, otherwise prototype token
+   */
+  _getHeaderTokenImage() {
+    // Get all active tokens for this actor
+    const tokens = this.actor.getActiveTokens();
+
+    // If there are active tokens, use the image from the first one
+    if (tokens && tokens.length > 0) {
+      const firstToken = tokens[0];
+      return firstToken.document.texture.src;
+    }
+
+    // If no active tokens, fall back to prototype token
+    return this.actor.prototypeToken.texture.src;
+  }
+
+  /**
+   * Handle header token image click for placed actors
+   */
+  async _onHeaderTokenClick(event) {
+    event.preventDefault();
+
+    // Get all active tokens for this actor
+    const tokens = this.actor.getActiveTokens();
+
+    if (tokens.length === 0) {
+      ui.notifications.warn("No placed tokens found for this actor.");
+      return;
+    }
+
+    // Use the first token for image selection
+    const token = tokens[0];
+
+    const fp = new FilePicker({
+      type: "image",
+      current: token.document.texture.src,
+      callback: async path => {
+        // Validate that the path has a valid image extension
+        if (path && typeof path === 'string' && /\.(jpg|jpeg|png|webp|gif|svg)$/i.test(path)) {
+          // Update all active tokens for this actor
+          for (const activeToken of tokens) {
+            await activeToken.document.update({
+              "texture.src": path
+            });
+          }
+
+          // Immediately update the header image in the DOM
+          const headerImg = this.element.find('.profile-img');
+          if (headerImg.length > 0) {
+            headerImg.attr('src', path);
+          }
+        } else {
+          ui.notifications.warn(game.i18n.localize('ANDRAGATHIMA.PleaseSelectValidImage'));
+        }
+      },
+      top: this.position.top + 40,
+      left: this.position.left + 10
+    });
+    return fp.browse();
+  }
+
 }
