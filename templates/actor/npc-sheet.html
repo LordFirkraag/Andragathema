@@ -122,9 +122,6 @@
           <div class="character-stats">
             
             
-            <div class="stat-line">
-              <strong>{{localize 'ANDRAGATHIMA.Defense'}}:</strong> <span {{#if (or system.hasArmorPenalty system.hasEncumbrancePenalty system.hasShieldPenalty)}}class="armor-penalty-text"{{/if}}><span class="rollable {{statusModifierClass (default flags.andragathima.modifiers.combat.meleeDefense 0)}}" data-roll-type="defense" data-defense-type="melee">{{formatStatNumber system.combat.melee.defense flags}}</span>/<span class="rollable {{statusModifierClass (default flags.andragathima.modifiers.combat.rangedDefense 0)}}" data-roll-type="defense" data-defense-type="ranged">{{formatStatNumber system.combat.ranged.defense flags}}</span></span>
-            </div>
 
             <div class="stat-line">
               <strong>{{localize 'ANDRAGATHIMA.Resistance'}}:</strong> <span class="rollable {{statusModifierClass (default flags.andragathima.modifiers.resistances.base 0)}}" data-roll-type="resistance" data-resistance-type="tomi">{{formatStatNumber system.baseResistance flags}}</span>

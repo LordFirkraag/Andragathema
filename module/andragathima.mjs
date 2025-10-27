@@ -1718,17 +1718,6 @@ function generateTooltipContent(actor) {
   let content = `<div class="item-name">${actor.name}</div>`;
   content += `<div class="item-details">`;
 
-  // Άμυνα (Defense) - Σώμα με σώμα / Μακρόθεν
-  if (system.combat?.melee?.defense !== undefined && system.combat?.ranged?.defense !== undefined) {
-    const meleeDefense = system.combat.melee.defense;
-    const rangedDefense = system.combat.ranged.defense;
-    
-    const meleeDefenseDisplay = formatStat(meleeDefense, useTargetNumbers);
-    const rangedDefenseDisplay = formatStat(rangedDefense, useTargetNumbers);
-    
-    content += `<div class="item-property"><span class="property-label">${game.i18n.localize('ANDRAGATHIMA.Defense')}:</span> ${meleeDefenseDisplay}/${rangedDefenseDisplay}</div>`;
-  }
-
   // Αντοχή (Resistance)
   if (system.baseResistance !== undefined) {
     const resistance = system.baseResistance;

@@ -617,9 +617,27 @@ export class AndragathimaActor extends Actor {
     
     // Apply penalty only if not proficient
     const appliedPenalty = (armorSkillLevel >= requiredSkillLevel) ? 0 : penalty;
-    
+
+    // Get armor resistances
+    const resistances = JSON.parse(JSON.stringify(armorSystem.resistances || {}));
+
+    // Add shield resistance bonuses if a shield is equipped
+    const shieldSlot = systemData.equipment?.slots?.shield;
+    if (shieldSlot && shieldSlot.id) {
+      const shieldWeapon = this.items.get(shieldSlot.id);
+      if (shieldWeapon && shieldWeapon.type === 'weapon') {
+        const weaponType = shieldWeapon.system.weaponType;
+        if (weaponType === 'aspida_varia') {
+          // Shields (both light and heavy) give +2 to diatrisi, kroysi, and tomi
+          resistances.diatrisi = (resistances.diatrisi || 0) + 2;
+          resistances.kroysi = (resistances.kroysi || 0) + 2;
+          resistances.tomi = (resistances.tomi || 0) + 2;
+        }
+      }
+    }
+
     return {
-      resistances: armorSystem.resistances || {},
+      resistances: resistances,
       attackPenalty: appliedPenalty, // Now added directly (penalty should be entered as negative in armor sheet)
       defensePenalty: appliedPenalty, // Now added directly (penalty should be entered as negative in armor sheet)
       armorType: armorType
@@ -655,13 +673,11 @@ export class AndragathimaActor extends Actor {
         const isLight = shieldWeapon.system.isLight || false;
         
         if (weaponType === 'aspida_varia' && isLight) {
-          // Light shield (Ασπίδες + ελαφρύ όπλο): +2/+2
-          meleeBonus += 2;
-          rangedBonus += 2;
+          // Light shield (Ασπίδες + ελαφρύ όπλο): resistance bonuses handled in armor data
+          // No longer provides defense bonus
         } else if (weaponType === 'aspida_varia' && !isLight) {
-          // Heavy shield (Ασπίδες χωρίς ελαφρύ όπλο): +2/+4
-          meleeBonus += 2;
-          rangedBonus += 4;
+          // Heavy shield (Ασπίδες χωρίς ελαφρύ όπλο): resistance bonuses handled in armor data
+          // No longer provides defense bonus
         } else {
           // Any other weapon: +1/+0
           meleeBonus += 1;

@@ -417,190 +417,35 @@ ANDRAGATHIMA.statusEffects = [
     name: "ANDRAGATHIMA.StatusWounded",
     description: "ANDRAGATHIMA.StatusWoundedDesc",
     img: "systems/andragathima/assets/conditions/wound.png",
-    changes: [
-      {
-        key: "system.combat.meleeDefense",
-        mode: 2, // ADD
-        value: -1
-      },
-      {
-        key: "system.combat.rangedDefense",
-        mode: 2, // ADD
-        value: -1
-      },
-      {
-        key: "system.resistances.base.modifier",
-        mode: 2, // ADD
-        value: -1
-      },
-      {
-        key: "system.saves.ant.modifier",
-        mode: 2, // ADD
-        value: -1
-      },
-      {
-        key: "system.saves.mya.modifier",
-        mode: 2, // ADD
-        value: -1
-      },
-      {
-        key: "system.saves.som.modifier",
-        mode: 2, // ADD
-        value: -1
-      }
-    ]
+    changes: []
   },
   {
     id: "wounded2",
     name: "ANDRAGATHIMA.StatusWounded",
     description: "ANDRAGATHIMA.StatusWoundedDesc",
     img: "systems/andragathima/assets/conditions/wound2.png",
-    changes: [
-      {
-        key: "system.combat.meleeDefense",
-        mode: 2, // ADD
-        value: -1
-      },
-      {
-        key: "system.combat.rangedDefense",
-        mode: 2, // ADD
-        value: -1
-      },
-      {
-        key: "system.resistances.base.modifier",
-        mode: 2, // ADD
-        value: -1
-      },
-      {
-        key: "system.saves.ant.modifier",
-        mode: 2, // ADD
-        value: -1
-      },
-      {
-        key: "system.saves.mya.modifier",
-        mode: 2, // ADD
-        value: -1
-      },
-      {
-        key: "system.saves.som.modifier",
-        mode: 2, // ADD
-        value: -1
-      }
-    ]
+    changes: []
   },
   {
     id: "wounded3",
     name: "ANDRAGATHIMA.StatusWounded",
     description: "ANDRAGATHIMA.StatusWoundedDesc",
     img: "systems/andragathima/assets/conditions/wound3.png",
-    changes: [
-      {
-        key: "system.combat.meleeDefense",
-        mode: 2, // ADD
-        value: -1
-      },
-      {
-        key: "system.combat.rangedDefense",
-        mode: 2, // ADD
-        value: -1
-      },
-      {
-        key: "system.resistances.base.modifier",
-        mode: 2, // ADD
-        value: -1
-      },
-      {
-        key: "system.saves.ant.modifier",
-        mode: 2, // ADD
-        value: -1
-      },
-      {
-        key: "system.saves.mya.modifier",
-        mode: 2, // ADD
-        value: -1
-      },
-      {
-        key: "system.saves.som.modifier",
-        mode: 2, // ADD
-        value: -1
-      }
-    ]
+    changes: []
   },
   {
     id: "wounded4",
     name: "ANDRAGATHIMA.StatusWounded",
     description: "ANDRAGATHIMA.StatusWoundedDesc",
     img: "systems/andragathima/assets/conditions/wound4.png",
-    changes: [
-      {
-        key: "system.combat.meleeDefense",
-        mode: 2, // ADD
-        value: -1
-      },
-      {
-        key: "system.combat.rangedDefense",
-        mode: 2, // ADD
-        value: -1
-      },
-      {
-        key: "system.resistances.base.modifier",
-        mode: 2, // ADD
-        value: -1
-      },
-      {
-        key: "system.saves.ant.modifier",
-        mode: 2, // ADD
-        value: -1
-      },
-      {
-        key: "system.saves.mya.modifier",
-        mode: 2, // ADD
-        value: -1
-      },
-      {
-        key: "system.saves.som.modifier",
-        mode: 2, // ADD
-        value: -1
-      }
-    ]
+    changes: []
   },
   {
     id: "wounded5",
     name: "ANDRAGATHIMA.StatusWounded",
     description: "ANDRAGATHIMA.StatusWoundedDesc",
     img: "systems/andragathima/assets/conditions/wound5.png",
-    changes: [
-      {
-        key: "system.combat.meleeDefense",
-        mode: 2, // ADD
-        value: -1
-      },
-      {
-        key: "system.combat.rangedDefense",
-        mode: 2, // ADD
-        value: -1
-      },
-      {
-        key: "system.resistances.base.modifier",
-        mode: 2, // ADD
-        value: -1
-      },
-      {
-        key: "system.saves.ant.modifier",
-        mode: 2, // ADD
-        value: -1
-      },
-      {
-        key: "system.saves.mya.modifier",
-        mode: 2, // ADD
-        value: -1
-      },
-      {
-        key: "system.saves.som.modifier",
-        mode: 2, // ADD
-        value: -1
-      }
-    ]
+    changes: []
   },
   // Υπόλοιπα conditions με τη σειρά που ζητήθηκε
   {
