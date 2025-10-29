@@ -409,6 +409,8 @@
     "ResistanceTomi": "Slashing",
     "ResistancePsyxos": "Cold",
     "ResistanceFotia": "Fire",
+    "ResistanceKeravnos": "Lightning",
+    "ResistanceOxy": "Acid",
     "ArmorPenalty": "Penalty",
     
     "WeaponTypeAspida": "Shields",
