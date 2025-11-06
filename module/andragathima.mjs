@@ -742,6 +742,7 @@ async function updateTokenStatusEffects(actor) {
   for (const token of tokens) {
     await updateTokenDyingEffect(token, showDyingOverlays ? isDying : false, showDyingOverlays ? activeWounds : 0);
     await updateTokenFearEffect(token, isFrightened);
+    await updateTokenDeadStroke(token, isDead);
     await updateTokenCustomOverlay(token, effectsToShow);
     await updateTokenWeaponOverlay(token, itemsToShow);
     await updateTokenDeadEffect(token, isDead);
@@ -831,6 +832,89 @@ async function updateTokenFearEffect(token, isFrightened) {
     
     token.addChildAt(fearStroke, insertIndex);
     console.log(`Frightened stroke applied to token ${token.name || token.id}`);
+  }
+}
+
+/**
+ * Apply or remove black stroke effect on token when dead
+ */
+async function updateTokenDeadStroke(token, isDead) {
+  if (!token.document || !token.mesh) return;
+
+  // Get stroke shape setting
+  const strokeShape = game.settings.get("andragathima", "deadStrokeShape");
+
+  // Remove existing dead stroke
+  const existingDeadStroke = token.children.find(child => child.andragathimaDeadStroke);
+  if (existingDeadStroke) {
+    token.removeChild(existingDeadStroke);
+  }
+
+  // Show stroke if dead and setting is not "off"
+  if (isDead && strokeShape !== "off") {
+    // Create dead stroke container
+    const deadStroke = new PIXI.Container();
+    deadStroke.andragathimaDeadStroke = true;
+
+    // Create black stroke graphic
+    const stroke = new PIXI.Graphics();
+    stroke.lineStyle(8, 0x000000, 1.0); // 8px black stroke
+
+    // Use grid size for consistent token sizing (same as other overlays)
+    const gridSize = canvas.grid.size;
+    const tokenWidth = token.document.width * gridSize;
+    const tokenHeight = token.document.height * gridSize;
+    const centerX = tokenWidth / 2;
+    const centerY = tokenHeight / 2;
+
+    // Get stroke shape from settings
+    const aspectRatio = token.document.width / token.document.height;
+    const isRoughlySquare = aspectRatio > 0.8 && aspectRatio < 1.2;
+
+    if (strokeShape === "rectangle") {
+      // Rectangle stroke - 4px outside the token edge
+      const width = tokenWidth + 8;  // 4px on each side
+      const height = tokenHeight + 8; // 4px on each side
+      stroke.drawRect(-4, -4, width, height);
+    } else if (strokeShape === "ellipse") {
+      // Ellipse stroke - draw circle or ellipse based on aspect ratio
+      if (isRoughlySquare) {
+        // Draw a circle for square tokens - 4px outside the token edge
+        const radius = Math.min(tokenWidth, tokenHeight) / 2 + 4;
+        stroke.drawCircle(centerX, centerY, radius);
+      } else {
+        // Draw an ellipse for rectangular tokens - 4px outside the token edge
+        const radiusX = tokenWidth / 2 + 4;
+        const radiusY = tokenHeight / 2 + 4;
+        stroke.drawEllipse(centerX, centerY, radiusX, radiusY);
+      }
+    }
+
+    deadStroke.addChild(stroke);
+
+    // Add stroke to token container at the correct z-index
+    // Position it one level above dying overlay but below effects
+    let insertIndex = token.children.length;
+
+    for (let i = 0; i < token.children.length; i++) {
+      // Insert after mesh and dying overlay but before effects and other overlays
+      if (token.children[i] === token.mesh ||
+          token.children[i].andragathimaDyingOverlay) {
+        insertIndex = i + 1;
+        continue;
+      }
+      // Stop before effects container and other overlays (except dying overlay)
+      if (token.children[i] === token.effects ||
+          token.children[i].andragathimaCustomOverlay ||
+          token.children[i].andragathimaWeaponOverlay ||
+          token.children[i].andragathimaFearStroke) {
+        insertIndex = i;
+        break;
+      }
+    }
+
+    token.addChildAt(deadStroke, insertIndex);
+    console.log(`Dead stroke applied to token ${token.name || token.id}`);
   }
 }
 
@@ -2644,6 +2728,20 @@ function registerSystemSettings() {
       "ellipse": "ANDRAGATHIMA.Settings.FrightenedStrokeEllipse",
       "rectangle": "ANDRAGATHIMA.Settings.FrightenedStrokeRectangle",
       "off": "ANDRAGATHIMA.Settings.FrightenedStrokeOff"
+    }
+  });
+
+  game.settings.register("andragathima", "deadStrokeShape", {
+    name: "ANDRAGATHIMA.Settings.DeadStrokeShape",
+    hint: "ANDRAGATHIMA.Settings.DeadStrokeShapeHint",
+    scope: "world",
+    config: true,
+    default: "ellipse",
+    type: String,
+    choices: {
+      "ellipse": "ANDRAGATHIMA.Settings.DeadStrokeEllipse",
+      "rectangle": "ANDRAGATHIMA.Settings.DeadStrokeRectangle",
+      "off": "ANDRAGATHIMA.Settings.DeadStrokeOff"
     }
   });
 }

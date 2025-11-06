@@ -782,8 +782,13 @@
       "FrightenedStrokeShape": "Εφέ τρόμου στις μάρκες",
       "FrightenedStrokeShapeHint": "Καθορίζει το σχήμα του κίτρινου περιγράμματος γύρω από μάρκες με φόβο",
       "FrightenedStrokeEllipse": "Έλλειψη",
-      "FrightenedStrokeRectangle": "Ορθογώνιο", 
-      "FrightenedStrokeOff": "Χωρίς"
+      "FrightenedStrokeRectangle": "Ορθογώνιο",
+      "FrightenedStrokeOff": "Χωρίς",
+      "DeadStrokeShape": "Εφέ θανάτου στις μάρκες",
+      "DeadStrokeShapeHint": "Καθορίζει το σχήμα του μαύρου περιγράμματος γύρω από μάρκες που είναι νεκρές",
+      "DeadStrokeEllipse": "Έλλειψη",
+      "DeadStrokeRectangle": "Ορθογώνιο",
+      "DeadStrokeOff": "Χωρίς"
     }
   }
 }

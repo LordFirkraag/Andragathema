@@ -767,7 +767,12 @@
       "FrightenedStrokeShapeHint": "Determines the shape of yellow outline around tokens with frightened status",
       "FrightenedStrokeEllipse": "Ellipse",
       "FrightenedStrokeRectangle": "Rectangle",
-      "FrightenedStrokeOff": "Off"
+      "FrightenedStrokeOff": "Off",
+      "DeadStrokeShape": "Dead Token Effect",
+      "DeadStrokeShapeHint": "Determines the shape of black outline around tokens with dead status",
+      "DeadStrokeEllipse": "Ellipse",
+      "DeadStrokeRectangle": "Rectangle",
+      "DeadStrokeOff": "Off"
     }
   }
 }
