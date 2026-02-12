@@ -148,9 +148,9 @@
               <strong>{{localize 'ANDRAGATHIMA.Movement'}}:</strong> <span class="{{statusModifierClass system.combat.speed.statusMod}}">{{system.combat.speed.value}} m</span>{{#if system.combat.speed.encumbranceNote}}{{system.combat.speed.encumbranceNote}}{{/if}}{{#if system.combat.speed.canRunNote}}{{system.combat.speed.canRunNote}}{{/if}}{{#if system.combat.speed.swim}}, {{localize 'ANDRAGATHIMA.MovementSwim'}} {{system.combat.speed.swim}} m{{/if}}{{#if system.combat.speed.fly}}, {{localize 'ANDRAGATHIMA.MovementFly'}} {{system.combat.speed.fly}} m{{#if system.combat.speed.flyQuality}} ({{#if (eq system.combat.speed.flyQuality "poor")}}{{localize 'ANDRAGATHIMA.FlightPoor'}}{{else if (eq system.combat.speed.flyQuality "good")}}{{localize 'ANDRAGATHIMA.FlightGood'}}{{else if (eq system.combat.speed.flyQuality "perfect")}}{{localize 'ANDRAGATHIMA.FlightPerfect'}}{{/if}}){{/if}}{{/if}}{{#if system.combat.speed.climb}}, {{localize 'ANDRAGATHIMA.MovementClimb'}} {{system.combat.speed.climb}} m{{/if}}{{#if system.combat.speed.burrow}}, {{localize 'ANDRAGATHIMA.MovementBurrow'}} {{system.combat.speed.burrow}} m{{/if}}
             </div>
 
-            <div class="stat-line">
+            <!--<div class="stat-line">
               <strong>{{localize 'ANDRAGATHIMA.Initiative'}}:</strong> <span class="rollable {{statusModifierClass system.combat.initiative.statusMod}}" data-roll-type="initiative">{{formatStatNumber system.combat.initiative.value flags}}</span>
-            </div>
+            </div>-->
 
             {{!-- Όπλα από γρήγορα αντικείμενα --}}
             {{#each quickWeapons}}

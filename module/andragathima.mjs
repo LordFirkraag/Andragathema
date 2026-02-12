@@ -1302,7 +1302,7 @@ async function updateTokenTorchLighting(token, hasTorchVisible) {
     const torchColor = game.settings.get("andragathima", "torchColor");
     const torchConfig = {
       bright: 10,           // 10m bright light radius
-      dim: 20,             // 20m dim light radius
+      dim: 10,             // 10m dim light radius, meaning no extra radius
       color: torchColor,   // Light color
       alpha: 0.5,          // Color intensity
       animation: {
@@ -1332,8 +1332,8 @@ async function updateTokenTorchLighting(token, hasTorchVisible) {
     
     if (usagePercentage > 0.8) {
       // Dim torch settings for worn torches
-      torchConfig.bright = 5;
-      torchConfig.dim = 10;
+      torchConfig.bright = 8;
+      torchConfig.dim = 8;
       console.log(`Torch is worn out (${Math.round(usagePercentage * 100)}% used) - reduced brightness applied`);
     }
     
@@ -1850,11 +1850,11 @@ function generateTooltipContent(actor) {
   }
 
   // Πρωτοβουλία
-  if (system.combat?.initiative?.value !== undefined) {
-    const init = system.combat.initiative.value;
-    const initDisplay = formatStat(init, useTargetNumbers);
-    content += `<div class="item-property"><span class="property-label">${game.i18n.localize('ANDRAGATHIMA.Initiative')}:</span> ${initDisplay}</div>`;
-  }
+ // if (system.combat?.initiative?.value !== undefined) {
+ //   const init = system.combat.initiative.value;
+ //   const initDisplay = formatStat(init, useTargetNumbers);
+ //   content += `<div class="item-property"><span class="property-label">${game.i18n.localize('ANDRAGATHIMA.Initiative')}:</span> ${initDisplay}</div>`;
+ // }
 
   // Επίθεση και Ζημιά από καλύτερο όπλο (από Καταγραφή)
   const weaponInfo = getBestQuickWeaponFromRecord(actor, useTargetNumbers, hideStatsFromPlayers);
@@ -2834,8 +2834,8 @@ async function checkTorchDuration(token, currentTime) {
       await token.document.update({
         light: {
           ...currentLight,
-          bright: 5,
-          dim: 10
+          bright: 8,
+          dim: 8
         },
         flags: {
           andragathima: {
