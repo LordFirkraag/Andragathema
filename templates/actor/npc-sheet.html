@@ -46,40 +46,40 @@
         {{!-- Αριστερή Στήλη: Βασικές Ικανότητες --}}
         <div class="left-column">
           <div class="abilities-column">
-            <div class="ability-item rollable" data-roll-type="ability" data-ability="dyn">
+            <div class="ability-item" data-ability="dyn">
               <span class="ability-name">{{localize 'ANDRAGATHIMA.AbilityDyn'}}</span>
-              <span class="ability-score {{statusModifierClass system.abilities.dyn.statusMod}}">{{system.abilities.dyn.displayValue}}</span>
-              <span class="ability-mod">({{formatNumber system.abilities.dyn.mod sign=true}})</span>
+              <span class="ability-score rollable {{statusModifierClass system.abilities.dyn.statusMod}}" data-roll-type="ability-score" data-ability="dyn">{{system.abilities.dyn.displayValue}}</span>
+              <span class="ability-mod rollable" data-roll-type="ability-mod" data-ability="dyn">({{formatNumber system.abilities.dyn.mod sign=true}})</span>
             </div>
-            
-            <div class="ability-item rollable" data-roll-type="ability" data-ability="epi">
+
+            <div class="ability-item" data-ability="epi">
               <span class="ability-name">{{localize 'ANDRAGATHIMA.AbilityEpi'}}</span>
-              <span class="ability-score {{statusModifierClass system.abilities.epi.statusMod}}">{{system.abilities.epi.displayValue}}</span>
-              <span class="ability-mod">({{formatNumber system.abilities.epi.mod sign=true}})</span>
+              <span class="ability-score rollable {{statusModifierClass system.abilities.epi.statusMod}}" data-roll-type="ability-score" data-ability="epi">{{system.abilities.epi.displayValue}}</span>
+              <span class="ability-mod rollable" data-roll-type="ability-mod" data-ability="epi">({{formatNumber system.abilities.epi.mod sign=true}})</span>
             </div>
-            
-            <div class="ability-item rollable" data-roll-type="ability" data-ability="kra">
+
+            <div class="ability-item" data-ability="kra">
               <span class="ability-name">{{localize 'ANDRAGATHIMA.AbilityKra'}}</span>
-              <span class="ability-score {{statusModifierClass system.abilities.kra.statusMod}}">{{system.abilities.kra.displayValue}}</span>
-              <span class="ability-mod">({{formatNumber system.abilities.kra.mod sign=true}})</span>
+              <span class="ability-score rollable {{statusModifierClass system.abilities.kra.statusMod}}" data-roll-type="ability-score" data-ability="kra">{{system.abilities.kra.displayValue}}</span>
+              <span class="ability-mod rollable" data-roll-type="ability-mod" data-ability="kra">({{formatNumber system.abilities.kra.mod sign=true}})</span>
             </div>
-            
-            <div class="ability-item rollable" data-roll-type="ability" data-ability="eyf">
+
+            <div class="ability-item" data-ability="eyf">
               <span class="ability-name">{{localize 'ANDRAGATHIMA.AbilityEyf'}}</span>
-              <span class="ability-score {{statusModifierClass system.abilities.eyf.statusMod}}">{{system.abilities.eyf.displayValue}}</span>
-              <span class="ability-mod">({{formatNumber system.abilities.eyf.mod sign=true}})</span>
+              <span class="ability-score rollable {{statusModifierClass system.abilities.eyf.statusMod}}" data-roll-type="ability-score" data-ability="eyf">{{system.abilities.eyf.displayValue}}</span>
+              <span class="ability-mod rollable" data-roll-type="ability-mod" data-ability="eyf">({{formatNumber system.abilities.eyf.mod sign=true}})</span>
             </div>
-            
-            <div class="ability-item rollable" data-roll-type="ability" data-ability="sof">
+
+            <div class="ability-item" data-ability="sof">
               <span class="ability-name">{{localize 'ANDRAGATHIMA.AbilitySof'}}</span>
-              <span class="ability-score {{statusModifierClass system.abilities.sof.statusMod}}">{{system.abilities.sof.displayValue}}</span>
-              <span class="ability-mod">({{formatNumber system.abilities.sof.mod sign=true}})</span>
+              <span class="ability-score rollable {{statusModifierClass system.abilities.sof.statusMod}}" data-roll-type="ability-score" data-ability="sof">{{system.abilities.sof.displayValue}}</span>
+              <span class="ability-mod rollable" data-roll-type="ability-mod" data-ability="sof">({{formatNumber system.abilities.sof.mod sign=true}})</span>
             </div>
-            
-            <div class="ability-item rollable" data-roll-type="ability" data-ability="xar">
+
+            <div class="ability-item" data-ability="xar">
               <span class="ability-name">{{localize 'ANDRAGATHIMA.AbilityXar'}}</span>
-              <span class="ability-score {{statusModifierClass system.abilities.xar.statusMod}}">{{system.abilities.xar.displayValue}}</span>
-              <span class="ability-mod">({{formatNumber system.abilities.xar.mod sign=true}})</span>
+              <span class="ability-score rollable {{statusModifierClass system.abilities.xar.statusMod}}" data-roll-type="ability-score" data-ability="xar">{{system.abilities.xar.displayValue}}</span>
+              <span class="ability-mod rollable" data-roll-type="ability-mod" data-ability="xar">({{formatNumber system.abilities.xar.mod sign=true}})</span>
             </div>
             
             {{!-- Διαχωριστική Γραμμή --}}
@@ -135,11 +135,11 @@
             {{/if}}
 
             <div class="stat-line">
-              <strong>{{localize 'ANDRAGATHIMA.SavingThrows'}}:</strong> {{localize 'ANDRAGATHIMA.SaveAntAbbr'}} <span {{#if system.hasEncumbrancePenalty}}class="armor-penalty-text rollable"{{else}}class="rollable"{{/if}} class="{{statusModifierClass system.saves.ant.statusMod}}" data-roll-type="save" data-save-type="ant">{{formatStatNumber system.saves.ant.value flags}}</span>, {{localize 'ANDRAGATHIMA.SaveMyaAbbr'}} <span class="rollable {{statusModifierClass system.saves.mya.statusMod}}" data-roll-type="save" data-save-type="mya">{{formatStatNumber system.saves.mya.value flags}}</span>, {{localize 'ANDRAGATHIMA.SaveSomAbbr'}} <span class="rollable {{statusModifierClass system.saves.som.statusMod}}" data-roll-type="save" data-save-type="som">{{formatStatNumber system.saves.som.value flags}}</span>
+              <strong>{{localize 'ANDRAGATHIMA.SavingThrows'}}:</strong> {{localize 'ANDRAGATHIMA.SaveMyaAbbr'}} <span class="rollable {{statusModifierClass system.saves.mya.statusMod}}" data-roll-type="save" data-save-type="mya">{{formatStatNumber system.saves.mya.value flags}}</span>, {{localize 'ANDRAGATHIMA.SaveSomAbbr'}} <span class="rollable {{statusModifierClass system.saves.som.statusMod}}" data-roll-type="save" data-save-type="som">{{formatStatNumber system.saves.som.value flags}}</span>
             </div>
 
             <div class="stat-line">
-              <strong>{{localize 'ANDRAGATHIMA.GrappleStability'}}:</strong> <span class="rollable {{statusModifierClass (default flags.andragathima.modifiers.other.pali 0)}}" data-roll-type="grapple">{{formatStatNumber system.combat.pali.value flags}}</span>/<span class="rollable {{statusModifierClass (default flags.andragathima.modifiers.other.eystatheia 0)}}" data-roll-type="stability">{{formatStatNumber system.combat.eystatheia.value flags}}</span>
+              <strong>{{localize 'ANDRAGATHIMA.Grapple'}}:</strong> <span class="rollable {{statusModifierClass (default flags.andragathima.modifiers.other.pali 0)}}" data-roll-type="grapple">{{formatStatNumber system.combat.pali.value flags}}</span>
             </div>
 
             <div class="stat-divider"></div>
@@ -158,8 +158,13 @@
               <strong>{{this.name}}</strong>
             </div>
             <div class="stat-line weapon-attack specialized-resistance">
-              {{localize 'ANDRAGATHIMA.AttackWithColon'}} <span{{#if this.system.hasAnyNonShieldPenalty}} class="weapon-proficiency-penalty rollable"{{else}} class="rollable"{{/if}} data-roll-type="weapon-attack" data-item-id="{{this._id}}">{{formatStatNumber this.system.meleeAttackWithPenalty ../flags}}{{#if this.system.hasRange}}/<span class="rollable" data-roll-type="weapon-attack" data-item-id="{{this._id}}" data-ranged="true">{{formatStatNumber this.system.rangedAttackWithPenalty ../flags}}</span>{{else}}/—{{/if}}</span>
+              {{localize 'ANDRAGATHIMA.TabCombat'}}: <span{{#if this.system.hasAnyNonShieldPenalty}} class="weapon-proficiency-penalty rollable"{{else}} class="rollable"{{/if}} data-roll-type="weapon-attack" data-item-id="{{this._id}}">{{formatStatNumber this.system.meleeAttackWithPenalty ../flags}}</span>
             </div>
+            {{#if this.system.hasRange}}
+            <div class="stat-line weapon-attack specialized-resistance">
+              {{localize 'ANDRAGATHIMA.TooltipRanged'}}: <span class="rollable" data-roll-type="weapon-attack" data-item-id="{{this._id}}" data-ranged="true">{{formatStatNumber this.system.rangedAttackWithPenalty ../flags}}</span>
+            </div>
+            {{/if}}
             <div class="stat-line weapon-damage specialized-resistance">
               {{localize 'ANDRAGATHIMA.DamageWithColon'}} <span class="rollable" data-roll-type="weapon-damage" data-item-id="{{this._id}}">{{formatStatNumber this.system.weaponDamage ../flags}} {{this.system.damageTypeDisplay}}</span>
             </div>
@@ -176,8 +181,13 @@
               <strong>{{this.name}} {{localize 'ANDRAGATHIMA.SecondHand'}}</strong>
             </div>
             <div class="stat-line weapon-attack specialized-resistance">
-              {{localize 'ANDRAGATHIMA.AttackWithColon'}} <span{{#if this.system.hasAnyNonShieldPenalty}} class="weapon-proficiency-penalty rollable"{{else}} class="rollable"{{/if}} data-roll-type="weapon-attack" data-item-id="{{this._id}}">{{formatStatNumber this.system.meleeAttackWithPenalty ../flags}}{{#if this.system.hasRange}}/<span class="rollable" data-roll-type="weapon-attack" data-item-id="{{this._id}}" data-ranged="true">{{formatStatNumber this.system.rangedAttackWithPenalty ../flags}}</span>{{else}}/—{{/if}}</span>
+              {{localize 'ANDRAGATHIMA.TabCombat'}}: <span{{#if this.system.hasAnyNonShieldPenalty}} class="weapon-proficiency-penalty rollable"{{else}} class="rollable"{{/if}} data-roll-type="weapon-attack" data-item-id="{{this._id}}">{{formatStatNumber this.system.meleeAttackWithPenalty ../flags}}</span>
             </div>
+            {{#if this.system.hasRange}}
+            <div class="stat-line weapon-attack specialized-resistance">
+              {{localize 'ANDRAGATHIMA.TooltipRanged'}}: <span class="rollable" data-roll-type="weapon-attack" data-item-id="{{this._id}}" data-ranged="true">{{formatStatNumber this.system.rangedAttackWithPenalty ../flags}}</span>
+            </div>
+            {{/if}}
             <div class="stat-line weapon-damage specialized-resistance">
               {{localize 'ANDRAGATHIMA.DamageWithColon'}} <span class="rollable" data-roll-type="weapon-damage" data-item-id="{{this._id}}">{{formatStatNumber this.system.weaponDamage ../flags}} {{this.system.damageTypeDisplay}}</span>
             </div>
@@ -201,11 +211,13 @@
             <div class="stat-divider"></div>
 
             {{#each system.skills as |skill key|}}
+            {{#unless (eq key "aspides")}}
             {{#if skill.hasSkill}}
             <div class="stat-line">
               {{skill.name}}{{#if (gt skill.level 1)}}{{#if (eq skill.level 2)}} ++{{else if (eq skill.level 3)}} +++{{else}} {{#each (range skill.level) as |dot|}}+{{/each}}{{/if}}{{/if}}{{#if (and (eq key "eidikeysi_sta_opla") skill.category)}} ({{#if (eq skill.category "aspida_varia")}}{{localize "ANDRAGATHIMA.WeaponTypeAspida"}}{{else if (eq skill.category "aspida_elafria")}}{{localize "ANDRAGATHIMA.WeaponTypeAspida"}}{{else if (eq skill.category "vallistra")}}{{localize "ANDRAGATHIMA.WeaponTypeVallistra"}}{{else if (eq skill.category "dory")}}{{localize "ANDRAGATHIMA.WeaponTypeDory"}}{{else if (eq skill.category "drepani")}}{{localize "ANDRAGATHIMA.WeaponTypeDrepani"}}{{else if (eq skill.category "longi")}}{{localize "ANDRAGATHIMA.WeaponTypeLongi"}}{{else if (eq skill.category "macheri")}}{{localize "ANDRAGATHIMA.WeaponTypeMacheri"}}{{else if (eq skill.category "mastigio")}}{{localize "ANDRAGATHIMA.WeaponTypeMastigio"}}{{else if (eq skill.category "pyrovolo")}}{{localize "ANDRAGATHIMA.WeaponTypePyrovolo"}}{{else if (eq skill.category "ravdi")}}{{localize "ANDRAGATHIMA.WeaponTypeRavdi"}}{{else if (eq skill.category "riptari")}}{{localize "ANDRAGATHIMA.WeaponTypeRiptari"}}{{else if (eq skill.category "ropalo")}}{{localize "ANDRAGATHIMA.WeaponTypeRopalo"}}{{else if (eq skill.category "sfendoni")}}{{localize "ANDRAGATHIMA.WeaponTypeSfendoni"}}{{else if (eq skill.category "spathi")}}{{localize "ANDRAGATHIMA.WeaponTypeSpathi"}}{{else if (eq skill.category "toxo")}}{{localize "ANDRAGATHIMA.WeaponTypeToxo"}}{{else if (eq skill.category "tsekoiri")}}{{localize "ANDRAGATHIMA.WeaponTypeTsekoiri"}}{{else if (eq skill.category "frageli")}}{{localize "ANDRAGATHIMA.WeaponTypeFrageli"}}{{else if (eq skill.category "autosxedio")}}{{localize "ANDRAGATHIMA.WeaponTypeAutosxedio"}}{{else if (eq skill.category "grothies")}}{{localize "ANDRAGATHIMA.WeaponTypeGrothies"}}{{else}}{{skill.category}}{{/if}}){{/if}}
             </div>
             {{/if}}
+            {{/unless}}
             {{/each}}
 
           </div>
@@ -573,14 +585,6 @@
         <h2>{{localize 'ANDRAGATHIMA.SavingThrows'}}</h2>
         <table class="saves-table">
           <tr>
-            <td>{{localize 'ANDRAGATHIMA.SaveAnt'}} ({{localize 'ANDRAGATHIMA.SaveAntAbbr'}}): {{system.saves.ant.base}}</td>
-            <td>
-              <button class="save-decrease small-btn {{#unless isGMOrAssistant}}disabled-by-permissions{{/unless}}" data-save="ant" type="button" {{#unless isGMOrAssistant}}disabled{{/unless}}>−</button>
-              <button class="save-increase small-btn {{#unless isGMOrAssistant}}disabled-by-permissions{{/unless}}" data-save="ant" type="button" {{#unless isGMOrAssistant}}disabled{{/unless}}>+</button>
-            </td>
-            <td></td>
-          </tr>
-          <tr>
             <td>{{localize 'ANDRAGATHIMA.SaveMya'}} ({{localize 'ANDRAGATHIMA.SaveMyaAbbr'}}): {{system.saves.mya.base}}</td>
             <td>
               <button class="save-decrease small-btn {{#unless isGMOrAssistant}}disabled-by-permissions{{/unless}}" data-save="mya" type="button" {{#unless isGMOrAssistant}}disabled{{/unless}}>−</button>
@@ -660,6 +664,7 @@
         <h2>{{localize 'ANDRAGATHIMA.Skills'}}</h2>
         <table class="skills-table">
           {{#each system.skills as |skill key|}}
+          {{#unless (eq key "aspides")}}
           <tr>
             <td>{{skill.name}}
               {{#if skill.hasSkill}}
@@ -707,6 +712,7 @@
               {{/if}}
             </td>
           </tr>
+          {{/unless}}
           {{/each}}
         </table>
       </div>

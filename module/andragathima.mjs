@@ -331,8 +331,8 @@ Handlebars.registerHelper('formatStatNumber', function(value, actorFlags, option
     const targetNumber = numValue + 11;
     return targetNumber + "+";
   } else {
-    // Original coefficient format with sign
-    return (numValue >= 0 ? "+" : "") + numValue;
+    // Original coefficient format with sign, using Unicode minus for negative
+    return (numValue >= 0 ? "+" : "−") + Math.abs(numValue);
   }
 });
 
@@ -716,9 +716,25 @@ async function updateTokenStatusEffects(actor) {
     }
   }
   
+  // Check encumbrance status and add indicator if not light
+  const encumbranceStatus = actor.system.equipment?.encumbranceStatus;
+  const encumbranceData = {
+    heavy:     { key: 'EncumbranceHeavy',    icon: 'systems/andragathima/assets/conditions/weight1.png' },
+    maximum:   { key: 'EncumbranceMaximum',  icon: 'systems/andragathima/assets/conditions/weight2.png' },
+    overloaded:{ key: 'EncumbranceExcessive',icon: 'systems/andragathima/assets/conditions/weight3.png' }
+  };
+  if (encumbranceStatus && encumbranceData[encumbranceStatus]) {
+    const enc = encumbranceData[encumbranceStatus];
+    effectsToShow.push({
+      name: game.i18n.localize(`ANDRAGATHIMA.${enc.key}`),
+      icon: enc.icon,
+      id: 'encumbered'
+    });
+  }
+
   // Collect weapons and ammunition that should show on tokens
   const itemsToShow = getWeaponsForDisplay(actor);
-  
+
   // Check if actor is dead for greyscale effect
   const isDead = actor.effects.some(effect => !effect.disabled && effect.statuses?.has("dead"));
   
@@ -1820,9 +1836,10 @@ function generateTooltipContent(actor) {
     });
   }
 
-  // Ζαριές αποφυγής (Saving throws)
+  // Ζαριές αποφυγής (Saving throws) - εκτός Αντανακλαστικών
   if (system.saves) {
     Object.entries(system.saves).forEach(([key, save]) => {
+      if (key === 'ant') return;
       if (save.value !== undefined) {
         const saveDisplay = formatStat(save.value, useTargetNumbers);
         const saveKey = `Save${key.charAt(0).toUpperCase() + key.slice(1)}`;
@@ -1832,15 +1849,10 @@ function generateTooltipContent(actor) {
     });
   }
 
-  // Πάλη/Ευστάθεια
-  if (system.combat?.pali?.value !== undefined && system.combat?.eystatheia?.value !== undefined) {
-    const pali = system.combat.pali.value;
-    const eyst = system.combat.eystatheia.value;
-    
-    const paliDisplay = formatStat(pali, useTargetNumbers);
-    const eystDisplay = formatStat(eyst, useTargetNumbers);
-    
-    content += `<div class="item-property"><span class="property-label">${game.i18n.localize('ANDRAGATHIMA.GrappleStability')}:</span> ${paliDisplay}/${eystDisplay}</div>`;
+  // Πάλη
+  if (system.combat?.pali?.value !== undefined) {
+    const paliDisplay = formatStat(system.combat.pali.value, useTargetNumbers);
+    content += `<div class="item-property"><span class="property-label">${game.i18n.localize('ANDRAGATHIMA.Grapple')}:</span> ${paliDisplay}</div>`;
   }
 
   // Ταχύτητα
@@ -2069,7 +2081,10 @@ function getBestQuickWeaponFromRecord(actor, useTargetNumbers, hideStatsFromPlay
       const meleeAttackDisplay = formatStat(meleeAttack);
       const rangedAttackDisplay = formatStat(rangedAttack);
       
-      content += `<div class="item-property"><span class="property-label">${game.i18n.localize('ANDRAGATHIMA.Attack')}:</span> ${meleeAttackDisplay}/${rangedAttackDisplay}</div>`;
+      content += `<div class="item-property"><span class="property-label">${game.i18n.localize('ANDRAGATHIMA.TabCombat')}:</span> ${meleeAttackDisplay}</div>`;
+      if (weapon.system.hasRange) {
+        content += `<div class="item-property"><span class="property-label">${game.i18n.localize('ANDRAGATHIMA.TooltipRanged')}:</span> ${rangedAttackDisplay}</div>`;
+      }
     }
     
     // Ζημιά (από υπολογισμένες τιμές στην Καταγραφή)
@@ -2203,7 +2218,7 @@ window.processWeaponForRecord = function processWeaponForRecord(actor, item, isS
     let shieldSpecificPenalties = 0;
     if (isShieldWeapon) {
       const hasAmfidexios = system.skills?.amfidexios?.hasSkill || false;
-      const hasAspidesSkill = system.skills?.aspides?.hasSkill || false;
+      const hasAspidesSkill = system.skills?.opla?.hasSkill || false;
       const offHandPenalty = hasAmfidexios ? 0 : -2;
       
       let shieldProficiencyPenalty = 0;

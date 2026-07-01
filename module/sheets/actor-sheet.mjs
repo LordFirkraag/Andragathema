@@ -327,19 +327,18 @@ export class AndragathimaActorSheet extends ActorSheet {
     const encumbranceStatus = system.equipment?.encumbranceStatus || 'light';
     system.hasEncumbrancePenalty = encumbranceStatus !== 'light';
     
-    // Add experience for base saves
+    // Add experience for base saves (excluding ant/Αντανακλαστικά)
     for (let [saveKey, save] of Object.entries(system.saves)) {
-      
-      // Add experience only for base save value
+      if (saveKey === 'ant') continue;
       if (save.base > 0) {
         totalExp += save.base;
       }
     }
     
     // Add experience from skills (1 point per level)
-    for (let skill of Object.values(system.skills)) {
+    for (let [key, skill] of Object.entries(system.skills)) {
+      if (key === 'aspides') continue;
       if (skill.hasSkill && skill.level > 0) {
-        // Each skill level costs 1 experience point
         totalExp += skill.level;
       }
     }
@@ -618,8 +617,8 @@ export class AndragathimaActorSheet extends ActorSheet {
         // Check if character has Αμφιδέξιος skill (for off-hand penalty)
         const hasAmfidexios = this.actor.system.skills?.amfidexios?.hasSkill || false;
         
-        // Check if character has Aspides skill (for shield proficiency)
-        const hasAspidesSkill = this.actor.system.skills?.aspides?.hasSkill || false;
+        // Check if character has Όπλα skill (shield proficiency requires Όπλα ≥1)
+        const hasAspidesSkill = this.actor.system.skills?.opla?.hasSkill || false;
         
         // Calculate all penalties for shield slot weapon
         const weaponData = foundry.utils.duplicate(item);
@@ -1180,8 +1179,8 @@ export class AndragathimaActorSheet extends ActorSheet {
       return roll;
     }
 
-    // Handle ability checks
-    if (dataset.ability) {
+    // Handle ability checks (legacy path — only when no specific rollType is set)
+    if (dataset.ability && !dataset.rollType) {
       return this._rollAbilityCheck(dataset);
     }
 
@@ -1200,6 +1199,10 @@ export class AndragathimaActorSheet extends ActorSheet {
     switch (dataset.rollType) {
       case 'ability':
         return this._rollAbilityCheck(dataset);
+      case 'ability-score':
+        return this._rollAbilityScore(dataset);
+      case 'ability-mod':
+        return this._rollAbilityMod(dataset);
       case 'save':
         return this._rollSave(dataset);
       case 'defense':
@@ -4415,26 +4418,28 @@ export class AndragathimaActorSheet extends ActorSheet {
       totalExp += system.combat.ranged.value * 2;
     }
     
-    // Add experience for base saves
-    for (let save of Object.values(system.saves)) {
+    // Add experience for base saves (excluding ant/Αντανακλαστικά)
+    for (let [saveKey, save] of Object.entries(system.saves)) {
+      if (saveKey === 'ant') continue;
       if (save.base > 0) {
         totalExp += save.base;
       }
     }
     
     // Add experience from skills (1 point per level)
-    for (let skill of Object.values(system.skills)) {
+    for (let [key, skill] of Object.entries(system.skills)) {
+      if (key === 'aspides') continue;
       if (skill.hasSkill && skill.level > 0) {
         totalExp += skill.level;
       }
     }
-    
+
     // Add experience from magic (Mage Level × Magic Degree)
     if (system.magic && system.magic.level && system.magic.degree) {
       const mageLevel = system.magic.level.value || 0;
       const magicDegree = system.magic.degree.value || 0;
       totalExp += mageLevel * magicDegree;
-      
+
       // Add experience for spells in spellbook (1 point per spell if Degree > 0 and Level > 0)
       if (mageLevel > 0 && magicDegree > 0) {
         const spellCount = this.actor.items.filter(item => item.type === "spell").length;
@@ -4995,6 +5000,49 @@ export class AndragathimaActorSheet extends ActorSheet {
     const ability = dataset.ability;
     // Target numbers toggle only affects display, calculations remain the same
     return this.actor.rollAbilityCheck(ability);
+  }
+
+  async _rollAbilityScore(dataset) {
+    const ability = dataset.ability;
+    const abilityData = this.actor.system.abilities[ability];
+    if (!abilityData) return;
+    const abilityLabels = {
+      dyn: game.i18n.localize('ANDRAGATHIMA.AbilityDynGenitive'),
+      epi: game.i18n.localize('ANDRAGATHIMA.AbilityEpiGenitive'),
+      kra: game.i18n.localize('ANDRAGATHIMA.AbilityKraGenitive'),
+      eyf: game.i18n.localize('ANDRAGATHIMA.AbilityEyfGenitive'),
+      sof: game.i18n.localize('ANDRAGATHIMA.AbilitySofGenitive'),
+      xar: game.i18n.localize('ANDRAGATHIMA.AbilityXarGenitive')
+    };
+    const score = abilityData.totalValue ?? abilityData.value ?? 0;
+    const label = `${game.i18n.localize('ANDRAGATHIMA.Test')} ${abilityLabels[ability]}`;
+    const roll = new Roll('1d20');
+    await roll.evaluate();
+    const d20 = roll.total;
+    const success = d20 <= score;
+    const resultClass = success ? 'success' : 'failure';
+    const resultText = success ? game.i18n.localize('ANDRAGATHIMA.Success') : game.i18n.localize('ANDRAGATHIMA.Failure');
+    await roll.toMessage({
+      speaker: ChatMessage.getSpeaker({ actor: this.actor }),
+      flavor: `${label}<br>d20 (${d20}) ≤ ${score} → <span class="${resultClass}">${resultText}</span>`
+    });
+  }
+
+  async _rollAbilityMod(dataset) {
+    const ability = dataset.ability;
+    const abilityData = this.actor.system.abilities[ability];
+    if (!abilityData) return;
+    const abilityLabels = {
+      dyn: game.i18n.localize('ANDRAGATHIMA.AbilityDynGenitive'),
+      epi: game.i18n.localize('ANDRAGATHIMA.AbilityEpiGenitive'),
+      kra: game.i18n.localize('ANDRAGATHIMA.AbilityKraGenitive'),
+      eyf: game.i18n.localize('ANDRAGATHIMA.AbilityEyfGenitive'),
+      sof: game.i18n.localize('ANDRAGATHIMA.AbilitySofGenitive'),
+      xar: game.i18n.localize('ANDRAGATHIMA.AbilityXarGenitive')
+    };
+    const modifier = abilityData.mod ?? 0;
+    const label = `${game.i18n.localize('ANDRAGATHIMA.EffectSheetCoefficient')} ${abilityLabels[ability]}`;
+    return AndragathimaRoll.basicRoll({ label, modifier, targetNumber: 11, actor: this.actor });
   }
 
   /**

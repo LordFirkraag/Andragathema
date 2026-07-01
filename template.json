@@ -275,12 +275,6 @@
           "maxLevel": 1,
           "hasSkill": false
         },
-        "aspides": {
-          "name": "Ασπίδες",
-          "level": 0,
-          "maxLevel": 1,
-          "hasSkill": false
-        },
         "astrapieos": {
           "name": "Αστραπιαίος",
           "level": 0,
@@ -847,12 +841,6 @@
         },
         "apofygi": {
           "name": "Αποφυγή",
-          "level": 0,
-          "maxLevel": 1,
-          "hasSkill": false
-        },
-        "aspides": {
-          "name": "Ασπίδες",
           "level": 0,
           "maxLevel": 1,
           "hasSkill": false

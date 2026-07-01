@@ -696,8 +696,8 @@ export class AndragathimaActor extends Actor {
     let attackPenalty = 0;
     let defensePenalty = 0;
     
-    // Check if character has Aspides skill
-    const hasAspidesSkill = systemData.skills?.aspides?.hasSkill || false;
+    // Check if character has Όπλα skill (shield proficiency requires Όπλα ≥1)
+    const hasAspidesSkill = systemData.skills?.opla?.hasSkill || false;
     
     // Check for weapon in shield slot
     const shieldSlot = systemData.equipment?.slots?.shield;

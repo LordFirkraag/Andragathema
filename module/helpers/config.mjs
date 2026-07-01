@@ -136,7 +136,6 @@ ANDRAGATHIMA.raceModifiers = {
     skills: {
       "aklonitos": 1,
       "anthektikos": 1,
-      "aspides": 1,
       "thorakisi": 3,
       "opla": 2
     }
@@ -152,7 +151,6 @@ ANDRAGATHIMA.raceModifiers = {
     skills: {
       "aklonitos": 1,
       "anthektikos": 1,
-      "aspides": 1,
       "thorakisi": 2,
       "opla": 2
     }

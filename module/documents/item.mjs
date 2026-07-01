@@ -242,8 +242,8 @@ export class AndragathimaItem extends Item {
     }
     
     if (weaponType === 'aspida_varia') {
-      const hasAspides = actorData.skills.aspides?.hasSkill;
-      return hasAspides ? 0 : -2;
+      const hasOpla = actorData.skills.opla?.hasSkill;
+      return hasOpla ? 0 : -2;
     }
     
     // Όπλα skill level requirements
