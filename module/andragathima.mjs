@@ -690,9 +690,12 @@ async function updateTokenStatusEffects(actor) {
   // Collect all effects that should show on tokens
   const effectsToShow = [];
   
+  const canSeeGmOnly = game.user.isGM;
+
   // Check all actor effects
   for (const effect of actor.effects) {
     if (!effect.disabled && effect.flags?.andragathima?.showOnToken) {
+      if (effect.flags.andragathima.gmOnlyToken && !canSeeGmOnly) continue;
       effectsToShow.push({
         name: effect.name,
         icon: effect.icon,
@@ -700,12 +703,13 @@ async function updateTokenStatusEffects(actor) {
       });
     }
   }
-  
+
   // Check item effects from equipped items
   for (const item of actor.items) {
     if (isItemEquipped(item)) {
       for (const effect of item.effects) {
         if (!effect.disabled && effect.flags?.andragathima?.showOnToken) {
+          if (effect.flags.andragathima.gmOnlyToken && !canSeeGmOnly) continue;
           effectsToShow.push({
             name: effect.name,
             icon: effect.icon,
@@ -1316,9 +1320,11 @@ async function updateTokenTorchLighting(token, hasTorchVisible) {
   if (hasTorchVisible) {
     // Torch lighting settings as specified
     const torchColor = game.settings.get("andragathima", "torchColor");
+    const torchDimRadius = game.settings.get("andragathima", "torchDimRadius");
+    const torchBrightRadius = torchDimRadius / 2;
     const torchConfig = {
-      bright: 10,           // 10m bright light radius
-      dim: 10,             // 10m dim light radius, meaning no extra radius
+      bright: torchBrightRadius,
+      dim: torchDimRadius,
       color: torchColor,   // Light color
       alpha: 0.5,          // Color intensity
       animation: {
@@ -1328,7 +1334,7 @@ async function updateTokenTorchLighting(token, hasTorchVisible) {
       },
       coloration: 10,      // Natural light technique (based on order in list)
       luminosity: 0.5,     // Luminosity
-      attenuation: 1,      // Attenuation 
+      attenuation: 1,      // Attenuation
       shadows: 0.5         // Shadows
     };
     
@@ -1347,9 +1353,9 @@ async function updateTokenTorchLighting(token, hasTorchVisible) {
     const usagePercentage = totalTorchUsage / TORCH_DURATION;
     
     if (usagePercentage > 0.8) {
-      // Dim torch settings for worn torches
-      torchConfig.bright = 8;
-      torchConfig.dim = 8;
+      // Worn torch: reduce to 80% of normal radii
+      torchConfig.bright = torchBrightRadius * 0.8;
+      torchConfig.dim = torchDimRadius * 0.8;
       console.log(`Torch is worn out (${Math.round(usagePercentage * 100)}% used) - reduced brightness applied`);
     }
     
@@ -2729,6 +2735,21 @@ function registerSystemSettings() {
     config: true,
     default: "#ff8400",
     type: String
+  });
+
+  // Torch dim light radius setting (bright = dim / 2)
+  game.settings.register("andragathima", "torchDimRadius", {
+    name: "ANDRAGATHIMA.Settings.TorchDimRadius",
+    hint: "ANDRAGATHIMA.Settings.TorchDimRadiusHint",
+    scope: "world",
+    config: true,
+    default: 20,
+    type: Number,
+    range: {
+      min: 2,
+      max: 60,
+      step: 2
+    }
   });
 
   // Frightened stroke effect setting

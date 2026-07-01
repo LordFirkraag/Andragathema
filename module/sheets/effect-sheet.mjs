@@ -79,9 +79,7 @@ export class AndragathimaActiveEffectSheet extends FormApplication {
     html.find('textarea[name="description"]').change(this._onEffectFieldChange.bind(this));
     html.find('input[name="disabled"]').change(this._onEffectFieldChange.bind(this));
     html.find('input[name="flags.andragathima.showOnToken"]').change(this._onEffectFieldChange.bind(this));
-    
-    // Duration fields
-    html.find('select[name="duration.units"], input[name="duration.value"]').change(this._onEffectFieldChange.bind(this));
+    html.find('input[name="flags.andragathima.gmOnlyToken"]').change(this._onEffectFieldChange.bind(this));
     
     // Status checkboxes
     html.find('input[name="statuses"]').change(this._onStatusChange.bind(this));

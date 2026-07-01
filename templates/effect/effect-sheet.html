@@ -94,33 +94,26 @@
       <button type="button" class="add-effect-change">{{localize 'ANDRAGATHIMA.EffectSheetAddEffect'}}</button>
     </div>
 
-    {{!-- Duration and Status Section --}}
+    {{!-- Status Section --}}
     <div class="duration-status-section">
-      <div class="form-group">
-        <label>{{localize 'ANDRAGATHIMA.EffectSheetDuration'}}</label>
-        <div class="form-fields">
-          <input type="number" name="duration.value" value="{{effect.duration.value}}" placeholder="{{localize 'ANDRAGATHIMA.EffectSheetDurationNumber'}}" class="duration-value" min="0"/>
-          
-          <select name="duration.units" class="duration-units">
-            <option value="" {{#unless effect.duration.units}}selected{{/unless}}>{{localize 'ANDRAGATHIMA.EffectSheetDurationPermanent'}}</option>
-            <option value="rounds" {{#if (eq effect.duration.units "rounds")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.EffectSheetDurationRounds'}}</option>
-            <option value="minutes" {{#if (eq effect.duration.units "minutes")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.EffectSheetDurationMinutes'}}</option>
-            <option value="hours" {{#if (eq effect.duration.units "hours")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.EffectSheetDurationHours'}}</option>
-          </select>
-        </div>
-      </div>
-
       <div class="disabled-section">
         <label>{{localize 'ANDRAGATHIMA.EffectSheetActive'}}</label>
         <div class="checkbox-container">
           <input type="checkbox" name="disabled" {{#if effect.disabled}}checked{{/if}}/>
         </div>
       </div>
-      
+
       <div class="form-group">
         <label>{{localize 'ANDRAGATHIMA.EffectSheetShowOnToken'}}</label>
         <div class="checkbox-container">
           <input type="checkbox" name="flags.andragathima.showOnToken" {{#if effect.flags.andragathima.showOnToken}}checked{{/if}}/>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>{{localize 'ANDRAGATHIMA.EffectSheetGmOnly'}}</label>
+        <div class="checkbox-container">
+          <input type="checkbox" name="flags.andragathima.gmOnlyToken" {{#if effect.flags.andragathima.gmOnlyToken}}checked{{/if}}/>
         </div>
       </div>
     </div>

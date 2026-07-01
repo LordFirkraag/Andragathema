@@ -552,6 +552,7 @@
     "EffectSheetDurationHours": "Ώρες",
     "EffectSheetActive": "Αδρανές",
     "EffectSheetShowOnToken": "Εμφάνιση",
+    "EffectSheetGmOnly": "Μόνο για τον Κριτή",
     
     "StatusBlinded": "Τύφλωση",
     "StatusCharmed": "Γοητεία", 
@@ -780,6 +781,8 @@
       "TorchDurationHint": "Πόσα λεπτά παιχνιδιού θα καίει ένας δαυλός πριν σβήσει και καταστραφεί",
       "TorchColor": "Χρώμα δαυλού",
       "TorchColorHint": "Το χρώμα του φωτός που εκπέμπει ο δαυλός",
+      "TorchDimRadius": "Ακτίνα αμυδρού φωτός δαυλού (μέτρα)",
+      "TorchDimRadiusHint": "Η ακτίνα του αμυδρού φωτός. Το φωτεινό φως καλύπτει πάντα τη μισή ακτίνα.",
       "FrightenedStrokeShape": "Εφέ τρόμου στις μάρκες",
       "FrightenedStrokeShapeHint": "Καθορίζει το σχήμα του κίτρινου περιγράμματος γύρω από μάρκες με φόβο",
       "FrightenedStrokeEllipse": "Έλλειψη",
