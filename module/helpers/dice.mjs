@@ -22,35 +22,48 @@ export class AndragathimaRoll {
     opposed = false,
     actor = null
   } = {}) {
-    
+
+    // Read actor-level bonuses from active effects (via the custom modifier system)
+    const statusMods = actor?._getStatusModifiers?.();
+    const globalBonus = statusMods?.combat?.globalBonus ?? 0;
+    const luckBonus = statusMods?.combat?.luckBonus ?? 0;
+
+    // Apply global bonus to modifier
+    const effectiveModifier = modifier + globalBonus;
+
     // Build the roll formula
-    const formula = `1d20 + ${modifier}`;
-    
+    const formula = `1d20 + ${effectiveModifier}`;
+
     // Create and evaluate the roll
     const roll = new Roll(formula);
     await roll.evaluate();
-    
+
     // Calculate the result
-    const total = roll.total;
     const d20Result = roll.dice[0].results[0].result;
-    
-    // Check for critical (20) or fumble (1)
-    const isCritical = d20Result === 20;
-    const isFumble = d20Result === 1;
-    
+
+    // Apply luck bonus: shifts the d20 result, clamped to [1, 20]
+    const effectiveD20 = luckBonus !== 0
+      ? Math.min(20, Math.max(1, d20Result + luckBonus))
+      : d20Result;
+    const total = effectiveD20 + effectiveModifier;
+
+    // Check for critical (20) or fumble (1) based on effective d20
+    const isCritical = effectiveD20 === 20;
+    const isFumble = effectiveD20 === 1;
+
     // Calculate success and stages
     const difference = total - targetNumber;
     const success = isCritical ? true : (isFumble ? false : difference >= 0);
     const stage = this.calculateStage(difference, isCritical, isFumble);
-    
+
     // Send roll to chat with custom flavor and format
     await roll.toMessage({
       speaker: ChatMessage.getSpeaker({actor: actor}),
       flavor: `${label}<br>${await this.buildChatContent({
         formula,
         total,
-        d20Result,
-        modifier,
+        d20Result: effectiveD20,
+        modifier: effectiveModifier,
         targetNumber,
         success,
         stage,

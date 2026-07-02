@@ -537,17 +537,13 @@ body .tooltip {
   transition: background-color 0.2s ease;
 }
 
+.andragathima .abilities-column .rollable {
+  cursor: pointer;
+}
+
 /* Rollable spans and elements - only for right column stats */
 .andragathima .character-stats .rollable {
   cursor: pointer;
-  border-radius: 3px;
-  transition: background-color 0.2s ease;
-  padding: 2px 4px;
-  margin: -2px -4px;
-}
-
-.andragathima .character-stats .stat-line.rollable:hover {
-  background: rgba(139, 115, 85, 0.1);
 }
 
 .andragathima .ability-name {

@@ -798,6 +798,11 @@ ANDRAGATHIMA.statusEffects = [
         key: "system.other.initiative",
         mode: 2, // ADD
         value: -1
+      },
+      {
+        key: "system.magic.degree.value",
+        mode: 2, // ADD
+        value: -1
       }
     ],
     flags: {
@@ -835,6 +840,11 @@ ANDRAGATHIMA.statusEffects = [
         value: -2
       },
       {
+        key: "system.magic.degree.value",
+        mode: 2, // ADD
+        value: -2
+      },
+      {
         key: "system.other.canRun",
         mode: 5, // OVERRIDE
         value: false
@@ -858,22 +868,27 @@ ANDRAGATHIMA.statusEffects = [
       {
         key: "system.combat.meleeAttack.modifier",
         mode: 2, // ADD
-        value: -3
+        value: -4
       },
       {
         key: "system.combat.rangedAttack.modifier",
         mode: 2, // ADD
-        value: -3
+        value: -4
       },
       {
         key: "system.other.weaponDamage",
         mode: 2, // ADD
-        value: -3
+        value: -4
       },
       {
         key: "system.other.initiative",
         mode: 2, // ADD
-        value: -3
+        value: -4
+      },
+      {
+        key: "system.magic.degree.value",
+        mode: 2, // ADD
+        value: -4
       },
       {
         key: "system.other.speedMultiplier",

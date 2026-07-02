@@ -106,7 +106,9 @@
           "eystatheia": {
             "value": 0,
             "label": "Ευστάθεια"
-          }
+          },
+          "globalBonus": 0,
+          "luckBonus": 0
         }
       },
       "resistances": {

@@ -5014,17 +5014,47 @@ export class AndragathimaActorSheet extends ActorSheet {
       sof: game.i18n.localize('ANDRAGATHIMA.AbilitySofGenitive'),
       xar: game.i18n.localize('ANDRAGATHIMA.AbilityXarGenitive')
     };
-    const score = abilityData.totalValue ?? abilityData.value ?? 0;
+    const statusMods = this.actor._getStatusModifiers?.();
+    const globalBonus = statusMods?.combat?.globalBonus ?? 0;
+    const luckBonus = statusMods?.combat?.luckBonus ?? 0;
+
+    const baseScore = abilityData.totalValue ?? abilityData.value ?? 0;
+
+    // Armor penalty (double) on Strength/Dexterity checks when not proficient with equipped armor.
+    // _getArmorData already returns 0 if the character has the required skill level.
+    let armorAbilityPenalty = 0;
+    if (ability === 'dyn' || ability === 'epi') {
+      const armorData = this.actor._getArmorData(this.actor.system);
+      armorAbilityPenalty = armorData.attackPenalty * 2; // already negative, doubling keeps it negative
+    }
+
+    // Exhaustion and encumbrance penalties reduce Strength and Dexterity checks.
+    let exhaustionPenalty = 0;
+    let encumbrancePenalty = 0;
+    if (ability === 'dyn' || ability === 'epi') {
+      exhaustionPenalty = statusMods?.combat?.meleeAttack ?? 0; // −1/−2/−4 per exhaustion stage
+      encumbrancePenalty = this.actor._getEncumbrancePenalties(this.actor.system).attackPenalty; // −2/−5/−10
+    }
+
+    // globalBonus raises the target score (easier to hit with ≤ roll)
+    const effectiveScore = baseScore + globalBonus + armorAbilityPenalty + exhaustionPenalty + encumbrancePenalty;
+
     const label = `${game.i18n.localize('ANDRAGATHIMA.Test')} ${abilityLabels[ability]}`;
     const roll = new Roll('1d20');
     await roll.evaluate();
     const d20 = roll.total;
-    const success = d20 <= score;
+
+    // luckBonus subtracts from d20 (lower is better for ≤ check), clamped to [1, 20]
+    const effectiveD20 = luckBonus !== 0
+      ? Math.min(20, Math.max(1, d20 - luckBonus))
+      : d20;
+
+    const success = effectiveD20 <= effectiveScore;
     const resultClass = success ? 'success' : 'failure';
     const resultText = success ? game.i18n.localize('ANDRAGATHIMA.Success') : game.i18n.localize('ANDRAGATHIMA.Failure');
     await roll.toMessage({
       speaker: ChatMessage.getSpeaker({ actor: this.actor }),
-      flavor: `${label}<br>d20 (${d20}) ≤ ${score} → <span class="${resultClass}">${resultText}</span>`
+      flavor: `${label}<br>d20 (${effectiveD20}) ≤ ${effectiveScore} → <span class="${resultClass}">${resultText}</span>`
     });
   }
 

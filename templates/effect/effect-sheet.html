@@ -27,17 +27,12 @@
                 <option value="system.abilities.xar.value" {{#if (eq change.key "system.abilities.xar.value")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.AbilityXar'}}</option>
               </optgroup>
               <optgroup label="{{localize 'ANDRAGATHIMA.EffectSheetSaves'}}">
-                <option value="system.saves.ant.base" {{#if (eq change.key "system.saves.ant.base")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.SaveAnt'}}</option>
                 <option value="system.saves.mya.base" {{#if (eq change.key "system.saves.mya.base")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.SaveMya'}}</option>
                 <option value="system.saves.som.base" {{#if (eq change.key "system.saves.som.base")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.SaveSom'}}</option>
               </optgroup>
               <optgroup label="{{localize 'ANDRAGATHIMA.EffectSheetCombat'}}">
-                <option value="system.combat.melee.value" {{#if (eq change.key "system.combat.melee.value")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.EffectSheetMeleeSkill'}}</option>
-                <option value="system.combat.ranged.value" {{#if (eq change.key "system.combat.ranged.value")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.EffectSheetRangedSkill'}}</option>
                 <option value="system.combat.meleeAttack.value" {{#if (eq change.key "system.combat.meleeAttack.value")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.EffectSheetMeleeAttack'}}</option>
                 <option value="system.combat.rangedAttack.value" {{#if (eq change.key "system.combat.rangedAttack.value")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.EffectSheetRangedAttack'}}</option>
-                <option value="system.combat.meleeDefense.value" {{#if (eq change.key "system.combat.meleeDefense.value")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.EffectSheetMeleeDefense'}}</option>
-                <option value="system.combat.rangedDefense.value" {{#if (eq change.key "system.combat.rangedDefense.value")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.EffectSheetRangedDefense'}}</option>
               </optgroup>
               <optgroup label="{{localize 'ANDRAGATHIMA.EffectSheetResistances'}}">
                 <option value="system.resistances.base" {{#if (eq change.key "system.resistances.base")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.EffectSheetResistanceBase'}}</option>
@@ -64,11 +59,11 @@
                 <option value="system.damage.desecration" {{#if (eq change.key "system.damage.desecration")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.EffectSheetDamageDesecration'}}</option>
               </optgroup>
               <optgroup label="{{localize 'ANDRAGATHIMA.EffectSheetOther'}}">
-                <option value="system.combat.initiative.value" {{#if (eq change.key "system.combat.initiative.value")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.EffectSheetInitiative'}}</option>
                 <option value="system.other.speed.value" {{#if (eq change.key "system.other.speed.value")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.EffectSheetSpeed'}}</option>
                 <option value="system.other.pali.value" {{#if (eq change.key "system.other.pali.value")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.EffectSheetGrapple'}}</option>
-                <option value="system.other.eystatheia.value" {{#if (eq change.key "system.other.eystatheia.value")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.EffectSheetStability'}}</option>
                 <option value="system.magic.degree.value" {{#if (eq change.key "system.magic.degree.value")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.EffectSheetMagicDegree'}}</option>
+                <option value="system.combat.globalBonus" {{#if (eq change.key "system.combat.globalBonus")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.EffectSheetGlobalBonus'}}</option>
+                <option value="system.combat.luckBonus" {{#if (eq change.key "system.combat.luckBonus")}}selected{{/if}}>{{localize 'ANDRAGATHIMA.EffectSheetLuckBonus'}}</option>
               </optgroup>
             </select>
             
