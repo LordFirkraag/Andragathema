@@ -1145,12 +1145,7 @@ export class AndragathimaActor extends Actor {
    * Process effect changes and add to modifiers
    */
   _processEffectChanges(effect, modifiers) {
-    // Special handling for Total Defense condition
-    if (effect.statuses && effect.statuses.has("totaldefense")) {
-      this._processTotalDefenseEffect(effect, modifiers);
-      return;
-    }
-    
+
     for (const change of effect.changes) {
       const key = change.key;
       const mode = change.mode;

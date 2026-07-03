@@ -1353,8 +1353,9 @@ export class AndragathimaActorSheet extends ActorSheet {
    * Roll Grapple
    */
   async _rollGrapple() {
-    // Target numbers toggle only affects display, calculations remain the same
-    const modifier = this.actor.system.combat.pali.value || 0;
+    const statusMods = this.actor._getStatusModifiers?.();
+    const paliStatusMod = statusMods?.combat?.pali ?? 0;
+    const modifier = (this.actor.system.combat.pali.value || 0) + paliStatusMod;
     return await AndragathimaRoll.basicRoll({
       label: game.i18n.localize('ANDRAGATHIMA.GrappleDiceLabel'),
       modifier: modifier,

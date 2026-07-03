@@ -706,17 +706,12 @@ ANDRAGATHIMA.statusEffects = [
     img: "systems/andragathima/assets/conditions/prone.png",
     changes: [
       {
-        key: "system.combat.meleeDefense",
+        key: "system.combat.melee",
         mode: 2, // ADD
         value: -4
       },
       {
-        key: "system.combat.rangedDefense",
-        mode: 2, // ADD  
-        value: 4
-      },
-      {
-        key: "system.combat.meleeAttack.modifier",
+        key: "system.combat.pali",
         mode: 2, // ADD
         value: -4
       }
@@ -770,7 +765,13 @@ ANDRAGATHIMA.statusEffects = [
     name: "ANDRAGATHIMA.StatusTotalDefense",
     description: "ANDRAGATHIMA.StatusTotalDefenseDesc",
     img: "systems/andragathima/assets/conditions/totaldefense.png",
-    changes: []
+    changes: [
+      {
+        key: "system.combat.melee",
+        mode: 2, // ADD
+        value: 4
+      }
+    ]
   },
   {
     id: "fatigued",

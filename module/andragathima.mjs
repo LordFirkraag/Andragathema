@@ -361,7 +361,23 @@ Hooks.once("ready", async function() {
   // Start periodic torch duration checks (every 30 seconds)
   if (game.user.isGM) {
     setInterval(checkAllTorchDurations, 30000); // 30 seconds
+
+    // One-time migration: ensure all existing NPC actors show effects to all players
+    const displayAlways = CONST.TOKEN_DISPLAY_MODES?.ALWAYS ?? 50;
+    for (const actor of game.actors) {
+      if (actor.type === "npc" && actor.prototypeToken.displayEffects !== displayAlways) {
+        await actor.update({ "prototypeToken.displayEffects": displayAlways });
+      }
+    }
   }
+
+  // Ensure new NPC actors always show condition icons to all players
+  Hooks.on("preCreateActor", (actor, data) => {
+    if (data.type === "npc") {
+      const displayAlways = CONST.TOKEN_DISPLAY_MODES?.ALWAYS ?? 50;
+      actor.updateSource({ "prototypeToken.displayEffects": displayAlways });
+    }
+  });
   
   // Register hook for when tokens are created or rendered
   Hooks.on("createToken", onCreateToken);
