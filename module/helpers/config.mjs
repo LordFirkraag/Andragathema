@@ -668,34 +668,9 @@ ANDRAGATHIMA.statusEffects = [
     img: "systems/andragathima/assets/conditions/intoxication.png",
     changes: [
       {
-        key: "system.other.initiative",
+        key: "system.combat.globalBonus",
         mode: 2, // ADD
-        value: -4
-      },
-      {
-        key: "system.combat.meleeAttack.modifier",
-        mode: 2, // ADD
-        value: -4
-      },
-      {
-        key: "system.combat.rangedAttack.modifier",
-        mode: 2, // ADD
-        value: -4
-      },
-      {
-        key: "system.combat.meleeDefense",
-        mode: 2, // ADD
-        value: -4
-      },
-      {
-        key: "system.combat.rangedDefense",
-        mode: 2, // ADD
-        value: -4
-      },
-      {
-        key: "system.other.ignoreDexterityInDamage",
-        mode: 5, // OVERRIDE
-        value: true
+        value: -2
       }
     ]
   },
