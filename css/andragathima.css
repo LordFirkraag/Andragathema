@@ -4254,7 +4254,7 @@ body.andragathima .tooltip {
   text-align: right;
 }
 
-.andragathima .toggle-switch {
+.andragathima .ag-toggle-switch {
   display: flex;
   align-items: center;
   cursor: pointer;
@@ -4262,11 +4262,11 @@ body.andragathima .tooltip {
   gap: 8px;
 }
 
-.andragathima .toggle-switch input[type="checkbox"] {
+.andragathima .ag-toggle-switch input[type="checkbox"] {
   display: none;
 }
 
-.andragathima .toggle-slider {
+.andragathima .ag-toggle-switch .ag-toggle-slider {
   position: relative;
   width: 32px;
   height: 16px;
@@ -4276,7 +4276,7 @@ body.andragathima .tooltip {
   transition: background-color 0.3s;
 }
 
-.andragathima .toggle-slider::before {
+.andragathima .ag-toggle-switch .ag-toggle-slider::before {
   content: '';
   position: absolute;
   top: 2px;
@@ -4288,16 +4288,16 @@ body.andragathima .tooltip {
   transition: transform 0.3s;
 }
 
-.andragathima .toggle-switch input:checked + .toggle-slider {
+.andragathima .ag-toggle-switch input:checked + .ag-toggle-slider {
   background-color: var(--andragathima-accent);
 }
 
-.andragathima .toggle-switch input:checked + .toggle-slider::before {
+.andragathima .ag-toggle-switch input:checked + .ag-toggle-slider::before {
   transform: translateX(16px);
   background-color: white;
 }
 
-.andragathima .toggle-label {
+.andragathima .ag-toggle-label {
   color: var(--andragathima-text);
   font-weight: normal;
 }
