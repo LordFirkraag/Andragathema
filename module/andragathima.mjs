@@ -431,7 +431,8 @@ Hooks.once("ready", async function() {
     e.stopImmediatePropagation();
     e.preventDefault();
     _spaceHeld = true;
-    if (_hoveredToken) showRangeCircles(_hoveredToken);
+    for (const t of (canvas.tokens?.controlled ?? [])) showRangeCircles(t);
+    if (_hoveredToken && !_hoveredToken.controlled) showRangeCircles(_hoveredToken);
   }, true);
   document.addEventListener("keyup", (e) => {
     if (e.code !== "Space" || !_spaceHeld) return;
@@ -442,6 +443,14 @@ Hooks.once("ready", async function() {
   }, true);
   window.addEventListener("blur", () => { _spaceHeld = false; hideRangeCircles(); });
   Hooks.on("canvasReady", () => { _spaceHeld = false; hideRangeCircles(); });
+
+  // Right-click to move selected token to visible point
+  document.addEventListener("pointerdown", (e) => {
+    if (e.button === 2) _rightDownPos = { x: e.clientX, y: e.clientY };
+  }, true);
+  document.addEventListener("contextmenu", onCanvasRightClick, true);
+  _setupCanvasMouseTracking();
+  Hooks.on("canvasReady", _setupCanvasMouseTracking);
   
   // Re-setup tooltips when actor sheets are closed
   Hooks.on("closeActorSheet", () => {
@@ -1651,20 +1660,287 @@ function rollItemMacro(itemUuid) {
 let tokenTooltip = null;
 
 /* -------------------------------------------- */
+/*  Right-click Move                            */
+/* -------------------------------------------- */
+
+let _canvasMousePos = { x: 0, y: 0 };
+let _rightDownPos = null;
+
+function _onCanvasPointerMove(e) {
+  try { _canvasMousePos = e.getLocalPosition(canvas.stage); } catch (_) {}
+}
+
+function _setupCanvasMouseTracking() {
+  if (!canvas?.stage) return;
+  canvas.stage.off("pointermove", _onCanvasPointerMove);
+  canvas.stage.on("pointermove", _onCanvasPointerMove);
+}
+
+function onCanvasRightClick(e) {
+  if (!canvas?.ready) return;
+  const view = canvas.app?.view;
+  if (!view) return;
+  const rect = view.getBoundingClientRect();
+  if (e.clientX < rect.left || e.clientX > rect.right || e.clientY < rect.top || e.clientY > rect.bottom) return;
+  const controlled = canvas.tokens?.controlled ?? [];
+  if (controlled.length === 0) return;
+  // Ignore if mouse moved during right-click (canvas pan drag)
+  if (_rightDownPos) {
+    const dx = e.clientX - _rightDownPos.x, dy = e.clientY - _rightDownPos.y;
+    if (dx * dx + dy * dy > 25) return; // >5px = drag
+  }
+  const canvasX = _canvasMousePos.x;
+  const canvasY = _canvasMousePos.y;
+  // Don't intercept clicks on tokens (let normal context menu show)
+  const gs = canvas.grid.size;
+  const onToken = canvas.tokens.placeables.some(t =>
+    canvasX >= t.document.x && canvasX <= t.document.x + t.document.width * gs &&
+    canvasY >= t.document.y && canvasY <= t.document.y + t.document.height * gs
+  );
+  if (onToken) return;
+  e.preventDefault();
+  e.stopImmediatePropagation();
+  _rightClickMoveMultipleTokens([...controlled], canvasX, canvasY).catch(console.error);
+}
+
+function _isSightBlocked(x1, y1, x2, y2) {
+  try {
+    const b = CONFIG.Canvas.polygonBackends?.sight;
+    if (b?.testCollision) return b.testCollision({ x: x1, y: y1 }, { x: x2, y: y2 }, { type: "sight", mode: "any" });
+  } catch (_) {}
+  return _isMovementBlocked(x1, y1, x2, y2);
+}
+
+class _MinHeap {
+  constructor() { this._d = []; }
+  push(v) { this._d.push(v); this._up(this._d.length - 1); }
+  pop() {
+    const t = this._d[0], last = this._d.pop();
+    if (this._d.length) { this._d[0] = last; this._dn(0); }
+    return t;
+  }
+  get size() { return this._d.length; }
+  _up(i) {
+    for (let p; i > 0 && this._d[p = (i-1)>>1].f > this._d[i].f; i = p)
+      [this._d[p], this._d[i]] = [this._d[i], this._d[p]];
+  }
+  _dn(i) {
+    for (;;) {
+      let m = i, l = 2*i+1, r = l+1;
+      if (l < this._d.length && this._d[l].f < this._d[m].f) m = l;
+      if (r < this._d.length && this._d[r].f < this._d[m].f) m = r;
+      if (m === i) break;
+      [this._d[m], this._d[i]] = [this._d[i], this._d[m]]; i = m;
+    }
+  }
+}
+
+function _findMovePath(token, targetDocX, targetDocY) {
+  const isGridless = (canvas.grid.type ?? 0) === 0;
+  const gs = canvas.grid.size;
+  const stepPx = isGridless ? Math.max(Math.round(gs / 4), 10) : gs;
+  const halfW = Math.min((token.document.width * gs) / 2 * 0.6, stepPx * 0.45);
+  const mps = (stepPx / gs) * (canvas.scene.grid.distance || 1);
+  const doc = token.document;
+  const sGX = Math.round(doc.x / stepPx);
+  const sGY = Math.round(doc.y / stepPx);
+  const eGX = Math.round(targetDocX / stepPx);
+  const eGY = Math.round(targetDocY / stepPx);
+  if (sGX === eGX && sGY === eGY) return [{ x: targetDocX, y: targetDocY }];
+  const heur = (gx, gy) => Math.sqrt((gx - eGX) ** 2 + (gy - eGY) ** 2) * mps;
+  // 8 directions only for pathfinding — wide (2,1) moves skipped to avoid wall clipping
+  const dirs = [
+    {dx:1,dy:0},{dx:-1,dy:0},{dx:0,dy:1},{dx:0,dy:-1},
+    {dx:1,dy:1},{dx:-1,dy:1},{dx:1,dy:-1},{dx:-1,dy:-1}
+  ];
+  const sk = `${sGX},${sGY}`;
+  const heap = new _MinHeap();
+  const gScore = new Map([[sk, 0]]);
+  const prev = new Map([[sk, null]]);
+  heap.push({ gx: sGX, gy: sGY, g: 0, f: heur(sGX, sGY) });
+  let found = false, iters = 0;
+  while (heap.size && iters++ < 20000) {
+    const { gx, gy, g } = heap.pop();
+    const k = `${gx},${gy}`;
+    if (g > (gScore.get(k) ?? Infinity) + 0.001) continue;
+    if (gx === eGX && gy === eGY) { found = true; break; }
+    for (const { dx, dy } of dirs) {
+      const ngx = gx + dx, ngy = gy + dy;
+      const ng = g + Math.sqrt(dx * dx + dy * dy) * mps;
+      const nk = `${ngx},${ngy}`;
+      if (ng >= (gScore.get(nk) ?? Infinity) - 0.001) continue;
+      const fx = (gx + .5) * stepPx, fy = (gy + .5) * stepPx;
+      const tx = (ngx + .5) * stepPx, ty = (ngy + .5) * stepPx;
+      if (_isPathBlocked(fx, fy, tx, ty, halfW)) continue;
+      // Corner-clipping: diagonal moves require both cardinal axes to be clear
+      if (dx !== 0 && dy !== 0) {
+        if (_isPathBlocked(fx, fy, fx + dx * stepPx, fy, halfW)) continue;
+        if (_isPathBlocked(fx, fy, fx, fy + dy * stepPx, halfW)) continue;
+      }
+      gScore.set(nk, ng);
+      prev.set(nk, k);
+      heap.push({ gx: ngx, gy: ngy, g: ng, f: ng + heur(ngx, ngy) });
+    }
+  }
+  if (!found) return null;
+  // Reconstruct raw path
+  const raw = [];
+  let k = `${eGX},${eGY}`;
+  while (k !== null) {
+    const c = k.indexOf(",");
+    const gx = parseInt(k.slice(0, c)), gy = parseInt(k.slice(c + 1));
+    raw.unshift({ x: gx * stepPx, y: gy * stepPx, cx: (gx + .5) * stepPx, cy: (gy + .5) * stepPx });
+    k = prev.get(k);
+  }
+  // Greedy simplification: skip waypoints where direct path is unobstructed
+  const simp = [raw[0]];
+  let i = 0;
+  while (i < raw.length - 1) {
+    let j = raw.length - 1;
+    while (j > i + 1 && _isPathBlocked(raw[i].cx, raw[i].cy, raw[j].cx, raw[j].cy, halfW)) j--;
+    simp.push(raw[j]);
+    i = j;
+  }
+  simp[simp.length - 1] = { x: targetDocX, y: targetDocY };
+  return simp;
+}
+
+async function _showTargetMarker(cx, cy, w, h) {
+  try {
+    const texture = await loadTexture("systems/andragathima/assets/target.png");
+    const sprite = new PIXI.Sprite(texture);
+    sprite.anchor.set(0.5);
+    sprite.width = w;
+    sprite.height = h;
+    sprite.x = cx;
+    sprite.y = cy;
+    (canvas.interface ?? canvas.stage).addChild(sprite);
+    return sprite;
+  } catch (_) { return null; }
+}
+
+function _hideTargetMarker(sprite) {
+  if (sprite) {
+    sprite.parent?.removeChild(sprite);
+    sprite.destroy({ texture: false });
+  }
+}
+
+function _findNearestFreePosition(targetDocX, targetDocY, tw, th, occupied, stepPx) {
+  const tgx = Math.round(targetDocX / stepPx);
+  const tgy = Math.round(targetDocY / stepPx);
+  const dirs = [{dx:1,dy:0},{dx:-1,dy:0},{dx:0,dy:1},{dx:0,dy:-1},{dx:1,dy:1},{dx:-1,dy:1},{dx:1,dy:-1},{dx:-1,dy:-1}];
+  const checked = new Set();
+  const cands = [{ gx: tgx, gy: tgy, d: 0 }];
+  while (cands.length > 0 && checked.size < 600) {
+    cands.sort((a, b) => a.d - b.d);
+    const { gx, gy } = cands.shift();
+    const k = `${gx},${gy}`;
+    if (checked.has(k)) continue;
+    checked.add(k);
+    let free = true;
+    for (let tx = 0; tx < tw && free; tx++)
+      for (let ty = 0; ty < th && free; ty++)
+        if (occupied.has(`${gx + tx},${gy + ty}`)) free = false;
+    if (free) return { x: gx * stepPx, y: gy * stepPx };
+    for (const { dx, dy } of dirs) {
+      const ngx = gx + dx, ngy = gy + dy;
+      if (!checked.has(`${ngx},${ngy}`))
+        cands.push({ gx: ngx, gy: ngy, d: Math.sqrt((ngx - tgx) ** 2 + (ngy - tgy) ** 2) });
+    }
+  }
+  return null;
+}
+
+async function _rightClickMoveMultipleTokens(tokens, canvasX, canvasY) {
+  const gs = canvas.grid.size;
+  const isGridless = (canvas.grid.type ?? 0) === 0;
+  const stepPx = isGridless ? Math.max(Math.round(gs / 4), 10) : gs;
+
+  // Filter dead tokens first (so they remain as obstacles)
+  tokens = tokens.filter(t => !t.actor?.effects.some(e => !e.disabled && e.statuses?.has("dead")));
+  if (tokens.length === 0) return;
+
+  // Build occupied set from all tokens NOT in the moving set
+  const movingIds = new Set(tokens.map(t => t.id));
+  const occupied = new Set();
+  for (const t of canvas.tokens.placeables) {
+    if (movingIds.has(t.id)) continue;
+    const tw = Math.max(1, Math.round((t.document.width * gs) / stepPx));
+    const th = Math.max(1, Math.round((t.document.height * gs) / stepPx));
+    const tgx = Math.round(t.document.x / stepPx);
+    const tgy = Math.round(t.document.y / stepPx);
+    for (let x = 0; x < tw; x++) for (let y = 0; y < th; y++) occupied.add(`${tgx + x},${tgy + y}`);
+  }
+
+  // Sort tokens by distance to click (closest gets priority position)
+  tokens.sort((a, b) => {
+    const ax = a.document.x + (a.document.width * gs) / 2 - canvasX;
+    const ay = a.document.y + (a.document.height * gs) / 2 - canvasY;
+    const bx = b.document.x + (b.document.width * gs) / 2 - canvasX;
+    const by = b.document.y + (b.document.height * gs) / 2 - canvasY;
+    return (ax * ax + ay * ay) - (bx * bx + by * by);
+  });
+
+  // Assign a free destination to each token and start movement in parallel
+  const moves = [];
+  for (const token of tokens) {
+    const tw = Math.max(1, Math.round((token.document.width * gs) / stepPx));
+    const th = Math.max(1, Math.round((token.document.height * gs) / stepPx));
+    const initX = canvasX - (token.document.width * gs) / 2;
+    const initY = canvasY - (token.document.height * gs) / 2;
+    const pos = _findNearestFreePosition(initX, initY, tw, th, occupied, stepPx);
+    if (!pos) continue;
+    // Snap to grid for grid scenes
+    let targetX = pos.x, targetY = pos.y;
+    if (!isGridless) {
+      const snap = canvas.grid.getSnappedPosition?.(targetX, targetY)
+                ?? { x: Math.round(targetX / gs) * gs, y: Math.round(targetY / gs) * gs };
+      targetX = snap.x; targetY = snap.y;
+    }
+    // Mark cells as occupied for the next token
+    const pgx = Math.round(targetX / stepPx), pgy = Math.round(targetY / stepPx);
+    for (let x = 0; x < tw; x++) for (let y = 0; y < th; y++) occupied.add(`${pgx + x},${pgy + y}`);
+    moves.push(_moveOneToken(token, targetX, targetY, gs));
+  }
+  await Promise.all(moves);
+}
+
+async function _moveOneToken(token, targetX, targetY, gs) {
+  const markerCX = targetX + (token.document.width * gs) / 2;
+  const markerCY = targetY + (token.document.height * gs) / 2;
+  const marker = await _showTargetMarker(markerCX, markerCY, token.document.width * gs * 0.85, token.document.height * gs * 0.85);
+  const path = _findMovePath(token, targetX, targetY);
+  if (!path) { _hideTargetMarker(marker); return; }
+  for (const wp of path.slice(1)) {
+    if (!token.controlled) break;
+    await token.document.update({ x: wp.x, y: wp.y });
+    // Wait for the canvas animation to actually complete
+    await new Promise(r => setTimeout(r, 60)); // let FoundryVTT start the animation
+    await token._animation?.catch?.(() => {});
+    await new Promise(r => setTimeout(r, 80)); // settle buffer
+  }
+  _hideTargetMarker(marker);
+}
+
+/* -------------------------------------------- */
 /*  Spacebar Range Circles                      */
 /* -------------------------------------------- */
 
-let _rangeCirclesContainer = null;
+let _rangeCirclesMap = new Map(); // tokenId → PIXI.Container
 let _spaceHeld = false;
 let _hoveredToken = null;
 
 function showRangeCircles(token) {
-  hideRangeCircles();
   if (!canvas?.ready || !token?.actor) return;
   if (token.actor.effects.some(e => !e.disabled && e.statuses?.has("dead"))) return;
+  // Destroy existing container for this token before redrawing
+  _hideRangeCirclesForToken(token);
 
-  _rangeCirclesContainer = new PIXI.Container();
-  (canvas.interface ?? canvas.stage).addChild(_rangeCirclesContainer);
+  const container = new PIXI.Container();
+  _rangeCirclesMap.set(token.id, container);
+  (canvas.interface ?? canvas.stage).addChild(container);
+  const _rangeCirclesContainer = container;
 
   const gridSize = canvas.grid.size;
   const cx = token.document.x + (token.document.width * gridSize) / 2;
@@ -1797,6 +2073,17 @@ function _computeReachableCells(token, speed, stepPx) {
   return dist;
 }
 
+function _isPathBlocked(x1, y1, x2, y2, halfW) {
+  if (_isMovementBlocked(x1, y1, x2, y2)) return true;
+  if (halfW < 2) return false;
+  const dx = x2 - x1, dy = y2 - y1;
+  const len = Math.sqrt(dx * dx + dy * dy);
+  if (len < 0.001) return false;
+  const px = (-dy / len) * halfW, py = (dx / len) * halfW;
+  return _isMovementBlocked(x1 + px, y1 + py, x2 + px, y2 + py)
+      || _isMovementBlocked(x1 - px, y1 - py, x2 - px, y2 - py);
+}
+
 function _isMovementBlocked(x1, y1, x2, y2) {
   try {
     const backend = CONFIG.Canvas.polygonBackends?.move;
@@ -1810,12 +2097,21 @@ function _isMovementBlocked(x1, y1, x2, y2) {
   return false;
 }
 
-function hideRangeCircles() {
-  if (_rangeCirclesContainer) {
-    _rangeCirclesContainer.parent?.removeChild(_rangeCirclesContainer);
-    _rangeCirclesContainer.destroy({ children: true });
-    _rangeCirclesContainer = null;
+function _hideRangeCirclesForToken(token) {
+  const c = _rangeCirclesMap.get(token.id);
+  if (c) {
+    c.parent?.removeChild(c);
+    c.destroy({ children: true });
+    _rangeCirclesMap.delete(token.id);
   }
+}
+
+function hideRangeCircles() {
+  for (const c of _rangeCirclesMap.values()) {
+    c.parent?.removeChild(c);
+    c.destroy({ children: true });
+  }
+  _rangeCirclesMap.clear();
 }
 
 /**
@@ -2892,7 +3188,7 @@ function onTokenHover(token, hovered) {
   } else {
     _hoveredToken = null;
     hideTokenTooltip();
-    if (_spaceHeld) hideRangeCircles();
+    if (_spaceHeld && !token.controlled) _hideRangeCirclesForToken(token);
   }
 }
 
