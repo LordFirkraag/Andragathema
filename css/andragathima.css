@@ -2404,11 +2404,6 @@ body .tooltip {
   max-width: 350px;
 }
 
-/* Hide any default Foundry tooltips when our custom ones are active */
-body.andragathima .tooltip {
-  display: none !important;
-}
-
 /* Better spacing for tooltip properties */
 .andragathima-rich-tooltip .item-property {
   margin: 1px 0;

@@ -369,6 +369,20 @@ Hooks.once("ready", async function() {
         await actor.update({ "prototypeToken.displayEffects": displayAlways });
       }
     }
+
+    // Set leftClickRelease default if not already enabled
+    if (!game.settings.get("core", "leftClickRelease")) {
+      await game.settings.set("core", "leftClickRelease", true);
+    }
+  }
+
+  // Language default για όλους τους χρήστες — μόνο την πρώτη φορά
+  if (!game.user.getFlag("andragathima", "languageDefaultApplied")) {
+    await game.user.setFlag("andragathima", "languageDefaultApplied", true);
+    if (game.i18n.lang !== "el") {
+      await game.settings.set("core", "language", "el");
+      window.location.reload();
+    }
   }
 
   // Ensure new NPC actors always show condition icons to all players
@@ -383,6 +397,10 @@ Hooks.once("ready", async function() {
   Hooks.on("createToken", onCreateToken);
   Hooks.on("renderToken", onRenderToken);
   Hooks.on("refreshToken", onRefreshToken);
+  Hooks.on("drawToken", (token) => {
+    if (!token.actor) return;
+    setTimeout(() => updateTokenStatusEffects(token.actor), 200);
+  });
   Hooks.on("canvasReady", onCanvasReady);
   
   // Register token tooltip hooks
@@ -394,9 +412,14 @@ Hooks.once("ready", async function() {
   Hooks.on("canvasZoom", hideTokenTooltip);
   
   // Override Token hover methods for direct integration
-  Hooks.once("ready", () => {
-    setupTokenHoverOverride();
-  });
+  setupTokenHoverOverride();
+
+  // In v13, canvasReady may fire before the ready hook runs.
+  // If the canvas is already initialized, apply overlays now.
+  if (canvas?.ready) {
+    onCanvasReady();
+    setupTokenTooltips();
+  }
   
   // Re-setup tooltips when actor sheets are closed
   Hooks.on("closeActorSheet", () => {
@@ -1491,16 +1514,17 @@ function onCanvasReady() {
   setTimeout(() => {
     setupTokenTooltips();
   }, 100);
-  
-  // Add a delay to ensure all tokens are fully loaded and rendered
-  setTimeout(() => {
-    // Update all tokens on the canvas
+
+  // Apply status effects overlays — two passes to handle slow-loading scenes
+  const applyAllOverlays = () => {
     for (const token of canvas.tokens.placeables) {
       if (token.actor) {
         updateTokenStatusEffects(token.actor);
       }
     }
-  }, 500);
+  };
+  setTimeout(applyAllOverlays, 800);
+  setTimeout(applyAllOverlays, 2500);
 }
 
 /**
