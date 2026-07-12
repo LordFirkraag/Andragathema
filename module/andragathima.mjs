@@ -374,6 +374,9 @@ Hooks.once("ready", async function() {
     if (!game.settings.get("core", "leftClickRelease")) {
       await game.settings.set("core", "leftClickRelease", true);
     }
+
+    // Auto-unpause on load
+    if (game.paused) game.togglePause(false, { broadcast: true });
   }
 
   // Language default για όλους τους χρήστες — μόνο την πρώτη φορά
@@ -420,6 +423,25 @@ Hooks.once("ready", async function() {
     onCanvasReady();
     setupTokenTooltips();
   }
+
+  // Spacebar: show range circles on hovered token (capture phase to avoid FoundryVTT pause toggle)
+  document.addEventListener("keydown", (e) => {
+    if (e.code !== "Space" || e.repeat || _spaceHeld) return;
+    if (["INPUT", "TEXTAREA", "SELECT"].includes(document.activeElement?.tagName)) return;
+    e.stopImmediatePropagation();
+    e.preventDefault();
+    _spaceHeld = true;
+    if (_hoveredToken) showRangeCircles(_hoveredToken);
+  }, true);
+  document.addEventListener("keyup", (e) => {
+    if (e.code !== "Space" || !_spaceHeld) return;
+    e.stopImmediatePropagation();
+    e.preventDefault();
+    _spaceHeld = false;
+    hideRangeCircles();
+  }, true);
+  window.addEventListener("blur", () => { _spaceHeld = false; hideRangeCircles(); });
+  Hooks.on("canvasReady", () => { _spaceHeld = false; hideRangeCircles(); });
   
   // Re-setup tooltips when actor sheets are closed
   Hooks.on("closeActorSheet", () => {
@@ -1628,6 +1650,174 @@ function rollItemMacro(itemUuid) {
  */
 let tokenTooltip = null;
 
+/* -------------------------------------------- */
+/*  Spacebar Range Circles                      */
+/* -------------------------------------------- */
+
+let _rangeCirclesContainer = null;
+let _spaceHeld = false;
+let _hoveredToken = null;
+
+function showRangeCircles(token) {
+  hideRangeCircles();
+  if (!canvas?.ready || !token?.actor) return;
+  if (token.actor.effects.some(e => !e.disabled && e.statuses?.has("dead"))) return;
+
+  _rangeCirclesContainer = new PIXI.Container();
+  (canvas.interface ?? canvas.stage).addChild(_rangeCirclesContainer);
+
+  const gridSize = canvas.grid.size;
+  const cx = token.document.x + (token.document.width * gridSize) / 2;
+  const cy = token.document.y + (token.document.height * gridSize) / 2;
+
+  // Movement range color matches token disposition border
+  const moveColor = _dispositionColor(token);
+  const isGridless = (canvas.grid.type ?? 0) === 0;
+  const stepPx = isGridless ? Math.max(Math.round(gridSize / 4), 10) : gridSize;
+  const speed = token.actor.system?.combat?.speed?.value ?? 0;
+  if (speed > 0) {
+    const reachable = _computeReachableCells(token, speed, stepPx);
+    if (reachable.size > 0) {
+      const gMove = new PIXI.Graphics();
+      gMove.lineStyle(0);
+      gMove.beginFill(moveColor, 0.10);
+      for (const k of reachable.keys()) {
+        const comma = k.indexOf(",");
+        const gx = parseInt(k.slice(0, comma));
+        const gy = parseInt(k.slice(comma + 1));
+        gMove.drawRect(gx * stepPx, gy * stepPx, stepPx, stepPx);
+      }
+      gMove.endFill();
+      gMove.lineStyle(2, moveColor, 0.85);
+      for (const k of reachable.keys()) {
+        const comma = k.indexOf(",");
+        const gx = parseInt(k.slice(0, comma));
+        const gy = parseInt(k.slice(comma + 1));
+        const neighbors = [[gx-1,gy],[gx+1,gy],[gx,gy-1],[gx,gy+1]];
+        const edges = [[0,0,0,1],[1,0,1,1],[0,0,1,0],[0,1,1,1]];
+        for (let i = 0; i < 4; i++) {
+          const [nx, ny] = neighbors[i];
+          if (!reachable.has(`${nx},${ny}`)) {
+            const [x1f, y1f, x2f, y2f] = edges[i];
+            gMove.moveTo((gx + x1f) * stepPx, (gy + y1f) * stepPx);
+            gMove.lineTo((gx + x2f) * stepPx, (gy + y2f) * stepPx);
+          }
+        }
+      }
+      _rangeCirclesContainer.addChild(gMove);
+    }
+  }
+
+  // Red circle: radius from active weapon's combatRange
+  const combatRange = _getTokenCombatRange(token);
+  const tokenSize = token.document.width;
+  const rrSquares = combatRange <= 1
+    ? tokenSize * 1.5
+    : (tokenSize * 1.5) + (combatRange - 1);
+  const rr = rrSquares * gridSize;
+  const gRed = new PIXI.Graphics();
+  gRed.lineStyle(2, 0xFF4444, 0.9);
+  gRed.beginFill(0xFF4444, 0.20);
+  gRed.drawCircle(cx, cy, rr);
+  gRed.endFill();
+  _rangeCirclesContainer.addChild(gRed);
+}
+
+function _getTokenCombatRange(token) {
+  if (!token.actor) return 1;
+  const quickItems = token.actor.system.equipment?.quickItems || [];
+  const weapons = [];
+  for (let i = 0; i < Math.min(quickItems.length, 8); i++) {
+    const qi = quickItems[i];
+    if (!qi?.id) continue;
+    const item = token.actor.items.get(qi.id);
+    if (item?.type === "weapon") weapons.push(item);
+  }
+  const active = weapons.find(w => w.system.showOnToken) ?? weapons[0];
+  return active?.system.combatRange ?? 1;
+}
+
+function _dispositionColor(token) {
+  const d = token.document.disposition;
+  const c = CONFIG.Canvas.dispositionColors ?? {};
+  const DISP = CONST.TOKEN_DISPOSITIONS;
+  if (d === DISP.FRIENDLY) return 0x00FF00;
+  if (d === DISP.NEUTRAL)  return 0x00FFFF;
+  if (d === DISP.HOSTILE)  return 0xFF0000;
+  return 0x00FFFF;
+}
+
+function _computeReachableCells(token, speed, stepPx) {
+  const doc = token.document;
+  const gridSizePx = canvas.grid.size;
+  const gridDist = canvas.scene.grid.distance || 1;
+  const metersPerStep = (stepPx / gridSizePx) * gridDist;
+  const tokenW = Math.max(1, Math.round((doc.width * gridSizePx) / stepPx));
+  const tokenH = Math.max(1, Math.round((doc.height * gridSizePx) / stepPx));
+  const startGX = Math.round(doc.x / stepPx);
+  const startGY = Math.round(doc.y / stepPx);
+
+  const dist = new Map();
+  const queue = [];
+
+  for (let tx = 0; tx < tokenW; tx++) {
+    for (let ty = 0; ty < tokenH; ty++) {
+      const k = `${startGX + tx},${startGY + ty}`;
+      dist.set(k, 0);
+      queue.push({ gx: startGX + tx, gy: startGY + ty, cost: 0 });
+    }
+  }
+
+  const dirs = [
+    { dx: 1, dy: 0 }, { dx: -1, dy: 0 }, { dx: 0, dy: 1 }, { dx: 0, dy: -1 },
+    { dx: 1, dy: 1 }, { dx: -1, dy: 1 }, { dx: 1, dy: -1 }, { dx: -1, dy: -1 },
+    { dx: 2, dy: 1 }, { dx: 2, dy: -1 }, { dx: -2, dy: 1 }, { dx: -2, dy: -1 },
+    { dx: 1, dy: 2 }, { dx: -1, dy: 2 }, { dx: 1, dy: -2 }, { dx: -1, dy: -2 }
+  ];
+
+  for (let qi = 0; qi < queue.length; qi++) {
+    const { gx, gy, cost } = queue[qi];
+    for (const { dx, dy } of dirs) {
+      const ngx = gx + dx;
+      const ngy = gy + dy;
+      const stepMeters = Math.sqrt(dx * dx + dy * dy) * metersPerStep;
+      const newCost = cost + stepMeters;
+      if (newCost > speed + 0.01) continue;
+      const k = `${ngx},${ngy}`;
+      if ((dist.get(k) ?? Infinity) <= newCost + 0.01) continue;
+      const fromX = (gx + 0.5) * stepPx;
+      const fromY = (gy + 0.5) * stepPx;
+      const toX   = (ngx + 0.5) * stepPx;
+      const toY   = (ngy + 0.5) * stepPx;
+      if (_isMovementBlocked(fromX, fromY, toX, toY)) continue;
+      dist.set(k, newCost);
+      queue.push({ gx: ngx, gy: ngy, cost: newCost });
+    }
+  }
+  return dist;
+}
+
+function _isMovementBlocked(x1, y1, x2, y2) {
+  try {
+    const backend = CONFIG.Canvas.polygonBackends?.move;
+    if (backend?.testCollision) {
+      return backend.testCollision({ x: x1, y: y1 }, { x: x2, y: y2 }, { type: "move", mode: "any" });
+    }
+  } catch (_) {}
+  try {
+    return !!(canvas.walls.checkCollision(new Ray({ x: x1, y: y1 }, { x: x2, y: y2 }), { type: "move" }));
+  } catch (_) {}
+  return false;
+}
+
+function hideRangeCircles() {
+  if (_rangeCirclesContainer) {
+    _rangeCirclesContainer.parent?.removeChild(_rangeCirclesContainer);
+    _rangeCirclesContainer.destroy({ children: true });
+    _rangeCirclesContainer = null;
+  }
+}
+
 /**
  * Create the tooltip element
  */
@@ -2696,9 +2886,13 @@ function setupTokenHoverOverride() {
  */
 function onTokenHover(token, hovered) {
   if (hovered) {
+    _hoveredToken = token;
     showTokenTooltip(token, { clientX: 0, clientY: 0 });
+    if (_spaceHeld) showRangeCircles(token);
   } else {
+    _hoveredToken = null;
     hideTokenTooltip();
+    if (_spaceHeld) hideRangeCircles();
   }
 }
 
