@@ -1735,15 +1735,14 @@ class _MinHeap {
   }
 }
 
-function _findMovePath(token, targetDocX, targetDocY) {
+function _findMovePath(token, targetDocX, targetDocY, startX, startY) {
   const isGridless = (canvas.grid.type ?? 0) === 0;
   const gs = canvas.grid.size;
   const stepPx = isGridless ? Math.max(Math.round(gs / 4), 10) : gs;
   const halfW = Math.min((token.document.width * gs) / 2 * 0.6, stepPx * 0.45);
   const mps = (stepPx / gs) * (canvas.scene.grid.distance || 1);
-  const doc = token.document;
-  const sGX = Math.round(doc.x / stepPx);
-  const sGY = Math.round(doc.y / stepPx);
+  const sGX = Math.round((startX ?? token.document.x) / stepPx);
+  const sGY = Math.round((startY ?? token.document.y) / stepPx);
   const eGX = Math.round(targetDocX / stepPx);
   const eGY = Math.round(targetDocY / stepPx);
   if (sGX === eGX && sGY === eGY) return [{ x: targetDocX, y: targetDocY }];
@@ -1759,27 +1758,47 @@ function _findMovePath(token, targetDocX, targetDocY) {
   const prev = new Map([[sk, null]]);
   heap.push({ gx: sGX, gy: sGY, g: 0, f: heur(sGX, sGY) });
   let found = false, iters = 0;
-  while (heap.size && iters++ < 20000) {
+  const _t0 = performance.now();
+  while (heap.size && iters++ < 25000) {
+    if ((iters & 127) === 0 && performance.now() - _t0 > 50) break;
     const { gx, gy, g } = heap.pop();
     const k = `${gx},${gy}`;
     if (g > (gScore.get(k) ?? Infinity) + 0.001) continue;
     if (gx === eGX && gy === eGY) { found = true; break; }
+    const fx = (gx + .5) * stepPx, fy = (gy + .5) * stepPx;
+    // Theta*: cache grandparent position for LOS shortcut
+    const parentKey = prev.get(k);
+    let pfx = fx, pfy = fy, pgScore = g;
+    if (parentKey !== null) {
+      const pc = parentKey.indexOf(",");
+      pfx = (parseInt(parentKey.slice(0, pc)) + .5) * stepPx;
+      pfy = (parseInt(parentKey.slice(pc + 1)) + .5) * stepPx;
+      pgScore = gScore.get(parentKey) ?? 0;
+    }
     for (const { dx, dy } of dirs) {
       const ngx = gx + dx, ngy = gy + dy;
-      const ng = g + Math.sqrt(dx * dx + dy * dy) * mps;
       const nk = `${ngx},${ngy}`;
-      if (ng >= (gScore.get(nk) ?? Infinity) - 0.001) continue;
-      const fx = (gx + .5) * stepPx, fy = (gy + .5) * stepPx;
       const tx = (ngx + .5) * stepPx, ty = (ngy + .5) * stepPx;
-      if (_isPathBlocked(fx, fy, tx, ty, halfW)) continue;
-      // Corner-clipping: diagonal moves require both cardinal axes to be clear
-      if (dx !== 0 && dy !== 0) {
-        if (_isPathBlocked(fx, fy, fx + dx * stepPx, fy, halfW)) continue;
-        if (_isPathBlocked(fx, fy, fx, fy + dy * stepPx, halfW)) continue;
+      let bestG = gScore.get(nk) ?? Infinity, bestParent = null;
+      // Theta*: direct grandparent→neighbor shortcut if LOS is clear
+      if (parentKey !== null && !_isPathBlocked(pfx, pfy, tx, ty, halfW)) {
+        const pg = pgScore + (Math.sqrt((tx - pfx) ** 2 + (ty - pfy) ** 2) / stepPx) * mps;
+        if (pg < bestG) { bestG = pg; bestParent = parentKey; }
       }
-      gScore.set(nk, ng);
-      prev.set(nk, k);
-      heap.push({ gx: ngx, gy: ngy, g: ng, f: ng + heur(ngx, ngy) });
+      // Standard A*: through current node (with corner-clipping guard for diagonals)
+      const blocked = _isPathBlocked(fx, fy, tx, ty, halfW) ||
+        (dx !== 0 && dy !== 0 && (
+          _isPathBlocked(fx, fy, fx + dx * stepPx, fy, halfW) ||
+          _isPathBlocked(fx, fy, fx, fy + dy * stepPx, halfW)
+        ));
+      if (!blocked) {
+        const ng = g + Math.sqrt(dx * dx + dy * dy) * mps;
+        if (ng < bestG) { bestG = ng; bestParent = k; }
+      }
+      if (bestParent === null) continue;
+      gScore.set(nk, bestG);
+      prev.set(nk, bestParent);
+      heap.push({ gx: ngx, gy: ngy, g: bestG, f: bestG + heur(ngx, ngy) });
     }
   }
   if (!found) return null;
@@ -1826,6 +1845,20 @@ function _hideTargetMarker(sprite) {
   }
 }
 
+async function _showBlockedMarker(cx, cy, size) {
+  try {
+    const texture = await loadTexture("systems/andragathima/assets/blocked.png");
+    const sprite = new PIXI.Sprite(texture);
+    sprite.anchor.set(0.5);
+    sprite.width = size;
+    sprite.height = size;
+    sprite.x = cx;
+    sprite.y = cy;
+    (canvas.interface ?? canvas.stage).addChild(sprite);
+    return sprite;
+  } catch (_) { return null; }
+}
+
 function _findNearestFreePosition(targetDocX, targetDocY, tw, th, occupied, stepPx) {
   const tgx = Math.round(targetDocX / stepPx);
   const tgy = Math.round(targetDocY / stepPx);
@@ -1852,6 +1885,35 @@ function _findNearestFreePosition(targetDocX, targetDocY, tw, th, occupied, step
   return null;
 }
 
+const _moveCancelMap = new Map();  // tokenId → { cancelled: boolean }
+
+function _cancelableWait(promise, cancelToken) {
+  return new Promise(resolve => {
+    const id = setInterval(() => {
+      if (cancelToken.cancelled) { clearInterval(id); resolve(); }
+    }, 20);
+    Promise.resolve(promise ?? Promise.resolve())
+      .then(() => { clearInterval(id); resolve(); })
+      .catch(() => { clearInterval(id); resolve(); });
+  });
+}
+
+function _isPointVisibleToTokens(tokens, x, y) {
+  if (!canvas.scene?.tokenVision) return true;
+  try {
+    const vis = canvas.effects?.visibility;
+    if (vis?.testVisibility) return vis.testVisibility({ x, y }, { tolerance: 2 });
+  } catch (_) {}
+  // Fallback: check each token's LOS polygon directly
+  try {
+    for (const t of tokens) {
+      if (t.vision?.los?.contains(x, y)) return true;
+    }
+    return false;
+  } catch (_) {}
+  return true; // fail open
+}
+
 async function _rightClickMoveMultipleTokens(tokens, canvasX, canvasY) {
   const gs = canvas.grid.size;
   const isGridless = (canvas.grid.type ?? 0) === 0;
@@ -1860,6 +1922,14 @@ async function _rightClickMoveMultipleTokens(tokens, canvasX, canvasY) {
   // Filter dead tokens first (so they remain as obstacles)
   tokens = tokens.filter(t => !t.actor?.effects.some(e => !e.disabled && e.statuses?.has("dead")));
   if (tokens.length === 0) return;
+
+  // Block movement to points outside the tokens' visible area
+  if (!_isPointVisibleToTokens(tokens, canvasX, canvasY)) {
+    const size = (tokens[0]?.document.width ?? 1) * gs * 0.85;
+    const marker = await _showBlockedMarker(canvasX, canvasY, size);
+    setTimeout(() => _hideTargetMarker(marker), 100);
+    return;
+  }
 
   // Build occupied set from all tokens NOT in the moving set
   const movingIds = new Set(tokens.map(t => t.id));
@@ -1906,21 +1976,88 @@ async function _rightClickMoveMultipleTokens(tokens, canvasX, canvasY) {
   await Promise.all(moves);
 }
 
+async function _tryUnstickToken(token, gs) {
+  const isGridless = (canvas.grid.type ?? 0) === 0;
+  const stepPx = isGridless ? Math.max(Math.round(gs / 4), 10) : gs;
+  const halfW = Math.min((token.document.width * gs) / 2 * 0.6, stepPx * 0.45);
+  const docX = token.document.x, docY = token.document.y;
+  const cx = docX + (token.document.width * gs) / 2;
+  const cy = docY + (token.document.height * gs) / 2;
+  const dirs8 = [
+    {dx:1,dy:0},{dx:-1,dy:0},{dx:0,dy:1},{dx:0,dy:-1},
+    {dx:1,dy:1},{dx:-1,dy:1},{dx:1,dy:-1},{dx:-1,dy:-1}
+  ];
+  const isStuck = (ncx, ncy) => dirs8.every(({dx, dy}) =>
+    _isPathBlocked(ncx, ncy, ncx + dx * stepPx, ncy + dy * stepPx, halfW)
+  );
+  if (!isStuck(cx, cy)) return;
+  // BFS outward (no wall filter) to find nearest non-stuck cell
+  const sGX = Math.round(docX / stepPx), sGY = Math.round(docY / stepPx);
+  const visited = new Set([`${sGX},${sGY}`]);
+  const queue = [{gx: sGX, gy: sGY}];
+  for (let head = 0; head < queue.length && head < 400; head++) {
+    const {gx, gy} = queue[head];
+    if (gx !== sGX || gy !== sGY) {
+      const ncx = (gx + .5) * stepPx, ncy = (gy + .5) * stepPx;
+      if (!isStuck(ncx, ncy)) {
+        await token.document.update({ x: gx * stepPx, y: gy * stepPx });
+        return;
+      }
+    }
+    for (const {dx, dy} of dirs8) {
+      const nk = `${gx + dx},${gy + dy}`;
+      if (!visited.has(nk)) { visited.add(nk); queue.push({gx: gx + dx, gy: gy + dy}); }
+    }
+  }
+}
+
 async function _moveOneToken(token, targetX, targetY, gs) {
+  const cancelToken = { cancelled: false };
+  const prevCancel = _moveCancelMap.get(token.id);
+  const startX = prevCancel ? (token.x ?? token.document.x) : token.document.x;
+  const startY = prevCancel ? (token.y ?? token.document.y) : token.document.y;
+  if (prevCancel) {
+    prevCancel.cancelled = true;
+    try { CanvasAnimation.terminateAnimation(token.animationName ?? `Token.${token.id}`); } catch (_) {}
+    // Snap to current visual position without animation to cut off ongoing movement
+    try { await token.document.update({ x: startX, y: startY }, { animate: false }); } catch (_) {}
+  }
+  _moveCancelMap.set(token.id, cancelToken);
+  if (cancelToken.cancelled) return;
+
+  // Pathfind synchronously (50ms limit — guaranteed fast)
+  let path = _findMovePath(token, targetX, targetY, startX, startY);
+
+  // Only unstick if pathfinding failed (avoids delay in common case)
+  if (!path) {
+    await _tryUnstickToken(token, gs);
+    if (cancelToken.cancelled) return;
+    path = _findMovePath(token, targetX, targetY);
+  }
+
+  if (cancelToken.cancelled) return;
+
+  // Show marker in background so movement starts without delay
+  let marker = null;
   const markerCX = targetX + (token.document.width * gs) / 2;
   const markerCY = targetY + (token.document.height * gs) / 2;
-  const marker = await _showTargetMarker(markerCX, markerCY, token.document.width * gs * 0.85, token.document.height * gs * 0.85);
-  const path = _findMovePath(token, targetX, targetY);
-  if (!path) { _hideTargetMarker(marker); return; }
-  for (const wp of path.slice(1)) {
-    if (!token.controlled) break;
+  const markerDone = _showTargetMarker(markerCX, markerCY, token.document.width * gs * 0.85, token.document.height * gs * 0.85)
+    .then(m => { marker = m; if (cancelToken.cancelled) { _hideTargetMarker(m); marker = null; } });
+
+  // If pathfinding timed out or failed, fall back to direct movement (may clip walls)
+  const waypoints = path ? path.slice(1) : [{ x: targetX, y: targetY }];
+
+  for (const wp of waypoints) {
+    if (!token.controlled || cancelToken.cancelled) break;
     await token.document.update({ x: wp.x, y: wp.y });
-    // Wait for the canvas animation to actually complete
-    await new Promise(r => setTimeout(r, 60)); // let FoundryVTT start the animation
-    await token._animation?.catch?.(() => {});
-    await new Promise(r => setTimeout(r, 80)); // settle buffer
+    await _cancelableWait(new Promise(r => setTimeout(r, 60)), cancelToken);
+    await _cancelableWait(token._animation, cancelToken);
+    if (cancelToken.cancelled) break;
+    await _cancelableWait(new Promise(r => setTimeout(r, 80)), cancelToken);
   }
+  await markerDone;
   _hideTargetMarker(marker);
+  if (_moveCancelMap.get(token.id) === cancelToken) _moveCancelMap.delete(token.id);
 }
 
 /* -------------------------------------------- */
