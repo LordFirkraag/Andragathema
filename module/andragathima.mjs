@@ -1680,6 +1680,8 @@ function onCanvasRightClick(e) {
   if (!canvas?.ready) return;
   const view = canvas.app?.view;
   if (!view) return;
+  // Skip clicks that landed on a UI element (floating windows, sidebar, controls, etc.)
+  if (e.target !== view && e.target?.closest?.('.app')) return;
   const rect = view.getBoundingClientRect();
   if (e.clientX < rect.left || e.clientX > rect.right || e.clientY < rect.top || e.clientY > rect.bottom) return;
   const controlled = canvas.tokens?.controlled ?? [];
@@ -1919,8 +1921,11 @@ async function _rightClickMoveMultipleTokens(tokens, canvasX, canvasY) {
   const isGridless = (canvas.grid.type ?? 0) === 0;
   const stepPx = isGridless ? Math.max(Math.round(gs / 4), 10) : gs;
 
-  // Filter dead tokens first (so they remain as obstacles)
-  tokens = tokens.filter(t => !t.actor?.effects.some(e => !e.disabled && e.statuses?.has("dead")));
+  // Filter dead or locked tokens (locked tokens remain as obstacles)
+  tokens = tokens.filter(t =>
+    !t.document.locked &&
+    !t.actor?.effects.some(e => !e.disabled && e.statuses?.has("dead"))
+  );
   if (tokens.length === 0) return;
 
   // Block movement to points outside the tokens' visible area
@@ -2000,7 +2005,7 @@ async function _tryUnstickToken(token, gs) {
     if (gx !== sGX || gy !== sGY) {
       const ncx = (gx + .5) * stepPx, ncy = (gy + .5) * stepPx;
       if (!isStuck(ncx, ncy)) {
-        await token.document.update({ x: gx * stepPx, y: gy * stepPx });
+        await token.document.update({ x: gx * stepPx, y: gy * stepPx }, { animate: false });
         return;
       }
     }
@@ -2014,12 +2019,13 @@ async function _tryUnstickToken(token, gs) {
 async function _moveOneToken(token, targetX, targetY, gs) {
   const cancelToken = { cancelled: false };
   const prevCancel = _moveCancelMap.get(token.id);
-  const startX = prevCancel ? (token.x ?? token.document.x) : token.document.x;
-  const startY = prevCancel ? (token.y ?? token.document.y) : token.document.y;
+  // Always use committed document position — visual (token.x/y) may be mid-animation
+  // inside a wall during an unstick, which would re-trap the token.
+  const startX = token.document.x;
+  const startY = token.document.y;
   if (prevCancel) {
     prevCancel.cancelled = true;
     try { CanvasAnimation.terminateAnimation(token.animationName ?? `Token.${token.id}`); } catch (_) {}
-    // Snap to current visual position without animation to cut off ongoing movement
     try { await token.document.update({ x: startX, y: startY }, { animate: false }); } catch (_) {}
   }
   _moveCancelMap.set(token.id, cancelToken);
@@ -2047,17 +2053,20 @@ async function _moveOneToken(token, targetX, targetY, gs) {
   // If pathfinding timed out or failed, fall back to direct movement (may clip walls)
   const waypoints = path ? path.slice(1) : [{ x: targetX, y: targetY }];
 
-  for (const wp of waypoints) {
-    if (!token.controlled || cancelToken.cancelled) break;
-    await token.document.update({ x: wp.x, y: wp.y });
-    await _cancelableWait(new Promise(r => setTimeout(r, 60)), cancelToken);
-    await _cancelableWait(token._animation, cancelToken);
-    if (cancelToken.cancelled) break;
-    await _cancelableWait(new Promise(r => setTimeout(r, 80)), cancelToken);
+  try {
+    for (const wp of waypoints) {
+      if (!token.controlled || cancelToken.cancelled) break;
+      await token.document.update({ x: wp.x, y: wp.y });
+      await _cancelableWait(new Promise(r => setTimeout(r, 60)), cancelToken);
+      await _cancelableWait(token._animation, cancelToken);
+      if (cancelToken.cancelled) break;
+      await _cancelableWait(new Promise(r => setTimeout(r, 80)), cancelToken);
+    }
+  } finally {
+    await markerDone.catch(() => {});
+    _hideTargetMarker(marker);
+    if (_moveCancelMap.get(token.id) === cancelToken) _moveCancelMap.delete(token.id);
   }
-  await markerDone;
-  _hideTargetMarker(marker);
-  if (_moveCancelMap.get(token.id) === cancelToken) _moveCancelMap.delete(token.id);
 }
 
 /* -------------------------------------------- */
@@ -3288,23 +3297,23 @@ function setupTokenHoverOverride() {
   // Mark as overridden
   Token.prototype._onHoverIn._andragathimaOverride = true;
   
-  // Override _onHoverOut  
+  // Override _onHoverOut
   Token.prototype._onHoverOut = function(event, options) {
     console.log("Token hover out:", this.actor?.name);
-    
+
     // Call original method first
     let result;
     if (originalOnHoverOut) {
       result = originalOnHoverOut.call(this, event, options);
     }
-    
+
     // Hide our tooltip
     try {
       hideTokenTooltip();
     } catch (error) {
       console.error("Error hiding tooltip:", error);
     }
-    
+
     return result;
   };
   
