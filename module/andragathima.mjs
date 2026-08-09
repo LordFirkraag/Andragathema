@@ -212,24 +212,21 @@ Hooks.on("renderTokenHUD", (hud, html, token) => {
     }
     console.log("ANDRAGATHIMA: Lock button added to HUD");
     
-    // Add click handler
+    // Add click handler — applies to all controlled tokens
     $html.find('[data-action="toggle-lock"]').click(async (event) => {
       event.preventDefault();
-      console.log("ANDRAGATHIMA: Lock button clicked, current state:", isLocked);
-      console.log("ANDRAGATHIMA: Attempting to update token:", tokenDoc);
-      
+      const newLocked = !isLocked;
+      const targets = canvas.tokens.controlled.length > 0
+        ? canvas.tokens.controlled
+        : [actualToken];
       try {
-        await tokenDoc.update({ locked: !isLocked });
+        await Promise.all(targets.map(t => t.document.update({ locked: newLocked })));
         ui.notifications.info(
-          isLocked 
-            ? game.i18n.localize("ANDRAGATHIMA.TokenUnlocked")
-            : game.i18n.localize("ANDRAGATHIMA.TokenLocked")
+          newLocked
+            ? game.i18n.localize("ANDRAGATHIMA.TokenLocked")
+            : game.i18n.localize("ANDRAGATHIMA.TokenUnlocked")
         );
-        
-        // Re-render the HUD to update the icon
-        if (hud && hud.render) {
-          hud.render();
-        }
+        if (hud?.render) hud.render();
       } catch (error) {
         console.error("ANDRAGATHIMA: Error updating token lock status:", error);
         ui.notifications.error("Failed to update token lock status");
@@ -554,6 +551,58 @@ Hooks.once("ready", async function() {
         }
 
         // Debug: ui.notifications.info(`${actor.name}: ${movementSpeed} grid/sec (single move)`, {console: false});
+      }
+    }
+  });
+
+  // Insomnia fatigue tracking: fires whenever the GM advances world time
+  Hooks.on("updateWorldTime", async (worldTime) => {
+    if (!game.user.isGM) return;
+
+    const fatigueLevels = ["fatigued", "exhausted", "depleted"];
+
+    for (const actor of game.actors) {
+      const lastRestTime = actor.getFlag("andragathima", "lastRestTime");
+      if (lastRestTime == null) continue;
+
+      const kra = actor.system?.abilities?.kra?.displayValue;
+      if (!kra || kra === '*' || kra <= 0) continue;
+
+      const hoursAwake = (worldTime - lastRestTime) / 3600;
+
+      // Insomnia thresholds: first fatigue at (14+kra)h, then every kra hours
+      let targetLevel = 0;
+      if (hoursAwake >= 14 + kra)     targetLevel = 1;
+      if (hoursAwake >= 14 + 2 * kra) targetLevel = 2;
+      if (hoursAwake >= 14 + 3 * kra) targetLevel = 3;
+      targetLevel = Math.min(targetLevel, fatigueLevels.length);
+
+      // Find current fatigue level (0 = none)
+      let currentLevel = 0;
+      for (let i = 0; i < fatigueLevels.length; i++) {
+        if (actor.effects.some(e => !e.disabled && e.statuses?.has(fatigueLevels[i]))) {
+          currentLevel = i + 1;
+          break;
+        }
+      }
+
+      if (targetLevel === currentLevel) continue;
+
+      // Remove current fatigue
+      if (currentLevel > 0) {
+        await actor.toggleStatusEffect(fatigueLevels[currentLevel - 1]);
+      }
+      // Apply new fatigue level
+      if (targetLevel > 0) {
+        await actor.toggleStatusEffect(fatigueLevels[targetLevel - 1]);
+      }
+      // Notify GM if fatigue got worse
+      if (targetLevel > currentLevel && targetLevel > 0) {
+        const conditionName = game.i18n.localize(`ANDRAGATHIMA.Status${fatigueLevels[targetLevel - 1].charAt(0).toUpperCase() + fatigueLevels[targetLevel - 1].slice(1)}`);
+        ChatMessage.create({
+          content: `<b>${actor.name}</b>: ${conditionName}`,
+          whisper: ChatMessage.getWhisperRecipients("GM")
+        });
       }
     }
   });
@@ -1680,8 +1729,8 @@ function onCanvasRightClick(e) {
   if (!canvas?.ready) return;
   const view = canvas.app?.view;
   if (!view) return;
-  // Skip clicks that landed on a UI element (floating windows, sidebar, controls, etc.)
-  if (e.target !== view && e.target?.closest?.('.app')) return;
+  // Skip clicks that landed on any UI element (floating windows, hotbar, sidebar, controls, etc.)
+  if (e.target !== view && e.target?.closest?.('#interface, .app')) return;
   const rect = view.getBoundingClientRect();
   if (e.clientX < rect.left || e.clientX > rect.right || e.clientY < rect.top || e.clientY > rect.bottom) return;
   const controlled = canvas.tokens?.controlled ?? [];
@@ -1978,7 +2027,7 @@ async function _rightClickMoveMultipleTokens(tokens, canvasX, canvasY) {
     for (let x = 0; x < tw; x++) for (let y = 0; y < th; y++) occupied.add(`${pgx + x},${pgy + y}`);
     moves.push(_moveOneToken(token, targetX, targetY, gs));
   }
-  await Promise.all(moves);
+  await Promise.allSettled(moves);
 }
 
 async function _tryUnstickToken(token, gs) {
@@ -2029,31 +2078,35 @@ async function _moveOneToken(token, targetX, targetY, gs) {
     try { await token.document.update({ x: startX, y: startY }, { animate: false }); } catch (_) {}
   }
   _moveCancelMap.set(token.id, cancelToken);
-  if (cancelToken.cancelled) return;
 
-  // Pathfind synchronously (50ms limit — guaranteed fast)
-  let path = _findMovePath(token, targetX, targetY, startX, startY);
-
-  // Only unstick if pathfinding failed (avoids delay in common case)
-  if (!path) {
-    await _tryUnstickToken(token, gs);
-    if (cancelToken.cancelled) return;
-    path = _findMovePath(token, targetX, targetY);
-  }
-
-  if (cancelToken.cancelled) return;
-
-  // Show marker in background so movement starts without delay
+  // Declare here so finally can always access them regardless of early returns
   let marker = null;
-  const markerCX = targetX + (token.document.width * gs) / 2;
-  const markerCY = targetY + (token.document.height * gs) / 2;
-  const markerDone = _showTargetMarker(markerCX, markerCY, token.document.width * gs * 0.85, token.document.height * gs * 0.85)
-    .then(m => { marker = m; if (cancelToken.cancelled) { _hideTargetMarker(m); marker = null; } });
-
-  // If pathfinding timed out or failed, fall back to direct movement (may clip walls)
-  const waypoints = path ? path.slice(1) : [{ x: targetX, y: targetY }];
+  let markerDone = null;
 
   try {
+    if (cancelToken.cancelled) return;
+
+    // Pathfind synchronously (50ms limit — guaranteed fast)
+    let path = _findMovePath(token, targetX, targetY, startX, startY);
+
+    // Only unstick if pathfinding failed (avoids delay in common case)
+    if (!path) {
+      await _tryUnstickToken(token, gs);
+      if (cancelToken.cancelled) return;
+      path = _findMovePath(token, targetX, targetY);
+    }
+
+    if (cancelToken.cancelled) return;
+
+    // Show marker in background so movement starts without delay
+    const markerCX = targetX + (token.document.width * gs) / 2;
+    const markerCY = targetY + (token.document.height * gs) / 2;
+    markerDone = _showTargetMarker(markerCX, markerCY, token.document.width * gs * 0.85, token.document.height * gs * 0.85)
+      .then(m => { marker = m; if (cancelToken.cancelled) { _hideTargetMarker(m); marker = null; } });
+
+    // If pathfinding timed out or failed, fall back to direct movement (may clip walls)
+    const waypoints = path ? path.slice(1) : [{ x: targetX, y: targetY }];
+
     for (const wp of waypoints) {
       if (!token.controlled || cancelToken.cancelled) break;
       await token.document.update({ x: wp.x, y: wp.y });
@@ -2063,7 +2116,7 @@ async function _moveOneToken(token, targetX, targetY, gs) {
       await _cancelableWait(new Promise(r => setTimeout(r, 80)), cancelToken);
     }
   } finally {
-    await markerDone.catch(() => {});
+    if (markerDone) await markerDone.catch(() => {});
     _hideTargetMarker(marker);
     if (_moveCancelMap.get(token.id) === cancelToken) _moveCancelMap.delete(token.id);
   }

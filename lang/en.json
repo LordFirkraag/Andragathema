@@ -127,6 +127,8 @@
     "Initiative": "Initiative",
     "Speed": "Speed",
     "Grapple": "Grapple",
+    "TravelFatigue": "Travel",
+    "InsomniaFatigue": "Sleeplessness",
     "Stability": "Stability",
     
     "TabAbilities": "Abilities",

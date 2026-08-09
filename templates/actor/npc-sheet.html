@@ -142,6 +142,17 @@
               <strong>{{localize 'ANDRAGATHIMA.Grapple'}}:</strong> <span class="rollable {{statusModifierClass (default flags.andragathima.modifiers.other.pali 0)}}" data-roll-type="grapple">{{formatStatNumber system.combat.pali.value flags}}</span>
             </div>
 
+            {{#if system.travelFatigue}}
+            <div class="stat-line">
+              <strong>{{localize 'ANDRAGATHIMA.TravelFatigue'}}:</strong> {{system.travelFatigue}}
+            </div>
+            {{/if}}
+            {{#if system.insomniaFatigue}}
+            <div class="stat-line">
+              <strong>{{localize 'ANDRAGATHIMA.InsomniaFatigue'}}:</strong> {{system.insomniaFatigue}}
+            </div>
+            {{/if}}
+
             <div class="stat-divider"></div>
 
             <div class="stat-line">

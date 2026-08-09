@@ -234,9 +234,17 @@ export class AndragathimaActor extends Actor {
     // Calculate save bonuses
     this._calculateSaves(systemData);
     
+    // Travel and insomnia fatigue thresholds based on Κράση (omit if 0 or invulnerable)
+    const npcKraDisplay = systemData.abilities.kra.displayValue;
+    if (npcKraDisplay && npcKraDisplay !== '*' && npcKraDisplay > 0) {
+      const travelInterval = Math.max(1, Math.floor(npcKraDisplay / 3));
+      systemData.travelFatigue = [1, 2, 3, 4].map(n => 6 + n * travelInterval).join('/');
+      systemData.insomniaFatigue = [1, 2, 3, 4].map(n => 14 + n * npcKraDisplay).join('/');
+    }
+
     // Calculate carrying capacity for NPCs
     this._calculateNpcCarryingCapacity(systemData);
-    
+
     // Calculate total weight including miscellaneous items
     this._calculateTotalWeight(systemData);
   }
@@ -469,10 +477,18 @@ export class AndragathimaActor extends Actor {
         // Absolute override mode (=): use the override value directly
         specializedBonus = resistanceOverride;
         resistance.statusMod = resistanceOverride - resistance.base; // Show effective change
-      } else if (resistanceCondOverride !== undefined && specializedBonus < resistanceCondOverride) {
-        // Conditional override mode (>=): use override only if it's higher than calculated
-        specializedBonus = resistanceCondOverride;
-        resistance.statusMod = resistanceCondOverride - resistance.base; // Show effective change
+      } else if (resistanceCondOverride !== undefined) {
+        // Conditional override mode (>=): the threshold applies to the FINAL total (specialized + kraMod),
+        // not just the specialized bonus. So we check if total < threshold and raise specialized
+        // only by the deficit, so the final total reaches the threshold.
+        const numericBase = (typeof baseResistance === 'number') ? baseResistance : 0;
+        const total = specializedBonus + numericBase;
+        if (total < resistanceCondOverride) {
+          specializedBonus = resistanceCondOverride - numericBase;
+          resistance.statusMod = specializedBonus - resistance.base - armorResistance;
+        } else {
+          resistance.statusMod = resistanceStatusMod;
+        }
       } else {
         resistance.statusMod = resistanceStatusMod;
       }
@@ -557,6 +573,14 @@ export class AndragathimaActor extends Actor {
     
     
     
+    // Travel and insomnia fatigue thresholds based on Κράση (omit if 0 or invulnerable)
+    const kraDisplay = abilities.kra.displayValue;
+    if (kraDisplay && kraDisplay !== '*' && kraDisplay > 0) {
+      const travelInterval = Math.max(1, Math.floor(kraDisplay / 3));
+      systemData.travelFatigue = [1, 2, 3, 4].map(n => 6 + n * travelInterval).join('/');
+      systemData.insomniaFatigue = [1, 2, 3, 4].map(n => 14 + n * kraDisplay).join('/');
+    }
+
     // Store status modifiers in flags for template use
     if (!this.flags.andragathima) this.flags.andragathima = {};
     if (!this.flags.andragathima.modifiers) this.flags.andragathima.modifiers = {};
@@ -1150,9 +1174,14 @@ export class AndragathimaActor extends Actor {
       const key = change.key;
       const mode = change.mode;
       let value = change.value;
-      
+
+      // Resolve @βμ keyword to the actor's base magic degree
+      if (typeof value === 'string' && value.trim() === '@βμ') {
+        value = this.system.magic?.degree?.value || 0;
+        if (value === 0) continue;
+      }
       // Handle boolean values
-      if (value === 'true') value = true;
+      else if (value === 'true') value = true;
       else if (value === 'false') value = false;
       else if (typeof value === 'boolean') value = value;
       else {
@@ -1381,10 +1410,13 @@ export class AndragathimaActor extends Actor {
     for (const change of effect.changes) {
       const key = change.key;
       const mode = change.mode;
-      const value = parseFloat(change.value) || 0;
-      
+      const rawValue = change.value;
+      const value = (typeof rawValue === 'string' && rawValue.trim() === '@βμ')
+        ? (this.system.magic?.degree?.value || 0)
+        : (parseFloat(rawValue) || 0);
+
       if (value === 0) continue;
-      
+
       // Skip attack and damage related effects for weapons in quick slots
       const isAttackEffect = key.startsWith('system.combat.') && 
                            (key.includes('Attack') || key.includes('attack'));
