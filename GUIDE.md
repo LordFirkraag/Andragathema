@@ -15,12 +15,12 @@
 | Πρόσθεση | `+` | `3` | Προσθέτει +3 στο stat |
 | Αντικατάσταση | `=` | `15` | Ορίζει το stat ακριβώς στο 15 |
 | Ελάχιστο | `>=` | `9` | Το τελικό stat δεν πέφτει κάτω από 9 |
-| Αδυναμότητα | `*` | `*` | Αυτόματη επιτυχία / πλήρης ανοχή |
-| Βαθμός Μαγείας | (οποιοδήποτε) | `@βμ` | Αντικαθίσταται από τον βαθμό μαγείας του χαρακτήρα |
+| Απρόσβλητο | `*` | `*` | Αυτόματη επιτυχία / πλήρης ανοχή |
+| Βαθμός Μαγείας | (οποιοδήποτε) | `@βμ` ή `@mr` | Αντικαθίσταται από τον βαθμό μαγείας του χαρακτήρα |
 
 **Σημαντικό για το `>=`:** Το ελάχιστο εφαρμόζεται στην **τελική** τιμή (συμπεριλαμβανομένης της Κράσης). Αν ο χαρακτήρας έχει Κράση 14 (+2) και effect `Άμυνα Τομής >= 9`, η τελική άμυνα θα είναι 9 — όχι 11.
 
-**Παραδείγματα `@βμ`:**
+**Παραδείγματα `@βμ` / `@mr`:**
 - `Άμυνα Τομής + @βμ` — προσθέτει τον βαθμό μαγείας στην Άμυνα Τομής
 - `Άμυνα Τομής >= @βμ` — η Άμυνα Τομής δεν πέφτει κάτω από τον βαθμό μαγείας
 
@@ -30,7 +30,7 @@
 
 #### Κράτα το Spacebar — Εμβέλειες
 Κρατώντας πατημένο το **Spacebar** ενώ το ποντίκι είναι πάνω σε ένα token (ή ενώ έχεις επιλεγμένο ένα token), εμφανίζονται:
-- **Χρωματιστή περιοχή** (πράσινο για φιλικούς, κόκκινο για εχθρούς, cyan για ουδέτερους) — η ακτίνα **κίνησης** βάσει της Ταχύτητας του χαρακτήρα
+- **Χρωματιστή περιοχή** (πράσινο για φιλικούς, κόκκινο για εχθρούς, γαλανό για ουδέτερους) — η ακτίνα **κίνησης** βάσει της Ταχύτητας του χαρακτήρα
 - **Κόκκινος κύκλος** — η ακτίνα **μάχης** του ενεργού όπλου
 
 #### Δεξί-κλικ για Κίνηση
@@ -89,13 +89,13 @@ In the effect sheet, the **value** field accepts special keywords beyond plain n
 | Override | `=` | `15` | Sets the stat exactly to 15 |
 | Minimum | `>=` | `9` | Final stat cannot drop below 9 |
 | Immunity | `*` | `*` | Automatic success / full immunity |
-| Magic Degree | (any) | `@βμ` | Replaced by the character's magic degree at runtime |
+| Magic Rank | (any) | `@βμ` or `@mr` | Replaced by the character's magic rank at runtime |
 
 **Important for `>=`:** The minimum applies to the **final** value (including the Toughness modifier). If a character has Toughness 14 (+2) and an effect `Slash Defense >= 9`, the final defense will be 9 — not 11.
 
-**`@βμ` examples:**
-- `Slash Defense + @βμ` — adds the magic degree to Slash Defense
-- `Slash Defense >= @βμ` — Slash Defense cannot drop below the magic degree
+**`@βμ` / `@mr` examples:**
+- `Slash Defense + @mr` — adds the magic rank to Slash Defense
+- `Slash Defense >= @mr` — Slash Defense cannot drop below the magic rank
 
 ---
 

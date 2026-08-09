@@ -1175,8 +1175,8 @@ export class AndragathimaActor extends Actor {
       const mode = change.mode;
       let value = change.value;
 
-      // Resolve @βμ keyword to the actor's base magic degree
-      if (typeof value === 'string' && value.trim() === '@βμ') {
+      // Resolve @βμ / @mr keyword to the actor's base magic rank
+      if (typeof value === 'string' && (value.trim() === '@βμ' || value.trim() === '@mr')) {
         value = this.system.magic?.degree?.value || 0;
         if (value === 0) continue;
       }
@@ -1411,7 +1411,7 @@ export class AndragathimaActor extends Actor {
       const key = change.key;
       const mode = change.mode;
       const rawValue = change.value;
-      const value = (typeof rawValue === 'string' && rawValue.trim() === '@βμ')
+      const value = (typeof rawValue === 'string' && (rawValue.trim() === '@βμ' || rawValue.trim() === '@mr'))
         ? (this.system.magic?.degree?.value || 0)
         : (parseFloat(rawValue) || 0);
 
