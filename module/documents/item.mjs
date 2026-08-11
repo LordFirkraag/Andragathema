@@ -69,9 +69,13 @@ export class AndragathimaItem extends Item {
       }
       
       // Get weapon damage modifier from status effects
+      // Excluded weapon types (bows, crossbows, slings, firearms) are not affected — they use
+      // mechanical force, not muscle power, so fatigue does not reduce their damage.
       const statusModifiers = this.actor?._getStatusModifiers() || { other: {} };
-      const weaponDamageModifier = statusModifiers.other?.weaponDamage || 0;
-      
+      const fatigueDmgExcluded = CONFIG.ANDRAGATHIMA?.fatigueWeaponDamageExcluded;
+      const fatigueExempt = fatigueDmgExcluded?.has(data.weaponType);
+      const weaponDamageModifier = fatigueExempt ? 0 : (statusModifiers.other?.weaponDamage || 0);
+
       data.weaponDamage = weaponCoefficient + abilityMod + (data.twoHandedDamageBonus || 0) + weaponDamageModifier;
       
       // Display damage type

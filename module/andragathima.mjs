@@ -402,6 +402,10 @@ Hooks.once("ready", async function() {
     setTimeout(() => updateTokenStatusEffects(token.actor), 200);
   });
   Hooks.on("canvasReady", onCanvasReady);
+  // Invalidate wall cache when walls change at runtime
+  Hooks.on("createWall",  () => { _movWallsCache = null; });
+  Hooks.on("updateWall",  () => { _movWallsCache = null; });
+  Hooks.on("deleteWall",  () => { _movWallsCache = null; });
   
   // Register token tooltip hooks
   Hooks.on("hoverToken", onTokenHover);
@@ -1590,6 +1594,8 @@ async function onRefreshToken(token, flags) {
  * Update all tokens when canvas is ready
  */
 function onCanvasReady() {
+  _movWallsCache = null;   // invalidate wall cache on scene change
+
   // Setup tooltips first
   setTimeout(() => {
     setupTokenTooltips();
@@ -1790,7 +1796,9 @@ function _findMovePath(token, targetDocX, targetDocY, startX, startY) {
   const isGridless = (canvas.grid.type ?? 0) === 0;
   const gs = canvas.grid.size;
   const stepPx = isGridless ? Math.max(Math.round(gs / 4), 10) : gs;
-  const halfW = Math.min((token.document.width * gs) / 2 * 0.6, stepPx * 0.45);
+  // Use a radius small enough to navigate narrow corridors / corners without excessive lag,
+  // but large enough that the capsule check catches walls the token's edge would hit.
+  const halfW = Math.min(_tokenRadius(token) * 0.6, stepPx * 0.45);
   const mps = (stepPx / gs) * (canvas.scene.grid.distance || 1);
   const sGX = Math.round((startX ?? token.document.x) / stepPx);
   const sGY = Math.round((startY ?? token.document.y) / stepPx);
@@ -2033,7 +2041,7 @@ async function _rightClickMoveMultipleTokens(tokens, canvasX, canvasY) {
 async function _tryUnstickToken(token, gs) {
   const isGridless = (canvas.grid.type ?? 0) === 0;
   const stepPx = isGridless ? Math.max(Math.round(gs / 4), 10) : gs;
-  const halfW = Math.min((token.document.width * gs) / 2 * 0.6, stepPx * 0.45);
+  const halfW = Math.min(_tokenRadius(token) * 0.6, stepPx * 0.45);
   const docX = token.document.x, docY = token.document.y;
   const cx = docX + (token.document.width * gs) / 2;
   const cy = docY + (token.document.height * gs) / 2;
@@ -2104,8 +2112,22 @@ async function _moveOneToken(token, targetX, targetY, gs) {
     markerDone = _showTargetMarker(markerCX, markerCY, token.document.width * gs * 0.85, token.document.height * gs * 0.85)
       .then(m => { marker = m; if (cancelToken.cancelled) { _hideTargetMarker(m); marker = null; } });
 
-    // If pathfinding timed out or failed, fall back to direct movement (may clip walls)
-    const waypoints = path ? path.slice(1) : [{ x: targetX, y: targetY }];
+    // A* waypoints are already wall-safe; for the direct fallback clip to the nearest wall.
+    let waypoints;
+    if (path) {
+      waypoints = path.slice(1);
+    } else {
+      const radius  = _tokenRadius(token);
+      const startCX = startX + (token.document.width  * gs) / 2;
+      const startCY = startY + (token.document.height * gs) / 2;
+      const targCX  = targetX + (token.document.width  * gs) / 2;
+      const targCY  = targetY + (token.document.height * gs) / 2;
+      const { x: safeCX, y: safeCY } = _moveUntilWall(startCX, startCY, targCX, targCY, radius);
+      waypoints = [{
+        x: safeCX - (token.document.width  * gs) / 2,
+        y: safeCY - (token.document.height * gs) / 2,
+      }];
+    }
 
     for (const wp of waypoints) {
       if (!token.controlled || cancelToken.cancelled) break;
@@ -2272,28 +2294,130 @@ function _computeReachableCells(token, speed, stepPx) {
   return dist;
 }
 
-function _isPathBlocked(x1, y1, x2, y2, halfW) {
-  if (_isMovementBlocked(x1, y1, x2, y2)) return true;
-  if (halfW < 2) return false;
-  const dx = x2 - x1, dy = y2 - y1;
-  const len = Math.sqrt(dx * dx + dy * dy);
-  if (len < 0.001) return false;
-  const px = (-dy / len) * halfW, py = (dx / len) * halfW;
-  return _isMovementBlocked(x1 + px, y1 + py, x2 + px, y2 + py)
-      || _isMovementBlocked(x1 - px, y1 - py, x2 - px, y2 - py);
+// ════════════════════════════════════════════════════════════════════════════
+// RIGHT-CLICK MOVEMENT — WALL COLLISION
+// ════════════════════════════════════════════════════════════════════════════
+
+let _movWallsCache = null;
+
+// ── Wall cache ───────────────────────────────────────────────────────────────
+
+function _getMovWalls() {
+  if (_movWallsCache) return _movWallsCache;
+  _movWallsCache = [];
+  for (const w of (canvas.walls?.placeables ?? [])) {
+    if ((w.document.move ?? 1) === 0) continue;
+    const [x1, y1, x2, y2] = w.document.c;
+    _movWallsCache.push({ x1, y1, x2, y2 });
+  }
+  return _movWallsCache;
 }
 
-function _isMovementBlocked(x1, y1, x2, y2) {
-  try {
-    const backend = CONFIG.Canvas.polygonBackends?.move;
-    if (backend?.testCollision) {
-      return backend.testCollision({ x: x1, y: y1 }, { x: x2, y: y2 }, { type: "move", mode: "any" });
-    }
-  } catch (_) {}
-  try {
-    return !!(canvas.walls.checkCollision(new Ray({ x: x1, y: y1 }, { x: x2, y: y2 }), { type: "move" }));
-  } catch (_) {}
+// ── Point → segment distance ─────────────────────────────────────────────────
+
+function _wallPointSegDist(px, py, x1, y1, x2, y2) {
+  const dx = x2 - x1, dy = y2 - y1;
+  const len2 = dx * dx + dy * dy;
+  if (len2 < 1e-6) return Math.hypot(px - x1, py - y1);
+  const t = Math.max(0, Math.min(1, ((px - x1) * dx + (py - y1) * dy) / len2));
+  return Math.hypot(px - (x1 + t * dx), py - (y1 + t * dy));
+}
+
+// ── Segment intersection ─────────────────────────────────────────────────────
+
+function _wallSegsIntersect(ax, ay, bx, by, cx, cy, dx, dy) {
+  const abx = bx - ax, aby = by - ay;
+  const cdx = dx - cx, cdy = dy - cy;
+  const c1 = abx * (cy - ay) - aby * (cx - ax);
+  const c2 = abx * (dy - ay) - aby * (dx - ax);
+  const c3 = cdx * (ay - cy) - cdy * (ax - cx);
+  const c4 = cdx * (by - cy) - cdy * (bx - cx);
+  const eps = 1e-6;
+  const onSeg = (px, py, qx, qy, rx, ry) =>
+    qx >= Math.min(px, rx) - eps && qx <= Math.max(px, rx) + eps &&
+    qy >= Math.min(py, ry) - eps && qy <= Math.max(py, ry) + eps;
+  if (((c1 > eps && c2 < -eps) || (c1 < -eps && c2 > eps)) &&
+      ((c3 > eps && c4 < -eps) || (c3 < -eps && c4 > eps))) return true;
+  if (Math.abs(c1) <= eps && onSeg(ax, ay, cx, cy, bx, by)) return true;
+  if (Math.abs(c2) <= eps && onSeg(ax, ay, dx, dy, bx, by)) return true;
+  if (Math.abs(c3) <= eps && onSeg(cx, cy, ax, ay, dx, dy)) return true;
+  if (Math.abs(c4) <= eps && onSeg(cx, cy, bx, by, dx, dy)) return true;
   return false;
+}
+
+// ── Segment → segment distance ───────────────────────────────────────────────
+
+function _wallSegSegDist(ax, ay, bx, by, cx, cy, dx, dy) {
+  if (_wallSegsIntersect(ax, ay, bx, by, cx, cy, dx, dy)) return 0;
+  return Math.min(
+    _wallPointSegDist(ax, ay, cx, cy, dx, dy),
+    _wallPointSegDist(bx, by, cx, cy, dx, dy),
+    _wallPointSegDist(cx, cy, ax, ay, bx, by),
+    _wallPointSegDist(dx, dy, ax, ay, bx, by)
+  );
+}
+
+// ── Static circle check ──────────────────────────────────────────────────────
+// Ελέγχει αν το κυκλικό token (κέντρο cx,cy, ακτίνα radius) δεν εφάπτεται τοίχου.
+
+function _isCirclePositionClear(cx, cy, radius) {
+  for (const w of _getMovWalls()) {
+    if (_wallPointSegDist(cx, cy, w.x1, w.y1, w.x2, w.y2) < radius) return false;
+  }
+  return true;
+}
+
+// ── Capsule (moving circle) check ────────────────────────────────────────────
+// Η τροχιά ενός κύκλου από Α → Β είναι capsule.
+// Blocked αν η ελάχιστη απόσταση path-segment → wall < radius.
+// Καλύπτει ΟΛΕΣ τις γωνίες — ακόμα και τοίχους παράλληλους στην κίνηση.
+
+function _isCirclePathClear(x1, y1, x2, y2, radius) {
+  const limit = radius;
+  if (Math.abs(x2 - x1) < 0.0001 && Math.abs(y2 - y1) < 0.0001)
+    return _isCirclePositionClear(x1, y1, radius);
+  for (const w of _getMovWalls()) {
+    if (_wallSegSegDist(x1, y1, x2, y2, w.x1, w.y1, w.x2, w.y2) < limit) return false;
+  }
+  return true;
+}
+
+// ── Walk to wall ─────────────────────────────────────────────────────────────
+// Βρίσκει το πιο μακρινό ασφαλές σημείο της διαδρομής πριν τον τοίχο.
+// Binary search με 22 iterations (~1/4Μ ακρίβεια).
+
+function _moveUntilWall(sx, sy, ex, ey, radius) {
+  const dx = ex - sx, dy = ey - sy;
+  const dist = Math.hypot(dx, dy);
+  if (dist < 0.0001) return { x: sx, y: sy };
+  if (_isCirclePathClear(sx, sy, ex, ey, radius)) return { x: ex, y: ey };
+  const ux = dx / dist, uy = dy / dist;
+  let lo = 0, hi = 1;
+  for (let i = 0; i < 22; i++) {
+    const t = (lo + hi) / 2;
+    if (_isCirclePathClear(sx, sy, sx + ux * dist * t, sy + uy * dist * t, radius)) lo = t;
+    else hi = t;
+  }
+  const safeDist = Math.max(0, lo * dist - 0.5);
+  return { x: sx + ux * safeDist, y: sy + uy * safeDist };
+}
+
+// ── Token radius ─────────────────────────────────────────────────────────────
+
+function _tokenRadius(token) {
+  return Math.max(token.document.width, token.document.height) * canvas.grid.size / 2;
+}
+
+// ── Backward-compatible wrappers ─────────────────────────────────────────────
+// Το _isPathBlocked χρησιμοποιείται στο A* / Theta* / simplification.
+// Το _isMovementBlocked χρησιμοποιείται για range BFS (center-only, radius=0.5).
+
+function _isPathBlocked(x1, y1, x2, y2, radius) {
+  return !_isCirclePathClear(x1, y1, x2, y2, radius);
+}
+
+function _isMovementBlocked(x1, y1, x2, y2, radius = 0.5) {
+  return !_isCirclePathClear(x1, y1, x2, y2, radius);
 }
 
 function _hideRangeCirclesForToken(token) {

@@ -571,11 +571,14 @@ export class AndragathimaActorSheet extends ActorSheet {
           }
           
           // Get weapon damage modifier from status effects
+          // Excluded types (toxo, vallistra, pyrovolo, sfendoni) are not penalised by fatigue.
           const statusModifiers = this.actor._getStatusModifiers();
-          const weaponDamageModifier = statusModifiers.other?.weaponDamage || 0;
-          
+          const fatigueDmgExcluded = CONFIG.ANDRAGATHIMA?.fatigueWeaponDamageExcluded;
+          const fatigueExempt = fatigueDmgExcluded?.has(item.system.weaponType);
+          const weaponDamageModifier = fatigueExempt ? 0 : (statusModifiers.other?.weaponDamage || 0);
+
           weaponData.system.weaponDamage = weaponCoefficient + abilityMod + twoHandedDamageBonus + weaponBaseDamageBonus + weaponDamageModifier;
-          
+
           // Create damage display with additional damage types
           let damageDisplay = item.system.damageTypeDisplay || '';
           if (weaponOtherDamageTypes.length > 0) {
@@ -709,11 +712,14 @@ export class AndragathimaActorSheet extends ActorSheet {
         // Note: Shield weapons never get two-handed bonus since shield slot is occupied
         
         // Get weapon damage modifier from status effects
+        // Excluded types (toxo, vallistra, pyrovolo, sfendoni) are not penalised by fatigue.
         const statusModifiers = this.actor._getStatusModifiers();
-        const weaponDamageModifier = statusModifiers.other?.weaponDamage || 0;
-        
+        const fatigueDmgExcluded = CONFIG.ANDRAGATHIMA?.fatigueWeaponDamageExcluded;
+        const fatigueExempt = fatigueDmgExcluded?.has(item.system.weaponType);
+        const weaponDamageModifier = fatigueExempt ? 0 : (statusModifiers.other?.weaponDamage || 0);
+
         weaponData.system.weaponDamage = weaponCoefficient + abilityMod + twoHandedDamageBonus + weaponBaseDamageBonus + weaponDamageModifier;
-        
+
         // Create damage display with additional damage types
         let damageDisplay = item.system.damageTypeDisplay || '';
         if (weaponOtherDamageTypes.length > 0) {

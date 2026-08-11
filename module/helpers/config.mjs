@@ -302,6 +302,17 @@ ANDRAGATHIMA.weaponTypes = {
 };
 
 /**
+ * Weapon categories that are NOT affected by the fatigue weapon-damage penalty.
+ * These are ranged weapons that use mechanical force (bows, crossbows, slings, firearms)
+ * rather than muscle power — fatigue reduces arm strength but not aim/pull.
+ * Melee and thrown weapons (dory, riptari, etc.) ARE affected.
+ */
+ANDRAGATHIMA.fatigueWeaponDamageExcluded = new Set([
+  "vallistra",  // Βαλλίστρες και αρμπαλέτες
+  "pyrovolo",   // Πυροβόλα
+]);
+
+/**
  * Weapon Properties
  * @type {Object}
  */
