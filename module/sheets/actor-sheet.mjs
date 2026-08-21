@@ -1439,16 +1439,17 @@ export class AndragathimaActorSheet extends ActorSheet {
       rangedValue: weaponData.system.rangedAttackWithPenalty
     });
     
-    const label = isRanged ? 
-      `${weaponData.name} - ${game.i18n.localize('ANDRAGATHIMA.RangedAttack')}` : 
-      `${weaponData.name} - ${game.i18n.localize('ANDRAGATHIMA.MeleeAttack')}`;
-    
+    const label = isRanged ?
+      `${weaponData.name} - ${game.i18n.localize('ANDRAGATHIMA.RangedAttack')}` :
+      `${weaponData.name} - Ζαριά Μάχης`;
+
     // Target numbers toggle only affects display, calculations remain the same
     return await AndragathimaRoll.basicRoll({
       label: label,
       modifier: modifier,
       targetNumber: 11,
-      actor: this.actor
+      actor: this.actor,
+      combatRoll: !isRanged   // advantage από Ολοκληρωτική Άμυνα μόνο σε Ζαριά Μάχης
     });
   }
 

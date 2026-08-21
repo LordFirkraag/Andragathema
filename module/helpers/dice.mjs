@@ -20,7 +20,8 @@ export class AndragathimaRoll {
     modifier = 0,
     targetNumber = 11,
     opposed = false,
-    actor = null
+    actor = null,
+    combatRoll = false   // true μόνο για επίθεση/άμυνα — ενεργοποιεί advantage από Ολοκληρωτική Άμυνα
   } = {}) {
 
     // Read actor-level bonuses from active effects (via the custom modifier system)
@@ -28,10 +29,10 @@ export class AndragathimaRoll {
     const globalBonus = statusMods?.combat?.globalBonus ?? 0;
     const luckBonus = statusMods?.combat?.luckBonus ?? 0;
 
-    // Ολοκληρωτική Άμυνα: advantage — ρίχνουμε 2 φορές, κρατάμε το καλύτερο
-    const hasAdvantage = actor?.effects.some(
+    // Ολοκληρωτική Άμυνα: advantage μόνο σε ζαριές μάχης (επίθεση/άμυνα)
+    const hasAdvantage = combatRoll && (actor?.effects.some(
       e => !e.disabled && e.statuses?.has('totaldefense')
-    ) ?? false;
+    ) ?? false);
 
     // Apply global bonus to modifier
     const effectiveModifier = modifier + globalBonus;
@@ -39,23 +40,27 @@ export class AndragathimaRoll {
     // Build the roll formula
     const formula = `1d20 + ${effectiveModifier}`;
 
-    // Roll once (or twice for advantage)
+    // Πρώτο ζάρι
     const roll = new Roll(formula);
     await roll.evaluate();
-    let d20Result = roll.dice[0].results[0].result;
-    let d20Result2 = null;
+    const d20First = roll.dice[0].results[0].result;
+    let d20Second = null;
+    let roll2 = null;
 
+    // Δεύτερο ζάρι για advantage
     if (hasAdvantage) {
-      const roll2 = new Roll(`1d20`);
+      roll2 = new Roll(`1d20`);
       await roll2.evaluate();
-      d20Result2 = roll2.dice[0].results[0].result;
-      if (d20Result2 > d20Result) d20Result = d20Result2;
+      d20Second = roll2.dice[0].results[0].result;
     }
+
+    // Το κρατημένο αποτέλεσμα: το μεγαλύτερο από τα δύο (ή μόνο το πρώτο)
+    const d20Kept = (d20Second !== null && d20Second > d20First) ? d20Second : d20First;
 
     // Apply luck bonus: shifts the d20 result, clamped to [1, 20]
     const effectiveD20 = luckBonus !== 0
-      ? Math.min(20, Math.max(1, d20Result + luckBonus))
-      : d20Result;
+      ? Math.min(20, Math.max(1, d20Kept + luckBonus))
+      : d20Kept;
     const total = effectiveD20 + effectiveModifier;
 
     // Check for critical (20) or fumble (1) based on effective d20
@@ -67,22 +72,30 @@ export class AndragathimaRoll {
     const success = isCritical ? true : (isFumble ? false : difference >= 0);
     const stage = this.calculateStage(difference, isCritical, isFumble);
 
-    // Send roll to chat with custom flavor and format
-    await roll.toMessage({
+    // Χτίζουμε το περιεχόμενο του μηνύματος
+    const chatContent = await this.buildChatContent({
+      formula,
+      total,
+      d20First,
+      d20Second,            // null αν δεν υπάρχει advantage
+      modifier: effectiveModifier,
+      targetNumber,
+      success,
+      stage,
+      isCritical,
+      isFumble,
+      opposed
+    });
+
+    // Χρησιμοποιούμε ChatMessage.create() αντί roll.toMessage() για να αποφύγουμε
+    // το native roll display που θα έδειχνε πάντα το πρώτο ζάρι ως αποτέλεσμα
+    const rolls = roll2 ? [roll, roll2] : [roll];
+    await ChatMessage.create({
       speaker: ChatMessage.getSpeaker({actor: actor}),
-      flavor: `${label}<br>${await this.buildChatContent({
-        formula,
-        total,
-        d20Result: effectiveD20,
-        d20Result2,          // null αν δεν υπάρχει advantage
-        modifier: effectiveModifier,
-        targetNumber,
-        success,
-        stage,
-        isCritical,
-        isFumble,
-        opposed
-      })}`
+      flavor: label,
+      content: chatContent,
+      rolls: rolls,
+      type: CONST.CHAT_MESSAGE_STYLES?.OTHER ?? CONST.CHAT_MESSAGE_TYPES?.OTHER ?? 0
     });
     
     return {roll, success, stage, isCritical, isFumble};
@@ -113,9 +126,7 @@ export class AndragathimaRoll {
    * @returns {Promise<string>} HTML content for chat message
    */
   static async buildChatContent(data) {
-    const {total, d20Result, d20Result2, modifier} = data;
-
-    console.log(`Dice Roll Debug:`, { total, d20Result, d20Result2, modifier });
+    const {total, d20First, d20Second, modifier} = data;
 
     // Format modifier: always show +/− including +0
     let modifierText = '';
@@ -127,25 +138,18 @@ export class AndragathimaRoll {
       modifierText = ` + 0`;
     }
 
-    // Advantage: show both dice, bold the kept one
+    // Advantage: εμφανίζουμε και τα δύο ζάρια, bold αυτό που κρατήθηκε (το μεγαλύτερο)
     let diceText;
-    if (d20Result2 !== null && d20Result2 !== undefined) {
-      const kept   = d20Result;
-      const other  = d20Result2;
-      // kept is always the higher (or equal) one
-      const keptFirst = other <= kept;
-      const first  = keptFirst ? `<b>${kept}</b>` : `${other}`;
-      const second = keptFirst ? `${other}` : `<b>${kept}</b>`;
+    if (d20Second !== null && d20Second !== undefined) {
+      const firstWins = d20First >= d20Second;
+      const first  = firstWins ? `<b>${d20First}</b>` : `${d20First}`;
+      const second = firstWins ? `${d20Second}` : `<b>${d20Second}</b>`;
       diceText = `d20 (${first}, ${second})`;
     } else {
-      diceText = `d20 (${d20Result})`;
+      diceText = `d20 (${d20First})`;
     }
 
-    const html = `${diceText}${modifierText} = <b><span style="font-size: 1.1em;">${total}</span></b>`;
-
-    console.log(`Generated HTML:`, html);
-
-    return html;
+    return `${diceText}${modifierText} = <b><span style="font-size: 1.1em;">${total}</span></b>`;
   }
   
   /**
@@ -170,10 +174,11 @@ export class AndragathimaRoll {
     modifier += options.bonus || 0;
     
     return this.basicRoll({
-      label: isRanged ? game.i18n.localize('ANDRAGATHIMA.RangedAttack') : game.i18n.localize('ANDRAGATHIMA.MeleeAttack'),
+      label: isRanged ? game.i18n.localize('ANDRAGATHIMA.RangedAttack') : 'Ζαριά Μάχης',
       modifier,
       targetNumber: options.targetNumber || 11,
-      actor
+      actor,
+      combatRoll: !isRanged   // advantage μόνο στη Ζαριά Μάχης (melee)
     });
   }
   
