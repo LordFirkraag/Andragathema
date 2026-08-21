@@ -751,13 +751,8 @@ ANDRAGATHIMA.statusEffects = [
     name: "ANDRAGATHIMA.StatusTotalDefense",
     description: "ANDRAGATHIMA.StatusTotalDefenseDesc",
     img: "systems/andragathima/assets/conditions/totaldefense.png",
-    changes: [
-      {
-        key: "system.combat.melee",
-        mode: 2, // ADD
-        value: 4
-      }
-    ]
+    changes: []
+    // Advantage on combat rolls (roll twice, keep best) is handled in dice.mjs basicRoll.
   },
   {
     id: "fatigued",

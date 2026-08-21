@@ -28,18 +28,29 @@ export class AndragathimaRoll {
     const globalBonus = statusMods?.combat?.globalBonus ?? 0;
     const luckBonus = statusMods?.combat?.luckBonus ?? 0;
 
+    // Ολοκληρωτική Άμυνα: advantage — ρίχνουμε 2 φορές, κρατάμε το καλύτερο
+    const hasAdvantage = actor?.effects.some(
+      e => !e.disabled && e.statuses?.has('totaldefense')
+    ) ?? false;
+
     // Apply global bonus to modifier
     const effectiveModifier = modifier + globalBonus;
 
     // Build the roll formula
     const formula = `1d20 + ${effectiveModifier}`;
 
-    // Create and evaluate the roll
+    // Roll once (or twice for advantage)
     const roll = new Roll(formula);
     await roll.evaluate();
+    let d20Result = roll.dice[0].results[0].result;
+    let d20Result2 = null;
 
-    // Calculate the result
-    const d20Result = roll.dice[0].results[0].result;
+    if (hasAdvantage) {
+      const roll2 = new Roll(`1d20`);
+      await roll2.evaluate();
+      d20Result2 = roll2.dice[0].results[0].result;
+      if (d20Result2 > d20Result) d20Result = d20Result2;
+    }
 
     // Apply luck bonus: shifts the d20 result, clamped to [1, 20]
     const effectiveD20 = luckBonus !== 0
@@ -63,6 +74,7 @@ export class AndragathimaRoll {
         formula,
         total,
         d20Result: effectiveD20,
+        d20Result2,          // null αν δεν υπάρχει advantage
         modifier: effectiveModifier,
         targetNumber,
         success,
@@ -101,14 +113,10 @@ export class AndragathimaRoll {
    * @returns {Promise<string>} HTML content for chat message
    */
   static async buildChatContent(data) {
-    const {total, d20Result, modifier} = data;
-    
-    console.log(`Dice Roll Debug:`, {
-      total,
-      d20Result,
-      modifier
-    });
-    
+    const {total, d20Result, d20Result2, modifier} = data;
+
+    console.log(`Dice Roll Debug:`, { total, d20Result, d20Result2, modifier });
+
     // Format modifier: always show +/− including +0
     let modifierText = '';
     if (modifier > 0) {
@@ -118,12 +126,25 @@ export class AndragathimaRoll {
     } else {
       modifierText = ` + 0`;
     }
-    
-    // Simple format with bold and larger result: d20 (X) + Y = <b><larger>Z</larger></b>
-    const html = `d20 (${d20Result})${modifierText} = <b><span style="font-size: 1.1em;">${total}</span></b>`;
-    
+
+    // Advantage: show both dice, bold the kept one
+    let diceText;
+    if (d20Result2 !== null && d20Result2 !== undefined) {
+      const kept   = d20Result;
+      const other  = d20Result2;
+      // kept is always the higher (or equal) one
+      const keptFirst = other <= kept;
+      const first  = keptFirst ? `<b>${kept}</b>` : `${other}`;
+      const second = keptFirst ? `${other}` : `<b>${kept}</b>`;
+      diceText = `d20 (${first}, ${second})`;
+    } else {
+      diceText = `d20 (${d20Result})`;
+    }
+
+    const html = `${diceText}${modifierText} = <b><span style="font-size: 1.1em;">${total}</span></b>`;
+
     console.log(`Generated HTML:`, html);
-    
+
     return html;
   }
   
