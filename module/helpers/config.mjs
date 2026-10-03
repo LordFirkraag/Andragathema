@@ -212,7 +212,6 @@ ANDRAGATHIMA.sizeModifiers = {
   "microscopic": {
     antochi: -4,
     rangedAttack: 8,
-    rangedDefense: 8,
     pali: -16,
     eystatheia: -16,
     carryCapacity: 0.125,
@@ -221,7 +220,6 @@ ANDRAGATHIMA.sizeModifiers = {
   "lilliputian": {
     antochi: -3,
     rangedAttack: 4,
-    rangedDefense: 4,
     pali: -14,
     eystatheia: -14,
     carryCapacity: 0.25,
@@ -230,7 +228,6 @@ ANDRAGATHIMA.sizeModifiers = {
   "tiny": {
     antochi: -2,
     rangedAttack: 2,
-    rangedDefense: 2,
     pali: -8,
     eystatheia: -8,
     carryCapacity: 0.5,
@@ -239,7 +236,6 @@ ANDRAGATHIMA.sizeModifiers = {
   "small": {
     antochi: -1,
     rangedAttack: 1,
-    rangedDefense: 1,
     pali: -4,
     eystatheia: -4,
     carryCapacity: 0.75,
@@ -248,7 +244,6 @@ ANDRAGATHIMA.sizeModifiers = {
   "medium": {
     antochi: 0,
     rangedAttack: 0,
-    rangedDefense: 0,
     pali: 0,
     eystatheia: 0,
     carryCapacity: 1,
@@ -257,7 +252,6 @@ ANDRAGATHIMA.sizeModifiers = {
   "large": {
     antochi: 0,
     rangedAttack: -1,
-    rangedDefense: -1,
     pali: 4,
     eystatheia: 4,
     carryCapacity: 2,
@@ -266,7 +260,6 @@ ANDRAGATHIMA.sizeModifiers = {
   "huge": {
     antochi: 0,
     rangedAttack: -2,
-    rangedDefense: -2,
     pali: 8,
     eystatheia: 8,
     carryCapacity: 4,
@@ -275,7 +268,6 @@ ANDRAGATHIMA.sizeModifiers = {
   "gargantuan": {
     antochi: 0,
     rangedAttack: -4,
-    rangedDefense: -4,
     pali: 12,
     eystatheia: 12,
     carryCapacity: 8,
@@ -284,7 +276,6 @@ ANDRAGATHIMA.sizeModifiers = {
   "colossal": {
     antochi: 0,
     rangedAttack: -8,
-    rangedDefense: -8,
     pali: 16,
     eystatheia: 16,
     carryCapacity: 16,
@@ -462,70 +453,21 @@ ANDRAGATHIMA.statusEffects = [
     name: "ANDRAGATHIMA.StatusStunned",
     description: "ANDRAGATHIMA.StatusStunnedDesc",
     img: "systems/andragathima/assets/conditions/stun.png", 
-    changes: [
-      {
-        key: "system.combat.meleeDefense",
-        mode: 2, // ADD
-        value: -2
-      },
-      {
-        key: "system.combat.rangedDefense",
-        mode: 2, // ADD
-        value: -2
-      },
-      {
-        key: "system.other.ignoreMeleeCoefficient",
-        mode: 5, // OVERRIDE
-        value: true
-      },
-      {
-        key: "system.other.ignoreRangedCoefficient",
-        mode: 5, // OVERRIDE
-        value: true
-      },
-      {
-        key: "system.other.ignoreShieldCoefficient",
-        mode: 5, // OVERRIDE
-        value: true
-      }
-    ]
+    changes: []
   },
   {
     id: "helpless",
     name: "ANDRAGATHIMA.StatusHelpless",
     description: "ANDRAGATHIMA.StatusHelplessDesc",
     img: "systems/andragathima/assets/conditions/helpless.png",
-    changes: [
-      {
-        key: "system.other.ignoreMeleeCoefficient",
-        mode: 5, // OVERRIDE
-        value: true
-      },
-      {
-        key: "system.other.ignoreRangedCoefficient",
-        mode: 5, // OVERRIDE
-        value: true
-      },
-      {
-        key: "system.other.ignoreShieldCoefficient",
-        mode: 5, // OVERRIDE
-        value: true
-      },
-      {
-        key: "system.combat.rangedDefense",
-        mode: 2, // ADD
-        value: -4
-      }
-    ]
+    changes: []
   },
   {
     id: "unconscious",
     name: "ANDRAGATHIMA.StatusUnconscious",
     description: "ANDRAGATHIMA.StatusUnconsciousDesc",
     img: "systems/andragathima/assets/conditions/coma.png",
-    changes: [
-      
-    ]
+    changes: []
   },
   {
     id: "dying",
@@ -593,16 +535,6 @@ ANDRAGATHIMA.statusEffects = [
     img: "systems/andragathima/assets/conditions/blind.png",
     changes: [
       {
-        key: "system.combat.meleeDefense",
-        mode: 2, // ADD
-        value: -4  // -2 original penalty + -2 to make it red
-      },
-      {
-        key: "system.combat.rangedDefense", 
-        mode: 2, // ADD
-        value: -4  // -2 original penalty + -2 to make it red
-      },
-      {
         key: "system.saves.ant.modifier",
         mode: 2, // ADD  
         value: -4
@@ -611,21 +543,6 @@ ANDRAGATHIMA.statusEffects = [
         key: "system.other.speedMultiplier",
         mode: 5, // OVERRIDE
         value: 0.67
-      },
-      {
-        key: "system.other.ignoreMeleeCoefficient",
-        mode: 5, // OVERRIDE
-        value: true
-      },
-      {
-        key: "system.other.ignoreRangedCoefficient", 
-        mode: 5, // OVERRIDE
-        value: true
-      },
-      {
-        key: "system.other.ignoreShieldCoefficient",
-        mode: 5, // OVERRIDE
-        value: true
       },
       {
         key: "system.other.canRun",
@@ -647,16 +564,6 @@ ANDRAGATHIMA.statusEffects = [
       },
       {
         key: "system.combat.rangedAttack.modifier",
-        mode: 2, // ADD
-        value: -2
-      },
-      {
-        key: "system.combat.meleeDefense",
-        mode: 2, // ADD
-        value: -2
-      },
-      {
-        key: "system.combat.rangedDefense",
         mode: 2, // ADD
         value: -2
       },
@@ -708,36 +615,14 @@ ANDRAGATHIMA.statusEffects = [
     name: "ANDRAGATHIMA.StatusGrappled",
     description: "ANDRAGATHIMA.StatusGrappledDesc",
     img: "systems/andragathima/assets/conditions/grapple.png", 
-    changes: [
-      {
-        key: "system.other.ignoreMeleeCoefficient",
-        mode: 5, // OVERRIDE
-        value: true
-      },
-      {
-        key: "system.other.ignoreRangedCoefficient",
-        mode: 5, // OVERRIDE
-        value: true
-      }
-    ]
+    changes: []
   },
   {
     id: "running",
     name: "ANDRAGATHIMA.StatusRunning",
     description: "ANDRAGATHIMA.StatusRunningDesc",
     img: "systems/andragathima/assets/conditions/run.png",
-    changes: [
-      {
-        key: "system.other.ignoreMeleeCoefficient",
-        mode: 5, // OVERRIDE
-        value: true
-      },
-      {
-        key: "system.other.ignoreRangedCoefficient",
-        mode: 5, // OVERRIDE
-        value: true
-      }
-    ]
+    changes: []
   },
   {
     id: "invisible",

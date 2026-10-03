@@ -21,7 +21,7 @@ export class AndragathimaRoll {
     targetNumber = 11,
     opposed = false,
     actor = null,
-    combatRoll = false   // true μόνο για επίθεση/άμυνα — ενεργοποιεί advantage από Ολοκληρωτική Άμυνα
+    combatRoll = false   // true μόνο για τη Ζαριά Μάχης — ενεργοποιεί advantage από Ολοκληρωτική Άμυνα
   } = {}) {
 
     // Read actor-level bonuses from active effects (via the custom modifier system)
@@ -29,7 +29,7 @@ export class AndragathimaRoll {
     const globalBonus = statusMods?.combat?.globalBonus ?? 0;
     const luckBonus = statusMods?.combat?.luckBonus ?? 0;
 
-    // Ολοκληρωτική Άμυνα: advantage μόνο σε ζαριές μάχης (επίθεση/άμυνα)
+    // Ολοκληρωτική Άμυνα: advantage μόνο στη Ζαριά Μάχης
     const hasAdvantage = combatRoll && (actor?.effects.some(
       e => !e.disabled && e.statuses?.has('totaldefense')
     ) ?? false);
@@ -183,35 +183,6 @@ export class AndragathimaRoll {
   }
   
   /**
-   * Roll for Defense
-   * @param {Actor} actor - The defending actor
-   * @param {Object} options - Roll options
-   * @returns {Promise<Object>} Roll results
-   */
-  static async rollDefense(actor, options = {}) {
-    const actorData = actor.system;
-    const isRanged = options.ranged || false;
-    
-    // Calculate modifier
-    let modifier = 0;
-    if (isRanged) {
-      modifier = actorData.combat.ranged.defense;
-    } else {
-      modifier = actorData.combat.melee.defense;
-    }
-    
-    // Add any additional modifiers
-    modifier += options.bonus || 0;
-    
-    return this.basicRoll({
-      label: isRanged ? game.i18n.localize('ANDRAGATHIMA.RangedDefense') : game.i18n.localize('ANDRAGATHIMA.MeleeDefense'),
-      modifier,
-      targetNumber: options.targetNumber || 11,
-      actor
-    });
-  }
-  
-  /**
    * Roll for Damage
    * @param {Actor} actor - The actor dealing damage
    * @param {Object} options - Roll options
@@ -250,7 +221,7 @@ export class AndragathimaRoll {
   }
   
   /**
-   * Roll for Resistance/Antochi
+   * Roll for Άμυνα (η παλιά Αντοχή)
    * @param {Actor} actor - The actor resisting damage
    * @param {Object} options - Roll options
    * @returns {Promise<Object>} Roll results
@@ -263,7 +234,7 @@ export class AndragathimaRoll {
     const modifier = actorData.resistances[damageType].value || 0;
     
     return this.basicRoll({
-      label: `Αντοχή (${CONFIG.ANDRAGATHIMA.damageTypes[damageType]})`,
+      label: `Άμυνα (${CONFIG.ANDRAGATHIMA.damageTypes[damageType]})`,
       modifier,
       targetNumber: options.targetNumber || 11,
       actor

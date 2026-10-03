@@ -356,13 +356,12 @@ export class AndragathimaActor extends Actor {
     const shieldPenalties = this._getShieldPenalties(systemData);
     
     // Store penalty info for template use  
-    systemData.hasArmorPenalty = armorData.defensePenalty < 0;
+    systemData.hasArmorPenalty = armorData.attackPenalty < 0;
     systemData.hasShieldPenalty = shieldPenalties.attackPenalty < 0;
     
     // Melee combat values
     const strMod = this._getAbilityMod(abilities.dyn);
     const meleeStatusMod = statusModifiers.combat.melee || 0;
-    const meleeDefenseStatusMod = statusModifiers.combat.meleeDefense || 0;
     
     // Store display value for combat skills (includes status modifiers)
     combat.melee.displayValue = (combat.melee.value || 0) + meleeStatusMod;
@@ -371,24 +370,19 @@ export class AndragathimaActor extends Actor {
     // Add separate attack modifiers (e.g., from frightened effect)
     const meleeAttackStatusMod = statusModifiers.combat.meleeAttack || 0;
     combat.melee.attack = (combat.melee.value || 0) + meleeStatusMod + meleeAttackStatusMod + armorData.attackPenalty + encumbrancePenalties.attackPenalty + shieldPenalties.attackPenalty;
+
+    // Το καθολικό μέρος από effects (δαχτυλίδια κ.λπ.) που περιέχεται στο attack.
+    // Τα όπλα το συγκρίνουν με το δικό τους αντί να προσθέτουν πάνω του.
+    combat.melee.attackEffect = {
+      bonus: statusModifiers.combat.meleeAttack_effectBonus || 0,
+      penalty: statusModifiers.combat.meleeAttack_effectPenalty || 0
+    };
     
-    // Melee defense = melee combat skill + melee status mod + melee defense status mod + shield bonus (if any) + armor penalty + encumbrance penalty + shield penalty
-    const shieldBonuses = this._getShieldBonus(systemData);
-    
-    // Check if blinded - ignore melee coefficient (melee combat skill) and shield bonus
-    const ignoreMeleeCoeff = statusModifiers.other?.ignoreMeleeCoefficient_override || statusModifiers.other?.ignoreMeleeCoefficient;
-    const ignoreShieldCoeff = statusModifiers.other?.ignoreShieldCoefficient_override || statusModifiers.other?.ignoreShieldCoefficient;
-    
-    const meleeCoeff = ignoreMeleeCoeff ? 0 : (combat.melee.value || 0) + meleeStatusMod;
-    const shieldMeleeBonus = ignoreShieldCoeff ? 0 : shieldBonuses.melee;
-    
-    combat.melee.defense = meleeCoeff + meleeDefenseStatusMod + shieldMeleeBonus + armorData.defensePenalty + encumbrancePenalties.defensePenalty + shieldPenalties.defensePenalty;
     combat.melee.damage = strMod;
     
     // Ranged combat values
     const dexMod = this._getAbilityMod(abilities.epi);
     const rangedStatusMod = statusModifiers.combat.ranged || 0;
-    const rangedDefenseStatusMod = statusModifiers.combat.rangedDefense || 0;
     
     // Store display value for ranged combat skill (includes status modifiers)
     combat.ranged.displayValue = (combat.ranged.value || 0) + rangedStatusMod;
@@ -398,16 +392,13 @@ export class AndragathimaActor extends Actor {
     // Add separate attack modifiers (e.g., from frightened effect)
     const rangedAttackStatusMod = statusModifiers.combat.rangedAttack || 0;
     combat.ranged.attack = (combat.ranged.value || 0) + rangedStatusMod + rangedAttackStatusMod + sizeMod.rangedAttack + armorData.attackPenalty + encumbrancePenalties.attackPenalty + shieldPenalties.attackPenalty;
+
+    // Το καθολικό μέρος από effects που περιέχεται στο attack (βλ. melee παραπάνω)
+    combat.ranged.attackEffect = {
+      bonus: statusModifiers.combat.rangedAttack_effectBonus || 0,
+      penalty: statusModifiers.combat.rangedAttack_effectPenalty || 0
+    };
     
-    // Ranged defense = dexterity modifier + size modifier + shield bonus (if any) + armor penalty + encumbrance penalty + shield penalty + status modifiers
-    // Check if blinded - ignore ranged coefficient (dexterity modifier) and shield bonus
-    const ignoreRangedCoeff = statusModifiers.other?.ignoreRangedCoefficient_override || statusModifiers.other?.ignoreRangedCoefficient;
-    const ignoreShieldRangedCoeff = statusModifiers.other?.ignoreShieldCoefficient_override || statusModifiers.other?.ignoreShieldCoefficient;
-    
-    const rangedCoeff = ignoreRangedCoeff ? 0 : dexMod;
-    const shieldRangedBonus = ignoreShieldRangedCoeff ? 0 : shieldBonuses.ranged;
-    
-    combat.ranged.defense = rangedCoeff + rangedDefenseStatusMod + sizeMod.rangedDefense + shieldRangedBonus + armorData.defensePenalty + encumbrancePenalties.defensePenalty + shieldPenalties.defensePenalty;
     combat.ranged.damage = 0; // Base ranged damage is typically from weapon
     
     // Grapple and stability
@@ -581,13 +572,6 @@ export class AndragathimaActor extends Actor {
       systemData.insomniaFatigue = [1, 2, 3, 4].map(n => 14 + n * kraDisplay).join('/');
     }
 
-    // Store status modifiers in flags for template use
-    if (!this.flags.andragathima) this.flags.andragathima = {};
-    if (!this.flags.andragathima.modifiers) this.flags.andragathima.modifiers = {};
-    if (!this.flags.andragathima.modifiers.combat) this.flags.andragathima.modifiers.combat = {};
-    
-    this.flags.andragathima.modifiers.combat.meleeDefense = meleeDefenseStatusMod;
-    this.flags.andragathima.modifiers.combat.rangedDefense = rangedDefenseStatusMod;
   }
 
   /**
@@ -600,7 +584,6 @@ export class AndragathimaActor extends Actor {
       return {
         resistances: {},
         attackPenalty: 0,
-        defensePenalty: 0,
         armorType: null
       };
     }
@@ -611,7 +594,6 @@ export class AndragathimaActor extends Actor {
       return {
         resistances: {},
         attackPenalty: 0,
-        defensePenalty: 0,
         armorType: null
       };
     }
@@ -645,72 +627,11 @@ export class AndragathimaActor extends Actor {
     // Get armor resistances
     const resistances = JSON.parse(JSON.stringify(armorSystem.resistances || {}));
 
-    // Add shield resistance bonuses if a shield is equipped
-    const shieldSlot = systemData.equipment?.slots?.shield;
-    if (shieldSlot && shieldSlot.id) {
-      const shieldWeapon = this.items.get(shieldSlot.id);
-      if (shieldWeapon && shieldWeapon.type === 'weapon') {
-        const weaponType = shieldWeapon.system.weaponType;
-        if (weaponType === 'aspida_varia') {
-          // Shields (both light and heavy) give +2 to diatrisi, kroysi, and tomi
-          resistances.diatrisi = (resistances.diatrisi || 0) + 2;
-          resistances.kroysi = (resistances.kroysi || 0) + 2;
-          resistances.tomi = (resistances.tomi || 0) + 2;
-        }
-      }
-    }
-
     return {
       resistances: resistances,
       attackPenalty: appliedPenalty, // Now added directly (penalty should be entered as negative in armor sheet)
-      defensePenalty: appliedPenalty, // Now added directly (penalty should be entered as negative in armor sheet)
       armorType: armorType
     };
-  }
-
-  /**
-   * Get shield bonus from equipped shield or weapon in shield slot
-   */
-  _getShieldBonus(systemData) {
-    let meleeBonus = 0;
-    let rangedBonus = 0;
-    
-    // Check for equipped shield items (armor type)
-    const shieldItems = this.items.filter(item => 
-      item.type === 'armor' && 
-      item.system.armorType === 'shield' && 
-      item.system.equipped
-    );
-    
-    for (let shield of shieldItems) {
-      const bonus = shield.system.defenseBonus || 0;
-      meleeBonus += bonus;
-      rangedBonus += bonus;
-    }
-    
-    // Check for weapon in shield slot
-    const shieldSlot = systemData.equipment?.slots?.shield;
-    if (shieldSlot && shieldSlot.id) {
-      const shieldWeapon = this.items.get(shieldSlot.id);
-      if (shieldWeapon && shieldWeapon.type === 'weapon') {
-        const weaponType = shieldWeapon.system.weaponType;
-        const isLight = shieldWeapon.system.isLight || false;
-        
-        if (weaponType === 'aspida_varia' && isLight) {
-          // Light shield (Ασπίδες + ελαφρύ όπλο): resistance bonuses handled in armor data
-          // No longer provides defense bonus
-        } else if (weaponType === 'aspida_varia' && !isLight) {
-          // Heavy shield (Ασπίδες χωρίς ελαφρύ όπλο): resistance bonuses handled in armor data
-          // No longer provides defense bonus
-        } else {
-          // Any other weapon: +1/+0
-          meleeBonus += 1;
-          rangedBonus += 0;
-        }
-      }
-    }
-    
-    return { melee: meleeBonus, ranged: rangedBonus };
   }
 
   /**
@@ -718,7 +639,6 @@ export class AndragathimaActor extends Actor {
    */
   _getShieldPenalties(systemData) {
     let attackPenalty = 0;
-    let defensePenalty = 0;
     
     // Check if character has Όπλα skill (shield proficiency requires Όπλα ≥1)
     const hasAspidesSkill = systemData.skills?.opla?.hasSkill || false;
@@ -733,23 +653,18 @@ export class AndragathimaActor extends Actor {
         
         if (!hasAspidesSkill && weaponType === 'aspida_varia') {
           if (isLight) {
-            // Light shield (Ασπίδες + ελαφρύ όπλο) without skill: -1/-1
+            // Light shield (Ασπίδες + ελαφρύ όπλο) without skill: -1
             attackPenalty = -1;
-            defensePenalty = -1;
           } else {
-            // Heavy shield (Ασπίδες χωρίς ελαφρύ όπλο) without skill: -2/-2
+            // Heavy shield (Ασπίδες χωρίς ελαφρύ όπλο) without skill: -2
             attackPenalty = -2;
-            defensePenalty = -2;
           }
         }
         // Other weapons don't get shield penalties
       }
     }
     
-    return {
-      attackPenalty: attackPenalty,
-      defensePenalty: defensePenalty
-    };
+    return { attackPenalty: attackPenalty };
   }
 
   /**
@@ -1041,7 +956,6 @@ export class AndragathimaActor extends Actor {
       case 'light':
         return {
           attackPenalty: 0,
-          defensePenalty: 0,
           savesPenalty: 0,
           speedMultiplier: 1,
           speedNote: ''
@@ -1049,7 +963,6 @@ export class AndragathimaActor extends Actor {
       case 'heavy':
         return {
           attackPenalty: -2,
-          defensePenalty: -2,
           savesPenalty: -2,
           speedMultiplier: 2/3,
           speedNote: game.i18n.localize('ANDRAGATHIMA.RunningX3')
@@ -1057,7 +970,6 @@ export class AndragathimaActor extends Actor {
       case 'maximum':
         return {
           attackPenalty: -5,
-          defensePenalty: -5,
           savesPenalty: -5,
           speedMultiplier: 1/3,
           speedNote: game.i18n.localize('ANDRAGATHIMA.RunningImpossible')
@@ -1065,7 +977,6 @@ export class AndragathimaActor extends Actor {
       case 'overloaded':
         return {
           attackPenalty: -10,
-          defensePenalty: -10,
           savesPenalty: -10,
           speedMultiplier: 0,
           speedNote: ''
@@ -1073,7 +984,6 @@ export class AndragathimaActor extends Actor {
       default:
         return {
           attackPenalty: 0,
-          defensePenalty: 0,
           savesPenalty: 0,
           speedMultiplier: 1,
           speedNote: ''
@@ -1152,23 +1062,80 @@ export class AndragathimaActor extends Actor {
       other: {}
     };
 
+    // Non-stacking buckets: για κάθε stat κρατάμε ξεχωριστά το μεγαλύτερο bonus
+    // και τη χειρότερη ποινή, ώστε να μη στοιβάζονται μεταξύ τους. Ισχύει για
+    // effects αντικειμένων/ξορκιών — οι καταστάσεις αθροίζονται κανονικά.
+    const stacks = {
+      abilities: {},
+      saves: {},
+      combat: {},
+      resistances: {},
+      other: {}
+    };
+
     // Process all active effects on this actor
     for (const effect of this.effects) {
       if (effect.disabled) continue;
-      
-      this._processEffectChanges(effect, modifiers);
+
+      // Καταστάσεις (κόπωση, τρόμος κ.λπ.) συσσωρεύονται: περνάμε stacks = null
+      this._processEffectChanges(effect, modifiers, this._isConditionEffect(effect) ? null : stacks);
     }
 
     // Process effects from equipped items
-    this._processEquippedItemEffects(modifiers);
-    
+    this._processEquippedItemEffects(modifiers, stacks);
+
+    this._mergeNonStacking(modifiers, stacks);
+
     return modifiers;
+  }
+
+  /**
+   * Είναι το effect κατάσταση (κόπωση, τρόμος, μέθη κ.λπ.);
+   * Οι καταστάσεις συσσωρεύονται κανονικά, σε αντίθεση με τα bonus αντικειμένων.
+   */
+  _isConditionEffect(effect) {
+    return (effect.statuses?.size ?? 0) > 0;
+  }
+
+  /**
+   * Καταγράφει ένα mode-2 (Add) modifier.
+   * Με stacks: τα bonus δεν στοιβάζονται μεταξύ τους (μετράει μόνο το μεγαλύτερο)
+   * και το ίδιο ισχύει για τις ποινές (μετράει μόνο η χειρότερη).
+   * Χωρίς stacks: κανονικό άθροισμα, όπως πριν.
+   */
+  _recordModifier(modifiers, stacks, category, key, value) {
+    if (!stacks) {
+      modifiers[category][key] = (modifiers[category][key] || 0) + value;
+      return;
+    }
+
+    let bucket = stacks[category][key];
+    if (!bucket) bucket = stacks[category][key] = { bonus: 0, penalty: 0 };
+
+    if (value > 0) bucket.bonus = Math.max(bucket.bonus, value);
+    else if (value < 0) bucket.penalty = Math.min(bucket.penalty, value);
+  }
+
+  /**
+   * Ενώνει τα non-stacking buckets με τα υπόλοιπα modifiers.
+   */
+  _mergeNonStacking(modifiers, stacks) {
+    for (const [category, keys] of Object.entries(stacks)) {
+      for (const [key, bucket] of Object.entries(keys)) {
+        modifiers[category][key] = (modifiers[category][key] || 0) + bucket.bonus + bucket.penalty;
+
+        // Κρατάμε ξεχωριστά τα δύο μέρη, ώστε τα bonus/ποινές των όπλων να
+        // συγκρίνονται μαζί τους αντί να προστίθενται (βλ. combineEffectBonus)
+        if (bucket.bonus > 0) modifiers[category][key + '_effectBonus'] = bucket.bonus;
+        if (bucket.penalty < 0) modifiers[category][key + '_effectPenalty'] = bucket.penalty;
+      }
+    }
   }
 
   /**
    * Process effect changes and add to modifiers
    */
-  _processEffectChanges(effect, modifiers) {
+  _processEffectChanges(effect, modifiers, stacks = null) {
 
     for (const change of effect.changes) {
       const key = change.key;
@@ -1193,7 +1160,7 @@ export class AndragathimaActor extends Actor {
       if (key.startsWith('system.abilities.')) {
         const abilityKey = key.split('.')[2]; // e.g., 'dyn' from 'system.abilities.dyn.value'
         if (mode === 2) { // Add mode
-          modifiers.abilities[abilityKey] = (modifiers.abilities[abilityKey] || 0) + value;
+          this._recordModifier(modifiers, stacks, 'abilities', abilityKey, value);
         } else if (mode === 5) { // Override mode
           modifiers.abilities[abilityKey + '_override'] = value;
         } else if (mode === 6) { // Conditional override mode (>=)
@@ -1204,7 +1171,7 @@ export class AndragathimaActor extends Actor {
       } else if (key.startsWith('system.saves.')) {
         const saveKey = key.split('.')[2]; // e.g., 'ant' from 'system.saves.ant.base'
         if (mode === 2) { // Add mode
-          modifiers.saves[saveKey] = (modifiers.saves[saveKey] || 0) + value;
+          this._recordModifier(modifiers, stacks, 'saves', saveKey, value);
         } else if (mode === 5) { // Override mode
           modifiers.saves[saveKey + '_override'] = value;
         } else if (mode === 6) { // Conditional override mode (>=)
@@ -1213,9 +1180,9 @@ export class AndragathimaActor extends Actor {
           modifiers.saves[saveKey + '_invulnerable'] = value;
         }
       } else if (key.startsWith('system.combat.')) {
-        const combatKey = key.split('.')[2]; // e.g., 'meleeDefense' from 'system.combat.meleeDefense'
+        const combatKey = key.split('.')[2]; // e.g., 'meleeAttack' from 'system.combat.meleeAttack.value'
         if (mode === 2) { // Add mode
-          modifiers.combat[combatKey] = (modifiers.combat[combatKey] || 0) + value;
+          this._recordModifier(modifiers, stacks, 'combat', combatKey, value);
         } else if (mode === 5) { // Override mode
           modifiers.combat[combatKey + '_override'] = value;
         } else if (mode === 6) { // Conditional override mode (>=)
@@ -1226,7 +1193,7 @@ export class AndragathimaActor extends Actor {
       } else if (key.startsWith('system.resistances.')) {
         const resistanceKey = key.split('.')[2]; // e.g., 'base' from 'system.resistances.base'
         if (mode === 2) { // Add mode
-          modifiers.resistances[resistanceKey] = (modifiers.resistances[resistanceKey] || 0) + value;
+          this._recordModifier(modifiers, stacks, 'resistances', resistanceKey, value);
         } else if (mode === 5) { // Override mode
           modifiers.resistances[resistanceKey + '_override'] = value;
         } else if (mode === 6) { // Conditional override mode (>=)
@@ -1237,7 +1204,7 @@ export class AndragathimaActor extends Actor {
       } else if (key.startsWith('system.magic.')) {
         const magicKey = key.split('.')[2]; // e.g., 'level' from 'system.magic.level.value'
         if (mode === 2) { // Add mode
-          modifiers.other[magicKey] = (modifiers.other[magicKey] || 0) + value;
+          this._recordModifier(modifiers, stacks, 'other', magicKey, value);
         } else if (mode === 5) { // Override mode
           modifiers.other[magicKey + '_override'] = value;
         } else if (mode === 6) { // Conditional override mode (>=)
@@ -1251,7 +1218,7 @@ export class AndragathimaActor extends Actor {
           if (typeof value === 'boolean') {
             modifiers.other[otherKey] = value;
           } else {
-            modifiers.other[otherKey] = (modifiers.other[otherKey] || 0) + value;
+            this._recordModifier(modifiers, stacks, 'other', otherKey, value);
           }
         } else if (mode === 5) { // Override mode
           modifiers.other[otherKey + '_override'] = value;
@@ -1265,80 +1232,16 @@ export class AndragathimaActor extends Actor {
   }
 
   /**
-   * Process Total Defense effect with complex shield and skill logic
-   */
-  _processTotalDefenseEffect(effect, modifiers) {
-    // Base total defense: +4/+0
-    let meleeDefenseBonus = 4;
-    let rangedDefenseBonus = 0;
-    
-    // Check if character has a shield equipped
-    const shieldSlot = this.system.equipment?.slots?.shield;
-    const hasShield = shieldSlot && shieldSlot.id && shieldSlot.id.trim() !== "";
-    
-    // Check for Projectile Deflection skill (Εκτροπή βλημάτων)
-    const hasProjectileDeflection = this.system.skills?.ektropi_vlimaton?.hasSkill;
-    
-    // Check for Never Unarmed skill (Ποτέ άοπλος)
-    const hasNeverUnarmed = this.system.skills?.pote_aoplos?.hasSkill;
-    
-    // Check if character is holding any weapon that is NOT Fist category
-    const quickWeapons = [];
-    this.system.equipment?.quickItems?.forEach(quickItem => {
-      if (quickItem.id) {
-        const item = this.items.get(quickItem.id);
-        if (item && item.type === 'weapon') {
-          quickWeapons.push({
-            name: item.name,
-            category: item.system.weaponCategory,
-            isFistCategory: item.system.weaponCategory === 'fist'
-          });
-        }
-      }
-    });
-    
-    const isHoldingNonFistWeapon = quickWeapons.some(weapon => !weapon.isFistCategory) || hasShield;
-    
-    // Apply bonus logic:
-    if (hasShield) {
-      // Has shield (light or heavy): +4/+4
-      rangedDefenseBonus = 4;
-    } else if (hasProjectileDeflection && hasNeverUnarmed) {
-      // Has both Projectile Deflection and Never Unarmed: always +4/+4
-      rangedDefenseBonus = 4;
-    } else if (hasProjectileDeflection && isHoldingNonFistWeapon) {
-      // Has Projectile Deflection and holding any weapon that is not fist category: +4/+4
-      rangedDefenseBonus = 4;
-    }
-    
-    // Apply the modifiers
-    modifiers.combat.meleeDefense = (modifiers.combat.meleeDefense || 0) + meleeDefenseBonus;
-    modifiers.combat.rangedDefense = (modifiers.combat.rangedDefense || 0) + rangedDefenseBonus;
-    
-    console.log(`Total Defense DEBUG:`, {
-      meleeBonus: meleeDefenseBonus,
-      rangedBonus: rangedDefenseBonus,
-      hasShield,
-      hasProjectileDeflection,
-      hasNeverUnarmed,
-      isHoldingNonFistWeapon,
-      quickWeapons,
-      projectileDeflectionSkill: this.system.skills?.ektropi_vlimaton,
-      neverUnarmedSkill: this.system.skills?.pote_aoplos
-    });
-  }
-
-  /**
    * Process effects from equipped items
    */
-  _processEquippedItemEffects(modifiers) {
+  _processEquippedItemEffects(modifiers, stacks = null) {
     // Process equipment slot items
     const equipmentSlots = this.system.equipment?.slots || {};
     for (const [slotKey, slotData] of Object.entries(equipmentSlots)) {
       if (slotData.id) {
         const item = this.items.get(slotData.id);
         if (item && item.effects) {
-          this._processItemEffects(item, modifiers, 'equipment');
+          this._processItemEffects(item, modifiers, 'equipment', stacks);
         }
       }
     }
@@ -1349,7 +1252,7 @@ export class AndragathimaActor extends Actor {
       if (quickItem.id) {
         const item = this.items.get(quickItem.id);
         if (item && item.effects) {
-          this._processItemEffects(item, modifiers, 'quick');
+          this._processItemEffects(item, modifiers, 'quick', stacks);
         }
       }
     }
@@ -1357,7 +1260,7 @@ export class AndragathimaActor extends Actor {
     // Process items with equipped system property
     for (const item of this.items) {
       if (item.system.equipped && item.effects) {
-        this._processItemEffects(item, modifiers, 'equipped');
+        this._processItemEffects(item, modifiers, 'equipped', stacks);
       }
     }
 
@@ -1371,7 +1274,7 @@ export class AndragathimaActor extends Actor {
         const isInQuickItems = quickItems.some(quickItem => quickItem.id === item.id);
         
         if (!isInEquipmentSlot && !isInQuickItems) {
-          this._processItemEffects(item, modifiers, 'misc');
+          this._processItemEffects(item, modifiers, 'misc', stacks);
         }
       }
     }
@@ -1380,23 +1283,35 @@ export class AndragathimaActor extends Actor {
   /**
    * Process effects from a specific item based on its location and settings
    */
-  _processItemEffects(item, modifiers, location) {
+  _processItemEffects(item, modifiers, location, stacks = null) {
     const requiresEquipment = item.system.effectsRequireEquipment !== false; // Default true
-    
+
     for (const effect of item.effects) {
       if (effect.disabled) continue;
-      
+
+      // Αν το αντικείμενο επιβάλλει κατάσταση, αυτή συσσωρεύεται κανονικά —
+      // ο κανόνας μη-στοίβαξης αφορά μόνο τα bonus μαγικών αντικειμένων/ξορκιών
+      const effectStacks = this._isConditionEffect(effect) ? null : stacks;
+
+      // Τα bonus επίθεσης/ζημιάς ενός όπλου ισχύουν μόνο για το ίδιο το όπλο και
+      // εφαρμόζονται στο φύλλο χαρακτήρα ανά όπλο — ποτέ καθολικά. Αλλιώς ένα όπλο
+      // στο δεύτερο χέρι (slot ασπίδας) θα έδινε το bonus του και στο άλλο όπλο,
+      // ενώ στον εαυτό του θα μετρούσε δύο φορές.
+      const applyAll = () => item.type === 'weapon'
+        ? this._processNonWeaponSpecificEffects(effect, modifiers, effectStacks)
+        : this._processEffectChanges(effect, modifiers, effectStacks);
+
       if (!requiresEquipment) {
         // Item doesn't require equipment - apply all effects always
-        this._processEffectChanges(effect, modifiers);
+        applyAll();
       } else {
         // Item requires equipment - apply based on location
         if (location === 'equipment' || location === 'equipped') {
           // In equipment slot or equipped - apply all effects
-          this._processEffectChanges(effect, modifiers);
+          applyAll();
         } else if (location === 'quick') {
           // In quick items - only apply non-attack/damage effects to character
-          this._processNonWeaponSpecificEffects(effect, modifiers);
+          this._processNonWeaponSpecificEffects(effect, modifiers, effectStacks);
         }
         // In misc slots - don't apply effects if requires equipment
       }
@@ -1406,7 +1321,7 @@ export class AndragathimaActor extends Actor {
   /**
    * Process only non-weapon-specific effects for quick items (exclude attack/damage)
    */
-  _processNonWeaponSpecificEffects(effect, modifiers) {
+  _processNonWeaponSpecificEffects(effect, modifiers, stacks = null) {
     for (const change of effect.changes) {
       const key = change.key;
       const mode = change.mode;
@@ -1430,7 +1345,7 @@ export class AndragathimaActor extends Actor {
       if (key.startsWith('system.abilities.')) {
         const abilityKey = key.split('.')[2];
         if (mode === 2) { // Add mode
-          modifiers.abilities[abilityKey] = (modifiers.abilities[abilityKey] || 0) + value;
+          this._recordModifier(modifiers, stacks, 'abilities', abilityKey, value);
         } else if (mode === 5) { // Override mode
           modifiers.abilities[abilityKey + '_override'] = value;
         } else if (mode === 6) { // Conditional override mode (>=)
@@ -1441,7 +1356,7 @@ export class AndragathimaActor extends Actor {
       } else if (key.startsWith('system.saves.')) {
         const saveKey = key.split('.')[2];
         if (mode === 2) { // Add mode
-          modifiers.saves[saveKey] = (modifiers.saves[saveKey] || 0) + value;
+          this._recordModifier(modifiers, stacks, 'saves', saveKey, value);
         } else if (mode === 5) { // Override mode
           modifiers.saves[saveKey + '_override'] = value;
         } else if (mode === 6) { // Conditional override mode (>=)
@@ -1452,7 +1367,7 @@ export class AndragathimaActor extends Actor {
       } else if (key.startsWith('system.combat.') && !isAttackEffect) {
         const combatKey = key.split('.')[2];
         if (mode === 2) { // Add mode
-          modifiers.combat[combatKey] = (modifiers.combat[combatKey] || 0) + value;
+          this._recordModifier(modifiers, stacks, 'combat', combatKey, value);
         } else if (mode === 5) { // Override mode
           modifiers.combat[combatKey + '_override'] = value;
         } else if (mode === 6) { // Conditional override mode (>=)
@@ -1463,7 +1378,7 @@ export class AndragathimaActor extends Actor {
       } else if (key.startsWith('system.resistances.')) {
         const resistanceKey = key.split('.')[2];
         if (mode === 2) { // Add mode
-          modifiers.resistances[resistanceKey] = (modifiers.resistances[resistanceKey] || 0) + value;
+          this._recordModifier(modifiers, stacks, 'resistances', resistanceKey, value);
         } else if (mode === 5) { // Override mode
           modifiers.resistances[resistanceKey + '_override'] = value;
         } else if (mode === 6) { // Conditional override mode (>=)
@@ -1474,7 +1389,7 @@ export class AndragathimaActor extends Actor {
       } else if (key.startsWith('system.magic.')) {
         const magicKey = key.split('.')[2];
         if (mode === 2) { // Add mode
-          modifiers.other[magicKey] = (modifiers.other[magicKey] || 0) + value;
+          this._recordModifier(modifiers, stacks, 'other', magicKey, value);
         } else if (mode === 5) { // Override mode
           modifiers.other[magicKey + '_override'] = value;
         } else if (mode === 6) { // Conditional override mode (>=)
@@ -1485,7 +1400,7 @@ export class AndragathimaActor extends Actor {
       } else if (key.startsWith('system.other.')) {
         const otherKey = key.split('.')[2];
         if (mode === 2) { // Add mode
-          modifiers.other[otherKey] = (modifiers.other[otherKey] || 0) + value;
+          this._recordModifier(modifiers, stacks, 'other', otherKey, value);
         } else if (mode === 5) { // Override mode
           modifiers.other[otherKey + '_override'] = value;
         } else if (mode === 6) { // Conditional override mode (>=)
@@ -1655,15 +1570,15 @@ export class AndragathimaActor extends Actor {
   }
 
   /**
-   * Calculate character level based on combat, defense, and magic grade
+   * Calculate character level based on combat, Άμυνα, and magic grade
    * @param {Object} systemData   Actor system data
    * @private
    */
   _calculateCharacterLevel(systemData) {
-    // 1. Calculate defense + resistance average
+    // 1. Άμυνα (η παλιά Αντοχή). Ήταν ο μέσος όρος άμυνας + αντοχής· τώρα που
+    // η παλιά άμυνα καταργήθηκε, μένει σκέτη η Άμυνα.
     // Handle invulnerable base resistance (*) by using a high numeric value (30) for calculation
-    const baseResistanceValue = systemData.baseResistance === '*' ? 30 : (parseFloat(systemData.baseResistance) || 0);
-    const defenseAverage = (systemData.combat.melee.defense + baseResistanceValue) / 2;
+    const amynaValue = systemData.baseResistance === '*' ? 30 : (parseFloat(systemData.baseResistance) || 0);
     
     // 2. Calculate highest attack + damage from quick items only
     let highestCombatValue = 0;
@@ -1697,7 +1612,7 @@ export class AndragathimaActor extends Actor {
     const magicDegree = baseMagicDegree + magicDegreeBonus;
     
     // 4. Take the highest of the three values, round it, minimum 0
-    const characterLevel = Math.max(0, Math.round(Math.max(defenseAverage, highestCombatValue, magicDegree)));
+    const characterLevel = Math.max(0, Math.round(Math.max(amynaValue, highestCombatValue, magicDegree)));
     
     // Store the calculated level
     systemData.characterLevel = characterLevel;

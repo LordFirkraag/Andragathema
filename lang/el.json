@@ -115,12 +115,9 @@
     
     "Attack": "Επίθεση",
     "TooltipRanged": "Βολές",
-    "Defense": "Άμυνα",
     "Damage": "Ζημιά",
     "AttackMelee": "Επίθεση Σώμα με Σώμα",
     "AttackRanged": "Επίθεση Μακρόθεν",
-    "DefenseMelee": "Άμυνα Σώμα με Σώμα",
-    "DefenseRanged": "Άμυνα Μακρόθεν",
     "AttackWithColon": "Επίθεση:",
     "DamageWithColon": "Ζημιά:",
     
@@ -191,7 +188,6 @@
     "Roll": "Ρίξε Ζάρι",
     "RollTest": "Δοκιμασία",
     "RollAttack": "Ζαριά Επίθεσης",
-    "RollDefense": "Ζαριά Άμυνας",
     "RollDamage": "Ζαριά Ζημιάς",
     "RollResistance": "Ζαριά Άμυνας",
     "RollSave": "Ζαριά Αποφυγής",
@@ -514,8 +510,6 @@
     "EffectSheetRangedSkill": "Ικανότητα μακρόθεν",
     "EffectSheetMeleeAttack": "Μάχη σώμα με σώμα",
     "EffectSheetRangedAttack": "Βολές",
-    "EffectSheetMeleeDefense": "Άμυνα σώμα με σώμα",
-    "EffectSheetRangedDefense": "Άμυνα μακρόθεν",
     "EffectSheetInitiative": "Πρωτοβουλία",
     "EffectSheetResistanceBase": "Άμυνα",
     "EffectSheetResistancePiercing": "Άμυνα διάτρησης",
@@ -610,7 +604,7 @@
     "StatusChargeDesc": "+2 Επίθεση σώμα με σώμα, -2/-2 Άμυνα.",
     
     "StatusTotalDefense": "Ολοκληρωτική άμυνα",
-    "StatusTotalDefenseDesc": "Άμυνα +4/+0. Αν έχεις ασπίδα (ελαφριά είτε βαριά) στο σλοτ ασπίδας, είναι +4/+4. Αν έχεις τη δεξιότητα Εκτροπή Βλημάτων, έχεις +4/+4 αν απλά κρατάς οποιοδήποτε όπλο εκτός από Γροθιές. Αν έχεις τη δεξιότητα Εκτροπή Βλημάτων και Ποτέ Άοπλος, έχεις πάντα +4/+4 με ολοκληρωτική άμυνα.",
+    "StatusTotalDefenseDesc": "Όταν κάνεις Ζαριά Μάχης, ρίχνεις δύο φορές και κρατάς το καλύτερο αποτέλεσμα.",
     
     "StatusFatigued": "Καταπονημένος",
     "StatusFatiguedDesc": "Έχεις ποινή −1/−1 σε όλες τις επιθέσεις και −1 Πρωτοβουλία.",
@@ -686,8 +680,6 @@
     "RangedAttack": "Επίθεση μακρόθεν",
     "MeleeAttack": "Επίθεση σώμα με σώμα",
     
-    "DefenseMeleeRoll": "Άμυνα σώμα με σώμα",
-    "DefenseRangedRoll": "Άμυνα μακρόθεν",
     
     "AbilityDynGenitive": "Δύναμης",
     "AbilityEpiGenitive": "Επιδεξιότητας",

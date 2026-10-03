@@ -536,8 +536,6 @@ export class AndragathimaItemSheet extends ItemSheet {
       'system.combat.ranged.value': 'Μακρόθεν',
       'system.combat.meleeAttack.value': 'Επίθεση σώμα με σώμα',
       'system.combat.rangedAttack.value': 'Επίθεση μακρόθεν',
-      'system.combat.meleeDefense.value': 'Άμυνα σώμα με σώμα',
-      'system.combat.rangedDefense.value': 'Άμυνα μακρόθεν',
       'system.combat.initiative.value': 'Πρωτοβουλία',
       'system.resistances.base': game.i18n.localize('ANDRAGATHIMA.Resistance'),
       'system.resistances.diatrisi': `${game.i18n.localize('ANDRAGATHIMA.Resistance')} ${game.i18n.localize('ANDRAGATHIMA.ResistanceDiatrisi').toLowerCase()}`,

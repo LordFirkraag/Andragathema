@@ -115,12 +115,9 @@
     
     "Attack": "Attack",
     "TooltipRanged": "Shots",
-    "Defense": "Defense",
     "Damage": "Damage",
     "AttackMelee": "Melee Attack",
     "AttackRanged": "Ranged Attack",
-    "DefenseMelee": "Melee Defense",
-    "DefenseRanged": "Ranged Defense",
     "AttackWithColon": "Attack:",
     "DamageWithColon": "Damage:",
     
@@ -191,7 +188,6 @@
     "Roll": "Roll Dice",
     "RollTest": "Test",
     "RollAttack": "Attack Roll",
-    "RollDefense": "Defense Roll",
     "RollDamage": "Damage Roll",
     "RollResistance": "Defense Roll",
     "RollSave": "Saving Throw",
@@ -514,8 +510,6 @@
     "EffectSheetRangedSkill": "Ranged ability",
     "EffectSheetMeleeAttack": "Melee combat",
     "EffectSheetRangedAttack": "Shots",
-    "EffectSheetMeleeDefense": "Melee defense",
-    "EffectSheetRangedDefense": "Ranged defense",
     "EffectSheetInitiative": "Initiative",
     "EffectSheetResistanceBase": "Defense",
     "EffectSheetResistancePiercing": "Piercing defense",
@@ -610,7 +604,7 @@
     "StatusChargeDesc": "+2 Melee Attack, -2/-2 Defense.",
     
     "StatusTotalDefense": "Total Defense",
-    "StatusTotalDefenseDesc": "Defense +4/+0. If you have a shield (light or heavy) in shield slot, it's +4/+4. If you have Projectile Deflection skill, you get +4/+4 if you simply hold any weapon except Fists. If you have Projectile Deflection and Never Unarmed, you always get +4/+4 with total defense.",
+    "StatusTotalDefenseDesc": "When you make a Combat Roll, you roll twice and keep the better result.",
     
     "StatusFatigued": "Fatigued",
     "StatusFatiguedDesc": "−1/−1 penalty to all attacks and −1 Initiative.",

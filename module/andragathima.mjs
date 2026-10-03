@@ -13,6 +13,7 @@ import { AndragathimaItemSheet } from "./sheets/item-sheet.mjs";
 import { AndragathimaActiveEffectSheet } from "./sheets/effect-sheet.mjs";
 // Import helper/utility classes and constants
 import { ANDRAGATHIMA } from "./helpers/config.mjs";
+import { combineEffectBonus, getWeaponEffectBonuses } from "./helpers/stacking.mjs";
 
 /* -------------------------------------------- */
 /*  Init Hook                                   */
@@ -2673,7 +2674,7 @@ function generateTooltipContent(actor) {
   let content = `<div class="item-name">${actor.name}</div>`;
   content += `<div class="item-details">`;
 
-  // Αντοχή (Resistance)
+  // Άμυνα (η παλιά Αντοχή)
   if (system.baseResistance !== undefined) {
     const resistance = system.baseResistance;
     const resistanceDisplay = formatStat(resistance, useTargetNumbers);
@@ -3040,34 +3041,11 @@ window.processWeaponForRecord = function processWeaponForRecord(actor, item, isS
     // Calculate weapon specialization bonus
     const weaponSpecializationBonus = getWeaponSpecializationBonus(actor, item.system.weaponType);
     
-    // Get weapon-specific effects (attack and damage bonuses)
-    let weaponMeleeAttackBonus = 0;
-    let weaponRangedAttackBonus = 0;
-    let weaponBaseDamageBonus = 0;
-    let weaponOtherDamageTypes = [];
-    
-    if (item.effects && item.effects.size > 0) {
-      for (let effect of item.effects) {
-        if (!effect.disabled && effect.changes) {
-          for (let change of effect.changes) {
-            if (change.key === 'system.combat.meleeAttack.value') {
-              weaponMeleeAttackBonus += Number(change.value) || 0;
-            } else if (change.key === 'system.combat.rangedAttack.value') {
-              weaponRangedAttackBonus += Number(change.value) || 0;
-            } else if (change.key === 'system.damage.base') {
-              weaponBaseDamageBonus += Number(change.value) || 0;
-            } else if (change.key && change.key.startsWith('system.damage.') && change.key !== 'system.damage.base') {
-              const damageType = change.key.replace('system.damage.', '');
-              const value = Number(change.value) || 0;
-              if (value > 0) {
-                const localizedDamageType = getLocalizedDamageType(damageType);
-                weaponOtherDamageTypes.push(`+${value} ${localizedDamageType}`);
-              }
-            }
-          }
-        }
-      }
-    }
+    // Get weapon-specific effects (attack and damage bonuses).
+    // Πολλαπλά effects στο ίδιο stat δεν στοιβάζονται — μετράει το μεγαλύτερο.
+    const weaponEffects = getWeaponEffectBonuses(item, getLocalizedDamageType);
+    const weaponBaseDamageBonus = weaponEffects.baseDamage.total;
+    const weaponOtherDamageTypes = weaponEffects.otherDamageTypes;
     
     // Calculate penalties specific to shield weapons
     let shieldSpecificPenalties = 0;
@@ -3090,13 +3068,18 @@ window.processWeaponForRecord = function processWeaponForRecord(actor, item, isS
     }
     
     // Calculate final attack values
-    weaponData.system.meleeAttackWithPenalty = system.combat.melee.attack + 
+    // Το bonus του όπλου δεν προστίθεται στο καθολικό bonus από effects —
+    // μετράει μόνο το μεγαλύτερο από τα δύο.
+    const meleeBase = combineEffectBonus(system.combat.melee.attack, system.combat.melee.attackEffect, weaponEffects.meleeAttack);
+    const rangedBase = combineEffectBonus(system.combat.ranged.attack, system.combat.ranged.attackEffect, weaponEffects.rangedAttack);
+
+    weaponData.system.meleeAttackWithPenalty = meleeBase + 
       proficiencyPenalty + strengthPenalty + rangedWeaponPenalty + 
-      shieldSpecificPenalties + weaponSpecializationBonus + weaponMeleeAttackBonus;
+      shieldSpecificPenalties + weaponSpecializationBonus;
       
-    weaponData.system.rangedAttackWithPenalty = system.combat.ranged.attack + 
+    weaponData.system.rangedAttackWithPenalty = rangedBase + 
       proficiencyPenalty + strengthPenalty + 
-      shieldSpecificPenalties + weaponSpecializationBonus + weaponRangedAttackBonus;
+      shieldSpecificPenalties + weaponSpecializationBonus;
     
     // Calculate damage
     const weaponCoefficient = item.system.damage?.coefficient || 0;
