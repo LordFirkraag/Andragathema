@@ -4475,3 +4475,88 @@ body .tooltip {
   opacity: 1;
 }
 
+
+/* -------------------------------------------- */
+/*  Κλειδωμένο φύλλο αντικειμένου               */
+/* -------------------------------------------- */
+
+/* Η φόρμα παίρνει .sheet-locked όταν το isEditable είναι false.
+   Τα πεδία κειμένου διαβάζονται σαν απλό κείμενο. Τα checkbox εξαιρούνται:
+   θέλουμε να φαίνονται όπως πριν, απλώς αδρανή. */
+.andragathima.sheet-locked input:disabled:not([type="checkbox"]):not([type="radio"]),
+.andragathima.sheet-locked select:disabled,
+.andragathima.sheet-locked textarea:disabled {
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  outline: none !important;
+  color: inherit;
+  opacity: 1;
+  cursor: default;
+  transition: none !important;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+/* Το παροδικό πλαίσιο στο hover/focus/active το ζωγραφίζουν κανόνες αλλού
+   με transition — τους μηδενίζουμε ρητά σε κάθε κατάσταση. */
+.andragathima.sheet-locked input:disabled:not([type="checkbox"]):not([type="radio"]):hover,
+.andragathima.sheet-locked input:disabled:not([type="checkbox"]):not([type="radio"]):focus,
+.andragathima.sheet-locked input:disabled:not([type="checkbox"]):not([type="radio"]):focus-visible,
+.andragathima.sheet-locked input:disabled:not([type="checkbox"]):not([type="radio"]):active,
+.andragathima.sheet-locked select:disabled:hover,
+.andragathima.sheet-locked select:disabled:focus,
+.andragathima.sheet-locked select:disabled:focus-visible,
+.andragathima.sheet-locked select:disabled:active,
+.andragathima.sheet-locked textarea:disabled:hover,
+.andragathima.sheet-locked textarea:disabled:focus,
+.andragathima.sheet-locked textarea:disabled:focus-visible,
+.andragathima.sheet-locked textarea:disabled:active {
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  outline: none !important;
+  transition: none !important;
+}
+
+/* Τα checkbox κρατούν το custom styling τους (appearance:none + ::after για
+   το ✓) — αλλάζει μόνο ο δείκτης. Χωρίς !important κερδίζει το cursor:pointer
+   του βασικού κανόνα, που έχει ίδια ειδικότητα. */
+.andragathima.sheet-locked input[type="checkbox"]:disabled,
+.andragathima.sheet-locked input[type="radio"]:disabled {
+  cursor: default !important;
+}
+
+/* Περιγραφή: κείμενο προς ανάγνωση, χωρίς δρομέα, πλαίσιο ή καρέ */
+.andragathima.sheet-locked .editor,
+.andragathima.sheet-locked .editor-content,
+.andragathima.sheet-locked .prosemirror,
+.andragathima.sheet-locked .editor *,
+.andragathima.sheet-locked .editor-content * {
+  cursor: default !important;
+  caret-color: transparent;
+}
+
+.andragathima.sheet-locked .editor,
+.andragathima.sheet-locked .editor-content,
+.andragathima.sheet-locked .prosemirror {
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  transition: none !important;
+}
+
+.andragathima.sheet-locked .editor:hover,
+.andragathima.sheet-locked .editor-content:hover,
+.andragathima.sheet-locked .editor-content:focus,
+.andragathima.sheet-locked .prosemirror:focus {
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+/* Το κουμπί επεξεργασίας της περιγραφής δεν εμφανίζεται καθόλου */
+.andragathima.sheet-locked .editor-edit {
+  display: none !important;
+}

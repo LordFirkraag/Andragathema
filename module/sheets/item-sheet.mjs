@@ -14,6 +14,24 @@ export class AndragathimaItemSheet extends ItemSheet {
     });
   }
 
+  /**
+   * Είναι ο χρήστης GM ή βοηθός GM;
+   */
+  static get isGMOrAssistant() {
+    return game.user.role >= CONST.USER_ROLES.ASSISTANT;
+  }
+
+  /**
+   * Με ενεργό το κλείδωμα, τα φύλλα αντικειμένων και ξορκιών είναι μόνο για
+   * ανάγνωση για τους παίκτες. Το Foundry απενεργοποιεί μόνο του όλα τα πεδία
+   * και το activateListeners σταματά νωρίς όταν το isEditable είναι false.
+   */
+  get isEditable() {
+    if (!super.isEditable) return false;
+    if (AndragathimaItemSheet.isGMOrAssistant) return true;
+    return !game.settings.get("andragathima", "lockItemSheets");
+  }
+
   /** @override */
   get template() {
     const path = "systems/andragathima/templates/item";
@@ -61,6 +79,10 @@ export class AndragathimaItemSheet extends ItemSheet {
 
     // Adding CONFIG for dropdowns
     context.config = CONFIG.ANDRAGATHIMA;
+
+    // Τα effects των αντικειμένων είναι ορατά και επεξεργάσιμα μόνο από
+    // GM και GM assistant — ανεξάρτητα από το κλείδωμα
+    context.isGMOrAssistant = AndragathimaItemSheet.isGMOrAssistant;
 
     // Item type specific data
     this._prepareItemTypeData(context);
@@ -145,6 +167,21 @@ export class AndragathimaItemSheet extends ItemSheet {
     // Setup instant tooltips
     this._setupInstantTooltips(html);
 
+    // Κλειδωμένο φύλλο: σημαδεύουμε τη φόρμα ώστε το CSS να σβήσει πλαίσια,
+    // φόντα και δρομείς, και να διαβάζεται σαν απλό κείμενο.
+    if (!this.isEditable) {
+      html.addClass("sheet-locked");
+      html.find('[contenteditable="true"]').attr("contenteditable", "false");
+
+      // Εξαίρεση: η ποσότητα μένει επεξεργάσιμη. Είναι λογιστική κατανάλωσης
+      // (βέλη, δαυλοί, φίλτρα) και όχι στατιστικό δύναμης. Με isEditable false
+      // το Foundry δεν δένει change listener και η φόρμα δεν υποβάλλεται, γι'
+      // αυτό γράφουμε την τιμή εμείς.
+      html.find('input[name="system.quantity"]')
+        .prop("disabled", false)
+        .on("change", this._onQuantityChange.bind(this));
+    }
+
     // Everything below here is only needed if the sheet is editable
     if (!this.isEditable) return;
 
@@ -157,13 +194,16 @@ export class AndragathimaItemSheet extends ItemSheet {
     // Resistance value changes
     html.find('.resistance-value').change(this._onResistanceChange.bind(this));
 
-    // Effects management
-    html.find('.add-effect-slot').click(this._onAddEffect.bind(this));
-    html.find('.effect-slot.has-effect').click(this._onEditEffect.bind(this));
-    html.find('.effect-delete').click(this._onDeleteEffect.bind(this));
-    
-    // Add right-click toggle functionality for effects
-    html.find('.effect-slot.has-effect').on('contextmenu', this._onToggleEffect.bind(this));
+    // Effects management — μόνο GM και GM assistant. Το πλαίσιο δεν καν
+    // εμφανίζεται στους άλλους, αλλά δεν δένουμε ούτε τους handlers.
+    if (AndragathimaItemSheet.isGMOrAssistant) {
+      html.find('.add-effect-slot').click(this._onAddEffect.bind(this));
+      html.find('.effect-slot.has-effect').click(this._onEditEffect.bind(this));
+      html.find('.effect-delete').click(this._onDeleteEffect.bind(this));
+
+      // Add right-click toggle functionality for effects
+      html.find('.effect-slot.has-effect').on('contextmenu', this._onToggleEffect.bind(this));
+    }
     
     // Handle showOnToken checkbox change for weapons and ammunition
     html.find('input[name="system.showOnToken"]').change(this._onShowOnTokenChange.bind(this));
@@ -407,10 +447,22 @@ export class AndragathimaItemSheet extends ItemSheet {
   }
 
   /**
+   * Γράφει την ποσότητα όταν το φύλλο είναι κλειδωμένο. Το μόνο πεδίο που
+   * επιτρέπεται στους παίκτες — το κλείδωμα εγγράφων το δέχεται ήδη.
+   */
+  async _onQuantityChange(event) {
+    event.preventDefault();
+    const quantity = Math.max(0, parseInt(event.currentTarget.value) || 0);
+    event.currentTarget.value = quantity;
+    await this.item.update({ "system.quantity": quantity });
+  }
+
+  /**
    * Handle adding a new effect to the item
    */
   async _onAddEffect(event) {
     event.preventDefault();
+    if (!AndragathimaItemSheet.isGMOrAssistant) return;
     
     // Create a new effect
     const effect = {
@@ -433,6 +485,7 @@ export class AndragathimaItemSheet extends ItemSheet {
    */
   _onEditEffect(event) {
     event.preventDefault();
+    if (!AndragathimaItemSheet.isGMOrAssistant) return;
     const effectId = event.currentTarget.dataset.effectId;
     const effect = this.item.effects.get(effectId);
     
@@ -446,6 +499,7 @@ export class AndragathimaItemSheet extends ItemSheet {
    */
   async _onDeleteEffect(event) {
     event.preventDefault();
+    if (!AndragathimaItemSheet.isGMOrAssistant) return;
     event.stopPropagation();
     
     const effectId = event.currentTarget.dataset.effectId;
@@ -461,6 +515,7 @@ export class AndragathimaItemSheet extends ItemSheet {
    */
   async _onToggleEffect(event) {
     event.preventDefault();
+    if (!AndragathimaItemSheet.isGMOrAssistant) return;
     event.stopPropagation();
     
     const effectId = event.currentTarget.dataset.effectId;

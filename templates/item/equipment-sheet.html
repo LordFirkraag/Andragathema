@@ -35,6 +35,7 @@
       </div>
 
       {{!-- Effects Grid --}}
+      {{#if isGMOrAssistant}}
       <div class="item-effects-section">
         <div class="effects-grid">
           {{#each item.effects as |effect|}}
@@ -60,6 +61,7 @@
           </label>
         </div>
       </div>
+      {{/if}}
 
       {{!-- Description --}}
       <div class="description-section">

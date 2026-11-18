@@ -591,24 +591,21 @@ Hooks.once("ready", async function() {
         }
       }
 
-      if (targetLevel === currentLevel) continue;
+      // Η αγρύπνια μόνο επιδεινώνει. Δεν μειώνει ποτέ: την κόπωση την καθαρίζει
+      // το macro ξεκούρασης, και μια μείωση εδώ θα έσβηνε κόπωση που έβαλε
+      // χειροκίνητα ο GM με την πρώτη προώθηση του χρόνου.
+      if (targetLevel <= currentLevel) continue;
 
-      // Remove current fatigue
-      if (currentLevel > 0) {
-        await actor.toggleStatusEffect(fatigueLevels[currentLevel - 1]);
-      }
-      // Apply new fatigue level
-      if (targetLevel > 0) {
-        await actor.toggleStatusEffect(fatigueLevels[targetLevel - 1]);
-      }
-      // Notify GM if fatigue got worse
-      if (targetLevel > currentLevel && targetLevel > 0) {
-        const conditionName = game.i18n.localize(`ANDRAGATHIMA.Status${fatigueLevels[targetLevel - 1].charAt(0).toUpperCase() + fatigueLevels[targetLevel - 1].slice(1)}`);
-        ChatMessage.create({
-          content: `<b>${actor.name}</b>: ${conditionName}`,
-          whisper: ChatMessage.getWhisperRecipients("GM")
-        });
-      }
+      // Εφαρμόζουμε το νέο επίπεδο· το προηγούμενο το διώχνει μόνο του ο
+      // αμοιβαίος αποκλεισμός στο onCreateActiveEffect.
+      await actor.toggleStatusEffect(fatigueLevels[targetLevel - 1]);
+
+      // Ενημέρωση GM
+      const conditionName = game.i18n.localize(`ANDRAGATHIMA.Status${fatigueLevels[targetLevel - 1].charAt(0).toUpperCase() + fatigueLevels[targetLevel - 1].slice(1)}`);
+      ChatMessage.create({
+        content: `<b>${actor.name}</b>: ${conditionName}`,
+        whisper: ChatMessage.getWhisperRecipients("GM")
+      });
     }
   });
 });
@@ -696,38 +693,21 @@ async function onCreateActiveEffect(activeEffect, options, userId) {
     }, 10); // 10ms delay
   }
   
-  // Handle mutual exclusion for exhaustion conditions
+  // Τα τρία επίπεδα κόπωσης είναι αμοιβαία αποκλειόμενα: όποιο εφαρμοστεί
+  // κερδίζει και διώχνει τα άλλα δύο, είτε ανεβαίνει είτε κατεβαίνει επίπεδο.
+  // Μετράμε και τα απενεργοποιημένα, γιατί ένα υπόλειμμα θα μπλόκαρε για πάντα
+  // την εφαρμογή νέας κόπωσης.
   const exhaustionStatuses = ["fatigued", "exhausted", "depleted"];
-  const currentExhaustionStatus = exhaustionStatuses.find(status => activeEffect.statuses.has(status));
-  
-  if (currentExhaustionStatus) {
-    // Find the exhaustion level of the current effect
-    const statusEffectConfig = CONFIG.statusEffects.find(s => s.id === currentExhaustionStatus);
-    const currentExhaustionLevel = statusEffectConfig?.flags?.andragathima?.exhaustionLevel || 0;
-    
-    // Remove ALL other exhaustion effects (regardless of level)
+
+  if (exhaustionStatuses.some(status => activeEffect.statuses?.has(status))) {
     const effectsToRemove = [];
     for (const effect of actor.effects) {
-      // Skip the effect we just added
-      if (effect === activeEffect) continue;
-      
-      const effectExhaustionStatus = exhaustionStatuses.find(status => effect.statuses.has(status));
-      if (effectExhaustionStatus) {
-        const effectConfig = CONFIG.statusEffects.find(s => s.id === effectExhaustionStatus);
-        const effectExhaustionLevel = effectConfig?.flags?.andragathima?.exhaustionLevel || 0;
-        
-        // If the new effect has higher or equal level, remove the existing one
-        // If the new effect has lower level, remove the new one (by canceling it later)
-        if (currentExhaustionLevel >= effectExhaustionLevel) {
-          effectsToRemove.push(effect.id);
-        } else {
-          // New effect has lower level, remove it and keep the higher level one
-          await activeEffect.delete();
-          return;
-        }
+      if (effect.id === activeEffect.id) continue;
+      if (exhaustionStatuses.some(status => effect.statuses?.has(status))) {
+        effectsToRemove.push(effect.id);
       }
     }
-    
+
     if (effectsToRemove.length > 0) {
       await actor.deleteEmbeddedDocuments("ActiveEffect", effectsToRemove);
     }
@@ -2206,33 +2186,15 @@ function showRangeCircles(token) {
     }
   }
 
-  // Red circle: radius from active weapon's combatRange
-  const combatRange = _getTokenCombatRange(token);
+  // Red circle: attack radius, derived from token size alone
   const tokenSize = token.document.width;
-  const rrSquares = combatRange <= 1
-    ? tokenSize * 1.5
-    : (tokenSize * 1.5) + (combatRange - 1);
-  const rr = rrSquares * gridSize;
+  const rr = tokenSize * 1.5 * gridSize;
   const gRed = new PIXI.Graphics();
   gRed.lineStyle(2, 0xFF4444, 0.9);
   gRed.beginFill(0xFF4444, 0.20);
   gRed.drawCircle(cx, cy, rr);
   gRed.endFill();
   _rangeCirclesContainer.addChild(gRed);
-}
-
-function _getTokenCombatRange(token) {
-  if (!token.actor) return 1;
-  const quickItems = token.actor.system.equipment?.quickItems || [];
-  const weapons = [];
-  for (let i = 0; i < Math.min(quickItems.length, 8); i++) {
-    const qi = quickItems[i];
-    if (!qi?.id) continue;
-    const item = token.actor.items.get(qi.id);
-    if (item?.type === "weapon") weapons.push(item);
-  }
-  const active = weapons.find(w => w.system.showOnToken) ?? weapons[0];
-  return active?.system.combatRange ?? 1;
 }
 
 function _dispositionColor(token) {
@@ -3538,6 +3500,23 @@ async function preloadHandlebarsTemplates() {
 
 // Register system settings
 function registerSystemSettings() {
+  // Κλείδωμα φύλλων αντικειμένων: όταν είναι ενεργό, μόνο GM και GM assistant
+  // μπορούν να γράψουν σε αντικείμενα και ξόρκια.
+  game.settings.register("andragathima", "lockItemSheets", {
+    name: "ANDRAGATHIMA.Settings.LockItemSheets",
+    hint: "ANDRAGATHIMA.Settings.LockItemSheetsHint",
+    scope: "world",
+    config: true,
+    default: true,
+    type: Boolean,
+    onChange: () => {
+      // Ξαναζωγραφίζουμε τα ανοιχτά φύλλα ώστε να αλλάξει αμέσως η κατάσταση
+      for (const app of Object.values(ui.windows)) {
+        if (app instanceof ItemSheet) app.render(false);
+      }
+    }
+  });
+
   // Token tooltip on/off setting
   game.settings.register("andragathima", "showTokenTooltips", {
     name: "ANDRAGATHIMA.Settings.ShowTokenTooltips",
@@ -3621,7 +3600,86 @@ function registerSystemSettings() {
 // Initialize settings on init hook
 Hooks.once("init", () => {
   registerSystemSettings();
+  registerItemLockHooks();
 });
+
+/* -------------------------------------------- */
+/*  Κλείδωμα αντικειμένων                       */
+/* -------------------------------------------- */
+
+// Πεδία που οι παίκτες αλλάζουν νόμιμα από το φύλλο χαρακτήρα και όχι από το
+// φύλλο αντικειμένου: ποσότητα, εξοπλισμός, χρήσεις, το αν «χρησιμοποιείται»
+// (εμφανίζεται στο token), και τα flags που κρατούν τη θέση στα slots.
+// Το sort το γράφει το ίδιο το Foundry όταν σέρνεις αντικείμενα.
+const PLAYER_WRITABLE_ITEM_FIELDS = [
+  "sort",
+  "flags",
+  "system.quantity",
+  "system.equipped",
+  "system.charges",
+  "system.showOnToken"
+];
+
+function _isGMOrAssistant() {
+  return game.user.role >= CONST.USER_ROLES.ASSISTANT;
+}
+
+function _itemLockActive() {
+  if (_isGMOrAssistant()) return false;
+  return game.settings.get("andragathima", "lockItemSheets") === true;
+}
+
+function registerItemLockHooks() {
+  // Αντικείμενα και ξόρκια: οι παίκτες δεν γράφουν τίποτα πέρα από τα πεδία
+  // διαχείρισης εξοπλισμού.
+  Hooks.on("preUpdateItem", (item, changes) => {
+    if (!_itemLockActive()) return true;
+
+    const flat = foundry.utils.flattenObject(changes);
+    const blocked = Object.keys(flat).filter(path => {
+      // Τα internals του Foundry (_id, _stats κ.λπ.) σφραγίζονται σε κάθε
+      // ενημέρωση και δεν είναι πεδία του φύλλου.
+      if (path.startsWith("_")) return false;
+
+      // Πεδία που επιτρέπονται ρητά στους παίκτες.
+      if (PLAYER_WRITABLE_ITEM_FIELDS.some(f => path === f || path.startsWith(`${f}.`))) return false;
+
+      // Πεδίο που δεν αλλάζει τιμή δεν είναι επεξεργασία. Το Foundry στέλνει
+      // μερικά αμετάβλητα σε κάθε ενημέρωση — π.χ. το type — και χωρίς αυτόν
+      // τον έλεγχο θα κόβαμε νόμιμες αλλαγές για πεδία που ούτε αγγίζονται.
+      if (flat[path] === foundry.utils.getProperty(item, path)) return false;
+
+      return true;
+    });
+    if (blocked.length === 0) return true;
+
+    // Διαγνωστικό: δείχνει ακριβώς ποιο πεδίο μπλοκάρεται, ώστε να φαίνεται
+    // αν κάποιο νόμιμο πεδίο λείπει από τη λίστα.
+    console.warn(
+      `ANDRAGATHIMA | Item lock blocked "${item.name}" (${item.type})`,
+      `>> BLOCKED: ${blocked.join(" , ")}`,
+      `>> ALL: ${Object.keys(flat).join(" , ")}`,
+      `>> CHANGES: ${JSON.stringify(changes)}`
+    );
+
+    ui.notifications.warn(game.i18n.localize("ANDRAGATHIMA.ItemLocked"));
+    return false;
+  });
+
+  // Τα effects πάνω σε αντικείμενα είναι πάντα GM-only, ανεξάρτητα από το
+  // κλείδωμα. Η διαγραφή μένει ελεύθερη: το πλαίσιο είναι ήδη κρυμμένο, και
+  // ένα μπλόκο εδώ κινδυνεύει να πιάσει τη διαγραφή effects που συμβαίνει
+  // όταν ο παίκτης πετάει ένα αντικείμενο.
+  for (const hook of ["preCreateActiveEffect", "preUpdateActiveEffect"]) {
+    Hooks.on(hook, (effect) => {
+      if (effect.parent?.documentName !== "Item") return true;
+      if (_isGMOrAssistant()) return true;
+
+      ui.notifications.warn(game.i18n.localize("ANDRAGATHIMA.ItemEffectsLocked"));
+      return false;
+    });
+  }
+}
 
 /* -------------------------------------------- */
 /*  Torch Duration Management                   */

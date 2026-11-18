@@ -212,6 +212,8 @@
     "EffectToggle": "Toggle effect",
     "EffectEdit": "Edit effect",
     "EffectDelete": "Delete effect",
+    "ItemLocked": "Item sheets are locked. Only the GM can change them.",
+    "ItemEffectsLocked": "Item effects are managed by the GM only.",
     "DeleteEffect": "Delete effect",
     "AddNewEffect": "Add new effect",
     
@@ -757,6 +759,8 @@
     "NoteEmpty": "Empty note",
     
     "Settings": {
+      "LockItemSheets": "Lock item sheets",
+      "LockItemSheetsHint": "When enabled, item and spell sheets are read-only for players. Only the GM and GM assistants can change them. Quantity is the exception and stays editable, for consumables. Players can also still move items between slots and right-click to choose what is in use.",
       "ShowTokenTooltips": "Show Token Tooltips",
       "ShowTokenTooltipsHint": "Shows information (name, HP, defense) when hovering over tokens",
       "TorchDuration": "Torch Duration (minutes)",

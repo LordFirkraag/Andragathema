@@ -67,11 +67,6 @@
               <td></td>
             </tr>
             <tr>
-              <td><label>Ακτίνα μάχης:</label></td>
-              <td><input type="number" name="system.combatRange" value="{{system.combatRange}}" data-dtype="Number" min="1" step="1"/></td>
-              <td></td>
-            </tr>
-            <tr>
               <td><label>{{localize 'ANDRAGATHIMA.Range'}}:</label></td>
               <td>
                 × <input type="number" name="system.range.multiplier" value="{{system.range.multiplier}}" style="width: 60px;" data-dtype="Number"/>
@@ -121,6 +116,7 @@
       </div>
 
       {{!-- Effects Grid --}}
+      {{#if isGMOrAssistant}}
       <div class="item-effects-section">
         <div class="effects-grid">
           {{#each item.effects as |effect|}}
@@ -155,6 +151,7 @@
           </div>
         </div>
       </div>
+      {{/if}}
 
       {{!-- Description --}}
       <div class="description-section">
