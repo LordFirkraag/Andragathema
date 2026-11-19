@@ -4485,14 +4485,15 @@ body .tooltip {
    θέλουμε να φαίνονται όπως πριν, απλώς αδρανή. */
 .andragathima.sheet-locked input:disabled:not([type="checkbox"]):not([type="radio"]),
 .andragathima.sheet-locked select:disabled,
-.andragathima.sheet-locked textarea:disabled {
+.andragathima.sheet-locked textarea:disabled,
+.andragathima.sheet-locked textarea[readonly] {
   border: none !important;
   background: transparent !important;
   box-shadow: none !important;
   outline: none !important;
   color: inherit;
   opacity: 1;
-  cursor: default;
+  cursor: default !important;
   transition: none !important;
   -webkit-appearance: none;
   appearance: none;
@@ -4511,7 +4512,11 @@ body .tooltip {
 .andragathima.sheet-locked textarea:disabled:hover,
 .andragathima.sheet-locked textarea:disabled:focus,
 .andragathima.sheet-locked textarea:disabled:focus-visible,
-.andragathima.sheet-locked textarea:disabled:active {
+.andragathima.sheet-locked textarea:disabled:active,
+.andragathima.sheet-locked textarea[readonly]:hover,
+.andragathima.sheet-locked textarea[readonly]:focus,
+.andragathima.sheet-locked textarea[readonly]:focus-visible,
+.andragathima.sheet-locked textarea[readonly]:active {
   border: none !important;
   background: transparent !important;
   box-shadow: none !important;
@@ -4559,4 +4564,126 @@ body .tooltip {
 /* Το κουμπί επεξεργασίας της περιγραφής δεν εμφανίζεται καθόλου */
 .andragathima.sheet-locked .editor-edit {
   display: none !important;
+}
+
+/* Το readonly textarea μπορεί να εστιαστεί: κρύβουμε τον καρέ, κρατάμε όμως
+   την επιλογή κειμένου ώστε να γίνεται copy. */
+.andragathima.sheet-locked textarea[readonly] {
+  caret-color: transparent;
+  user-select: text;
+}
+
+/* -------------------------------------------- */
+/*  Περιγραφή: γεμίζει το ύψος του παραθύρου    */
+/* -------------------------------------------- */
+
+/* Η περιγραφή μεγαλώνει και μικραίνει μαζί με το παράθυρο, χωρίς δική της
+   λαβή μεγέθυνσης. Χρειάζεται αδιάσπαστη αλυσίδα flex από τη φόρμα μέχρι το
+   textarea· το min-height: 0 σε κάθε κρίκο είναι απαραίτητο, αλλιώς τα flex
+   items αρνούνται να συρρικνωθούν κάτω από το περιεχόμενό τους.
+
+   Αφορά μόνο τα φύλλα αντικειμένων χωρίς tabs (όπλο, θωράκιση, εξοπλισμός,
+   πυρομαχικά, διάφορα, ξόρκι). Τα φύλλα με tabs — δεξιότητα και γενικό —
+   χρησιμοποιούν τον editor του Foundry και μένουν ως είναι. */
+
+/* Οι δύο πρώτοι κρίκοι, που είναι έξω από τα templates μας: το παράθυρο του
+   Foundry και η ίδια η φόρμα. Χωρίς αυτούς η φόρμα έχει ύψος περιεχομένου,
+   οπότε το flex: 1 παρακάτω δεν έχει τίποτα να μοιράσει και η περιγραφή
+   κολλάει στο min-height της. */
+.andragathima.sheet.item > .window-content {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.andragathima.sheet.item > .window-content > form.flexcol {
+  flex: 1;
+  min-height: 0;
+  height: auto;
+}
+
+/* Η κεφαλίδα κρατά το φυσικό της ύψος: ως flex child θα συμπιεζόταν */
+.andragathima.sheet.item > .window-content > form.flexcol > .sheet-header {
+  flex: 0 0 auto;
+}
+
+/* Η κύλιση μένει στο .sheet-body, γιατί το Foundry θυμάται τη θέση της από
+   εκεί (scrollY: [".sheet-body"]). Το overflow-x μένει hidden από τον βασικό
+   κανόνα. Αν το σύνολο δεν χωρά, κυλά όλο μαζί αντί να κυλά η περιγραφή.
+   Το height/max-height του βασικού κανόνα ακυρώνονται ώστε να αποφασίζει
+   το flex. */
+.andragathima.sheet.item form.flexcol > .sheet-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  height: auto;
+  max-height: none;
+  overflow-y: auto;
+}
+
+/* Ο περιτυλιχτής τύπου: .weapon-details, .armor-details κ.λπ. */
+.andragathima.sheet.item form.flexcol > .sheet-body > div:not(.tab) {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+/* Κρίσιμο: τα flex items συρρικνώνονται εξ ορισμού (flex-shrink: 1). Χωρίς
+   αυτό, όταν το περιεχόμενο δεν χωρά, ο πίνακας ιδιοτήτων και το πλαίσιο
+   effects ζουλιούνται αντί να υπερχειλίσουν και να κυλήσουν. Μόνο η
+   περιγραφή επιτρέπεται να αλλάζει ύψος. */
+.andragathima.sheet.item form.flexcol > .sheet-body > div:not(.tab) > *:not(.description-section) {
+  flex: 0 0 auto;
+}
+
+.andragathima.sheet.item .description-section {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+/* Ο τίτλος κρατά το φυσικό του ύψος */
+.andragathima.sheet.item .description-section h3 {
+  flex: 0 0 auto;
+}
+
+.andragathima.sheet.item .description-section .description-text {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+/* Το textarea δεν κυλά ποτέ μέσα του: το _autoSizeDescription του δίνει
+   min-height ίσο με το κείμενο, και ό,τι δεν χωρά το κυλά το .sheet-body.
+   Το flex: 1 μένει ώστε σε ψηλό παράθυρο να μεγαλώνει κι άλλο. Το min-height
+   εδώ είναι απλώς εφεδρεία πριν τρέξει το JS. */
+.andragathima.sheet.item .description-section textarea {
+  flex: 1 1 auto;
+  min-height: 90px;
+  height: auto;
+  overflow-y: hidden !important;
+  resize: none;
+}
+
+/* Στο block layout τα κάθετα margins συμπτύσσονταν: το 15px του .info-section
+   χώνευε στον γονέα του, το 10px του .item-effects-section συμπτυσσόταν με το
+   20px από πάνω, και το 10px του .effects-grid χώνευε στον δικό του γονέα —
+   σύνολο 20px κενό. Ως flex items καθένα δημιουργεί νέο BFC και τα margins
+   αθροίζονται σε 55px. Μηδενίζουμε τα τρία που πριν χωνεύονταν, ώστε να μείνει
+   μόνο το κάτω περιθώριο του πίνακα ιδιοτήτων. */
+.andragathima.sheet.item form.flexcol > .sheet-body > div:not(.tab) > .item-effects-section {
+  margin-top: 0;
+}
+
+.andragathima.sheet.item form.flexcol > .sheet-body > div:not(.tab) > * > .info-section:last-child {
+  margin-bottom: 0;
+}
+
+.andragathima.sheet.item .item-effects-section > .effects-grid:first-child {
+  margin-top: 0;
 }

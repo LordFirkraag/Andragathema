@@ -167,6 +167,9 @@ export class AndragathimaItemSheet extends ItemSheet {
     // Setup instant tooltips
     this._setupInstantTooltips(html);
 
+    // Η περιγραφή παίρνει ύψος όσο το κείμενό της
+    this._autoSizeDescription(html);
+
     // Κλειδωμένο φύλλο: σημαδεύουμε τη φόρμα ώστε το CSS να σβήσει πλαίσια,
     // φόντα και δρομείς, και να διαβάζεται σαν απλό κείμενο.
     if (!this.isEditable) {
@@ -455,6 +458,68 @@ export class AndragathimaItemSheet extends ItemSheet {
     const quantity = Math.max(0, parseInt(event.currentTarget.value) || 0);
     event.currentTarget.value = quantity;
     await this.item.update({ "system.quantity": quantity });
+  }
+
+  /**
+   * Δίνει στο textarea της περιγραφής ελάχιστο ύψος ίσο με το περιεχόμενό του,
+   * ώστε να μην αποκτά ποτέ δικό του scrollbar — κυλά όλο το φύλλο αντί γι'
+   * αυτό. Ορίζουμε min-height και όχι height, ώστε αν το παράθυρο είναι ψηλό
+   * το flex να μπορεί ακόμα να το μεγαλώσει παραπάνω.
+   */
+  _autoSizeDescription(html) {
+    const fit = (el) => {
+      // Για να μετρήσουμε καθαρό ύψος περιεχομένου πρέπει να εξουδετερώσουμε
+      // ό,τι του δίνει ύψος. Το flex μετράει κι αυτό: αν το έχει τεντώσει, το
+      // scrollHeight επιστρέφει το τεντωμένο ύψος αντί του περιεχομένου.
+      el.style.flex = "0 0 auto";
+      el.style.minHeight = "0px";
+      el.style.height = "0px";
+
+      const needed = el.scrollHeight;   // η ανάγνωση επιβάλλει reflow
+
+      el.style.flex = "";               // πίσω στον κανόνα του CSS
+      el.style.height = "auto";
+      el.style.minHeight = `${needed}px`;
+    };
+
+    // Ο παλιός observer αφορά στοιχεία προηγούμενου render
+    this._descriptionResizeObserver?.disconnect();
+    const observer = window.ResizeObserver
+      ? new ResizeObserver(entries => {
+          for (const entry of entries) {
+            const el = entry.target;
+            // Μόνο αλλαγή πλάτους μετράει. Χωρίς αυτόν τον έλεγχο, το ύψος
+            // που βάζουμε θα πυροδοτούσε ξανά τον observer, επ' άπειρον.
+            if (el.clientWidth === el._andragathimaLastWidth) continue;
+            el._andragathimaLastWidth = el.clientWidth;
+            fit(el);
+          }
+        })
+      : null;
+
+    for (const el of html.find('textarea[name="system.description"]')) {
+      fit(el);
+      el.addEventListener("input", () => fit(el));
+
+      // Μετά το πρώτο layout το πλάτος μπορεί να έχει αλλάξει, π.χ. επειδή
+      // εμφανίστηκε μπάρα κύλισης, οπότε το κείμενο ξανατυλίγεται.
+      requestAnimationFrame(() => fit(el));
+
+      // Οι γραμματοσειρές φορτώνουν ασύγχρονα και αλλάζουν το ύψος γραμμής
+      document.fonts?.ready?.then(() => fit(el));
+
+      el._andragathimaLastWidth = el.clientWidth;
+      observer?.observe(el);
+    }
+
+    this._descriptionResizeObserver = observer;
+  }
+
+  /** @override */
+  async close(options) {
+    this._descriptionResizeObserver?.disconnect();
+    this._descriptionResizeObserver = null;
+    return super.close(options);
   }
 
   /**
